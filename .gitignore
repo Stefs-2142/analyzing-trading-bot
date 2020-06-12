@@ -1,7 +1,6 @@
+# Project-related stuff
 settings.py
 bot.log
-.8_ephem_bot.py.swp
-cities.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
