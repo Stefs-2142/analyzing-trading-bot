@@ -1,6 +1,7 @@
 # Project-related stuff
 settings.py
 bot.log
+gists.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
