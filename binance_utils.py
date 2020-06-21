@@ -4,7 +4,6 @@ from settings import API_KEY, SECRET_KEY, EXCEPTION_LIST
 from pprint import PrettyPrinter
 
 
-
 client = Client(API_KEY, SECRET_KEY)
 pp = PrettyPrinter()
 
@@ -13,7 +12,7 @@ def set_order(ticket_1,ticket_2):
     """" Выставляет ордер с заданными параметрами. """
     
     try:
-        order = client.create_test_order(
+        order = client.create_test_order(  # Создаём тестовый ордер в тестовой сети.
         symbol=f'{ticket_1}{ticket_2}',
         side=SIDE_BUY,
         type=ORDER_TYPE_LIMIT,
@@ -24,19 +23,14 @@ def set_order(ticket_1,ticket_2):
         print (f"К сожалению, возникла ошибка {ex}. Попробуйте ещё раз.")
     else:
         print ("Выполнено.")
-        return order # 
+        return order 
 
 
-def get_historical_data():
-    pass
-    #historical_data(client.get_recent_trades(symbol='BTTBTC'))
-
-    
 def get_average_price(ticket_1,ticket_2):
     """ Возвращает текущую цену заданной пары. """
 
     try:
-        avg_price = client.get_avg_price(symbol=f'{ticket_1}{ticket_2}')
+        avg_price = client.get_avg_price(symbol=f'{ticket_1}{ticket_2}') # Получаем среднее значение цены за 5 мин.
     except EXCEPTION_LIST as ex:
         print (f"К сожалению, возникла ошибка {ex}. Попробуйте ещё раз.") 
     else:
@@ -47,7 +41,7 @@ def get_all_open_orders():
     """ Возвращает список открытых сделок. """
 
     try:
-        orders = client.get_open_orders()
+        orders = client.get_open_orders() # Получаем список открытых сделок.
     except EXCEPTION_LIST as ex:
         print (f"К сожалению, возникла ошибка {ex}. Попробуйте ещё раз.") 
     else:
@@ -57,7 +51,7 @@ def get_all_open_orders():
 def close_order(ticket_1,ticket_2,orderId):
     """ Закрывает ордер. """
 
-    orders = get_all_open_orders()  #Проверяем если ли ордер на закрытие. 
+    orders = get_all_open_orders()  # Проверяем есть ли ордер на закрытие. 
     for order in orders:                      
         if order.get('sybmol') == ticket_1 and order.get('sybmol') == ticket_1 and ordet.get('orderId') == orderId:
             try:
@@ -70,8 +64,14 @@ def close_order(ticket_1,ticket_2,orderId):
             return 'К сожалению, нет ордеров на закрытие.'
 
 
+def get_balance():
+    """ Возвращает баланс пользователя. """
 
+    info = client.get_account()
+    balance = {}                        # Создаём словарь с балансом пользователя. {'BTC': 2, 'ETC': 12}
+    for crypto in info['balances']:
+        if crypto['free'] != '0.00000000':
+            balance[crypto['asset']] = crypto['free']
+    return balance
 
-    
-    
 
