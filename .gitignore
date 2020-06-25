@@ -2,6 +2,7 @@
 settings.py
 bot.log
 gists.py
+*backup.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
