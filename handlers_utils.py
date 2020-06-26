@@ -6,7 +6,6 @@ def greet_user(update, context):
 
 # Функция-обработчик команды /start
 def unknown_text(update, context):
-    # Дописать нормальный текст
     reply = ("Команда не найдена, пожалуйста, "
              "нажмите на одну из доступных кнопок")
     update.message.reply_text(reply)
