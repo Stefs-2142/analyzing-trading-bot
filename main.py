@@ -1,7 +1,5 @@
 from model import DbUtils
 
-import settings
-
 
 def main():
     db = DbUtils()
