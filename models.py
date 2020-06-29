@@ -19,7 +19,14 @@ class User(Base):
     api_key = Column('api_key', Text)
 
     def add_user(self, user_data):
-
+        """
+        Функция принимает на вход список с данными пользователя
+        На основании списка функция создает объект пользователя
+        После этого функция пытается добавить новый объект в БД
+        Если происходит ошибка (пользователь с таким ключем уже есть) - 
+        функция возвращает False, если все ок - True
+        ! Попробовать переписать в NamedTuple
+        """
         (
             user_id_cand, shares_user_cand,
             crypto_user_cand, analytics_subscription_cand,
@@ -45,6 +52,13 @@ class User(Base):
             return False
 
     def del_user(self, del_user_id):
+        """
+        Функция удаляет пользователя из БД
+        Единственное применение, если пользователь стопнул бота, но
+        бот попытался отправить нотис пользователю, при таком сценарии - 
+        удаление юзера, есть обработчик ошибок, 
+        но я не уверен что он потребуется хоть когда-то
+        """
         candidate_user = self.session.query(User).get(del_user_id)
 
         try:
@@ -55,6 +69,29 @@ class User(Base):
             self.session.rollback()
             return False
 
+    def get_shares_users(self):
+        """
+        Функция отдает ID пользователей, которые следят за
+        акциями в виде обычного списка
+        """
+        raw_users = self.session.query(User).filter(User.shares_user
+            == True).all() 
+        
+        users = [user.user_id for user in raw_users]    
+            
+        return users 
+        
+    def get_crypto_users(self):
+        """
+        Функция отдает ID пользователей, которые следят за
+        криптой в виде обычного списка
+        """
+        raw_users = self.session.query(User).filter(User.crypto_user
+            == True).all() 
+        
+        users = [user.user_id for user in raw_users]    
+            
+        return users 
 
 class Asset(Base):
     __tablename__ = 'assets'
@@ -103,3 +140,24 @@ class Asset(Base):
                       =del_ticker).delete()
 
         self.session.commit()
+        
+    def get_user_assets(self, query_user_id):
+        """
+        Функция получает из ДБ все активы пользователя
+        и упаковывает их во вложенный список
+        """
+        user_assets = self.session.query(Asset).filter(Asset.user_id
+            == query_user_id).all()
+            
+        packed_assets = []
+
+        for elem in user_assets:
+            packed_assets.append([
+                elem.ticker,
+                elem.add_date,
+                elem.initial_price,
+                elem.target_price,
+                elem.min_price
+            ])
+            
+        return packed_assets 
