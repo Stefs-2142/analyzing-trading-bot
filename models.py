@@ -23,7 +23,7 @@ class User(Base):
         Функция принимает на вход список с данными пользователя
         На основании списка функция создает объект пользователя
         После этого функция пытается добавить новый объект в БД
-        Если происходит ошибка (пользователь с таким ключем уже есть) - 
+        Если происходит ошибка (пользователь с таким ID уже есть) -
         функция возвращает False, если все ок - True
         ! Попробовать переписать в NamedTuple
         """
@@ -55,8 +55,8 @@ class User(Base):
         """
         Функция удаляет пользователя из БД
         Единственное применение, если пользователь стопнул бота, но
-        бот попытался отправить нотис пользователю, при таком сценарии - 
-        удаление юзера, есть обработчик ошибок, 
+        бот попытался отправить нотис пользователю, при таком сценарии -
+        удаление юзера, есть обработчик ошибок,
         но я не уверен что он потребуется хоть когда-то
         """
         candidate_user = self.session.query(User).get(del_user_id)
@@ -75,23 +75,44 @@ class User(Base):
         акциями в виде обычного списка
         """
         raw_users = self.session.query(User).filter(User.shares_user
-            == True).all() 
-        
-        users = [user.user_id for user in raw_users]    
-            
-        return users 
-        
+            is True).all()
+
+        users = [user.user_id for user in raw_users]
+
+        return users
+
     def get_crypto_users(self):
         """
         Функция отдает ID пользователей, которые следят за
         криптой в виде обычного списка
         """
         raw_users = self.session.query(User).filter(User.crypto_user
-            == True).all() 
-        
-        users = [user.user_id for user in raw_users]    
-            
-        return users 
+            is True).all()
+
+        users = [user.user_id for user in raw_users]
+
+        return users
+
+    def get_analytics_users(self):
+        """
+        Функция отдает ID пользователей, которые подписаны на аналитику
+        """
+        raw_users = self.session.query(User).filter(User.analytics_subscription
+            is True).all()
+
+        users = [user.user_id for user in raw_users]
+
+        return users
+
+    def get_api_key(self, query_user_id):
+        """
+        Функция отдает api ключ запрошенного пользователя строкой
+        """
+        user_key = self.session.query(User).filter_by(user_id
+            = query_user_id).scalar().api_key
+
+        return user_key
+
 
 class Asset(Base):
     __tablename__ = 'assets'
@@ -108,7 +129,14 @@ class Asset(Base):
     min_price = Column('min_price', Float)
 
     def add_asset(self, asset_data):
-        # ! Попробовать переписать в NamedTuple
+        """
+        Функция принимает на вход список с данными по инструменту
+        На основании списка функция создает объект инструмента
+        После этого функция пытается добавить новый объект в БД
+        Если происходит ошибка (если пара юзера и инструмента уже есть) -
+        функция возвращает False, если все ок - True
+        ! Попробовать переписать в NamedTuple
+        """
         (
             user_id_cand, ticker_cand, is_crypto_cand, add_date_cand,
             initial_price_cand, target_price_cand, min_price_cand,
@@ -140,7 +168,33 @@ class Asset(Base):
                       =del_ticker).delete()
 
         self.session.commit()
-        
+
+    def edit_t_price(self, edit_user_id, edit_ticker, value):
+        """
+        Функция принимает ID Юзера, инструмент для изменения и
+        новую стоимость, с полученными данными функция изменяет
+        таргетную стоимость инструмента в БД
+        """
+        asset = self.session.query(Asset).filter_by(user_id
+            = edit_user_id).filter_by(ticker
+            = edit_ticker).scalar()
+
+        asset.target_price = value
+        self.session.commit()
+
+    def edit_m_price(self, edit_user_id, edit_ticker, value):
+        """
+        Функция принимает ID Юзера, инструмент для изменения и
+        новую стоимость, с полученными данными функция изменяет
+        минимальную стоимость инструмента в БД
+        """
+        asset = self.session.query(Asset).filter_by(user_id
+            = edit_user_id).filter_by(ticker
+            = edit_ticker).scalar()
+
+        asset.min_price = value
+        self.session.commit()
+
     def get_user_assets(self, query_user_id):
         """
         Функция получает из ДБ все активы пользователя
@@ -148,7 +202,7 @@ class Asset(Base):
         """
         user_assets = self.session.query(Asset).filter(Asset.user_id
             == query_user_id).all()
-            
+
         packed_assets = []
 
         for elem in user_assets:
@@ -159,5 +213,5 @@ class Asset(Base):
                 elem.target_price,
                 elem.min_price
             ])
-            
-        return packed_assets 
+
+        return packed_assets
