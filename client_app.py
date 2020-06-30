@@ -11,6 +11,7 @@ def main():
     binance_client.get_average_price('BTC', 'USDT')
     binance_client.get_all_open_orders()
     binance_client.get_balance()
+    binance_client.set_alert('ETC', 'USDT', 5.7)
 
     # close_order('BTC','USDT',SOME_ORDER_ID) # Проверить можно только с реальным ордером.
 
