@@ -57,7 +57,7 @@ class BinanceClient():
     def close_order(self, ticket_1, ticket_2, orderId):
         """ Закрывает ордер. """
 
-        orders = self.get_all_open_orders()  # Проверяем есть ли ордер на закрытие. 
+        orders = self.get_all_open_orders()  # Проверяем есть ли ордер на закрытие.
         for order in orders:
             if order.get('symbol') == ticket_1 and order.get('symbol') == ticket_1 and order.get('orderId') == orderId:
                 try:
@@ -65,7 +65,7 @@ class BinanceClient():
                     logging.info('Выполнено.')
                     return result
                 except EXCEPTION_LIST as ex:
-                    logging.info(f'Возникла ошибка - {ex}')  
+                    logging.info(f'Возникла ошибка - {ex}')
             else:
                 return logging.info('К сожалению, нет ордеров на закрытие.')
 
@@ -86,7 +86,7 @@ class BinanceClient():
         sub_target_low = round((target-target*0.03), 1)  # Зададим границы таргета в 3%
         sub_target_hight = round((target+target*0.03), 1)
         logging.info('Таргет установлен.')
- 
+
         while True:
             sleep(5)
             current_price = self.average_price(ticket_1, ticket_2)

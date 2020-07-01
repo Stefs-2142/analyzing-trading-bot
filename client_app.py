@@ -13,8 +13,6 @@ def main():
     binance_client.get_balance()
     binance_client.set_alert('ETC', 'USDT', 5.7)
 
-    # close_order('BTC','USDT',SOME_ORDER_ID) # Проверить можно только с реальным ордером.
-
 
 if __name__ == "__main__":
     main()
