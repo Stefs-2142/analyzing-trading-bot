@@ -1,0 +1,2 @@
+API_KEY = "your_key"
+DB_CONNECT = "postgresql:///DB_NAME"
