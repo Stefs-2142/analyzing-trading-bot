@@ -1,4 +1,4 @@
-from base import Session, Engine, Base
+from base import session, Engine, Base
 from sqlalchemy import create_engine, exists, Column, literal
 from sqlalchemy import BigInteger, Boolean, Integer, Text, Date, Float
 from sqlalchemy.ext.declarative import declarative_base
@@ -7,8 +7,6 @@ import sqlalchemy.exc
 
 class User(Base):
     __tablename__ = 'users'
-
-    session = Session()
 
     user_id = Column('user_id', BigInteger, primary_key=True)
     shares_user = Column('shares_user', Boolean)
@@ -34,21 +32,21 @@ class User(Base):
         ) = user_data
 
         candidate_user = User(
-                        user_id=user_id_cand,
-                        shares_user=shares_user_cand,
-                        crypto_user=crypto_user_cand,
-                        analytics_subscription=analytics_subscription_cand,
-                        post_frequency=post_frequency_cand,
-                        analytics_frequency=analytics_frequency_cand,
-                        api_key=api_key_cand
-                        )
-        self.session.add(candidate_user)
+            user_id=user_id_cand,
+            shares_user=shares_user_cand,
+            crypto_user=crypto_user_cand,
+            analytics_subscription=analytics_subscription_cand,
+            post_frequency=post_frequency_cand,
+            analytics_frequency=analytics_frequency_cand,
+            api_key=api_key_cand
+            )
+        session.add(candidate_user)
 
         try:
-            self.session.commit()
+            session.commit()
             return True
         except sqlalchemy.exc.IntegrityError:
-            self.session.rollback()
+            session.rollback()
             return False
 
     def del_user(self, del_user_id):
@@ -59,14 +57,14 @@ class User(Base):
         удаление юзера, есть обработчик ошибок,
         но я не уверен что он потребуется хоть когда-то
         """
-        candidate_user = self.session.query(User).get(del_user_id)
+        candidate_user = session.query(User).get(del_user_id)
 
         try:
-            self.session.delete(candidate_user)
-            self.session.commit()
+            session.delete(candidate_user)
+            session.commit()
             return True
         except sqlalchemy.orm.exc.UnmappedInstanceError:
-            self.session.rollback()
+            session.rollback()
             return False
 
     def get_shares_users(self):
@@ -74,8 +72,11 @@ class User(Base):
         Функция отдает ID пользователей, которые следят за
         акциями в виде обычного списка
         """
-        raw_users = self.session.query(User).filter(User.shares_user
-            is True).all()
+        raw_users = session.query(
+                User
+            ).filter(
+                User.shares_user
+            ).all()
 
         users = [user.user_id for user in raw_users]
 
@@ -86,8 +87,11 @@ class User(Base):
         Функция отдает ID пользователей, которые следят за
         криптой в виде обычного списка
         """
-        raw_users = self.session.query(User).filter(User.crypto_user
-            is True).all()
+        raw_users = session.query(
+                User
+            ).filter(
+                User.crypto_user
+            ).all()
 
         users = [user.user_id for user in raw_users]
 
@@ -97,8 +101,11 @@ class User(Base):
         """
         Функция отдает ID пользователей, которые подписаны на аналитику
         """
-        raw_users = self.session.query(User).filter(User.analytics_subscription
-            is True).all()
+        raw_users = session.query(
+                User
+            ).filter(
+                User.analytics_subscription
+            ).all()
 
         users = [user.user_id for user in raw_users]
 
@@ -108,8 +115,11 @@ class User(Base):
         """
         Функция отдает api ключ запрошенного пользователя строкой
         """
-        user_key = self.session.query(User).filter_by(user_id
-            = query_user_id).scalar().api_key
+        user_key = session.query(
+                User
+            ).filter_by(
+                user_id=query_user_id
+            ).first().api_key
 
         return user_key
 
@@ -117,7 +127,7 @@ class User(Base):
 class Asset(Base):
     __tablename__ = 'assets'
 
-    session = Session()
+    session = session
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column('user_id', BigInteger)
@@ -151,23 +161,31 @@ class Asset(Base):
             target_price=target_price_cand,
             min_price=min_price_cand,
             )
-        if self.session.query(exists().where(Asset.user_id
-                      == user_id_cand).where(Asset.ticker
-                      == ticker_cand)).scalar():
-            self.session.rollback()
+        if session.query(
+                exists().where(
+                    Asset.user_id == user_id_cand
+                ).where(
+                    Asset.ticker == ticker_cand
+                )).scalar():
+
+            session.rollback()
             return False
         else:
-            self.session.add(candidate_asset)
-            self.session.commit()
+            session.add(candidate_asset)
+            session.commit()
             return True
 
     def del_asset(self, del_user_id, del_ticker):
 
-        self.session.query(Asset).filter_by(user_id
-                      =del_user_id).filter_by(ticker
-                      =del_ticker).delete()
+        session.query(
+                Asset
+            ).filter_by(
+                user_id=del_user_id
+            ).filter_by(
+                ticker=del_ticker
+            ).delete()
 
-        self.session.commit()
+        session.commit()
 
     def edit_t_price(self, edit_user_id, edit_ticker, value):
         """
@@ -175,12 +193,16 @@ class Asset(Base):
         новую стоимость, с полученными данными функция изменяет
         таргетную стоимость инструмента в БД
         """
-        asset = self.session.query(Asset).filter_by(user_id
-            = edit_user_id).filter_by(ticker
-            = edit_ticker).scalar()
+        asset = session.query(
+                    Asset
+                ).filter_by(
+                    user_id=edit_user_id
+                ).filter_by(
+                    ticker=edit_ticker
+                ).first()
 
         asset.target_price = value
-        self.session.commit()
+        session.commit()
 
     def edit_m_price(self, edit_user_id, edit_ticker, value):
         """
@@ -188,20 +210,27 @@ class Asset(Base):
         новую стоимость, с полученными данными функция изменяет
         минимальную стоимость инструмента в БД
         """
-        asset = self.session.query(Asset).filter_by(user_id
-            = edit_user_id).filter_by(ticker
-            = edit_ticker).scalar()
+        asset = session.query(
+                Asset
+            ).filter_by(
+                user_id=edit_user_id
+            ).filter_by(
+                ticker=edit_ticker
+            ).scalar()
 
         asset.min_price = value
-        self.session.commit()
+        session.commit()
 
     def get_user_assets(self, query_user_id):
         """
         Функция получает из ДБ все активы пользователя
         и упаковывает их во вложенный список
         """
-        user_assets = self.session.query(Asset).filter(Asset.user_id
-            == query_user_id).all()
+        user_assets = session.query(
+                Asset
+            ).filter(
+                Asset.user_id == query_user_id
+            ).all()
 
         packed_assets = []
 

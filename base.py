@@ -8,4 +8,6 @@ Engine = create_engine(DB_CONNECT)
 
 Session = sessionmaker(bind = Engine)
 
+session = Session()
+
 Base = declarative_base()
