@@ -1,8 +1,8 @@
 from binance.client import Client
 from binance.enums import SIDE_BUY, ORDER_TYPE_LIMIT, TIME_IN_FORCE_GTC
 from settings import API_KEY, SECRET_KEY, EXCEPTION_LIST
-from time import sleep
 import logging
+
 
 client = Client(API_KEY, SECRET_KEY)
 logging.basicConfig(filename='binance.log', level=logging.INFO,
@@ -40,8 +40,9 @@ class BinanceClient():
         except EXCEPTION_LIST as ex:
             logging.info(f'Возникла ошибка - {ex}')
         else:
-            logging.info(f"{avg_price['price']} {ticket_2}")
-            return f"{round(float(avg_price['price']),1)} {ticket_2}"
+            formated_avg_price = str(round(float(avg_price['price']), 1)) + " " + str(ticket_2)
+            logging.info(formated_avg_price)
+            return formated_avg_price
 
     def get_all_open_orders(self):
         """ Возвращает список открытых сделок. """
@@ -80,29 +81,6 @@ class BinanceClient():
         logging.info(balance)
         return balance
 
-    def set_alert(self, ticket_1, ticket_2, target):
-        """ Устанавливает отслеживание вхождения цены в алертное состояние. """
-
-        sub_target_low = round((target-target*0.03), 1)  # Зададим границы таргета в 3%
-        sub_target_hight = round((target+target*0.03), 1)
-        logging.info('Таргет установлен.')
-
-        while True:
-            sleep(5)
-            current_price = self.average_price(ticket_1, ticket_2)
-
-            if current_price == float(target):
-                logging.info(f'WARNING PAIR {ticket_1}/{ticket_2} IN TAGRET ZONE ={target}!')
-                break
-            elif current_price == sub_target_low:
-                logging.info(f'WARNING PAIR {ticket_1}/{ticket_2} NEAR TAGRET ZONE ={target}!')
-                break
-            elif current_price == sub_target_hight:
-                logging.info(f'WARNING PAIR {ticket_1}/{ticket_2} NEAR TAGRET ZONE ={target}!')
-                break
-
-        return True
-
     def average_price(self, ticket_1, ticket_2):
         """ Возвращает значение цены заданой пары """
         try:
@@ -111,3 +89,37 @@ class BinanceClient():
             logging.info(f'Возникла ошибка - {ex}')
         else:
             return round(float(price['price']), 1)
+
+    def get_trade_history(self, ticket_1, ticket_2):
+        """ Возвращает историю торгов по заданой паре. """
+
+        try:
+            trades = client.get_my_trades(symbol=f'{ticket_1}{ticket_2}')
+            combined_trades = []
+            for trade in trades:
+
+                symbol = trade['symbol']
+                quantity = trade['qty']
+                quoteQty = trade['quoteQty']
+                order_id = trade['orderId']
+
+                order = client.get_order(
+                    symbol=f'{ticket_1}{ticket_2}',
+                    orderId=order_id)
+
+                order_side = order['side']
+                order_status = order['status']
+                order_type = order['type']
+                price = order['price']
+                logging.info(f'{symbol} {order_type} {order_side} {quantity} {quoteQty} {price} {order_status}')
+
+                combined_trades.append(
+                    {'symbol': symbol, 'order_side': order_side,
+                        'order_type': order_type, 'quantity': quantity,
+                        'quoteQty': quoteQty, 'price': price})
+            logging.info(combined_trades)
+
+        except EXCEPTION_LIST as ex:
+            logging.info(f'Возникла ошибка - {ex}')
+        else:
+            return combined_trades
