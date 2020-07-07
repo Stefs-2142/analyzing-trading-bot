@@ -60,7 +60,7 @@ class BinanceClient():
 
         orders = self.get_all_open_orders()  # Проверяем есть ли ордер на закрытие.
         for order in orders:
-            if order.get('symbol') == ticket_1 and order.get('symbol') == ticket_1 and order.get('orderId') == orderId:
+            if order.get('symbol') == f'{ticket_1}{ticket_2}' and order.get('orderId') == orderId:
                 try:
                     result = client.cancel_order(symbol=f'{ticket_1}{ticket_2}', orderId='orderId')
                     logging.info('Выполнено.')
