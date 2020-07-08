@@ -52,14 +52,56 @@ def add_step_2(update, context):
                 '"Использовать текущую цену".'
             )
             return add_step_2
-        context.user_data['ticker'][2] = ticker_current_price
-    else:
-        print(context.user_data['ticker'])
-        return ConversationHandler.END 
+        context.user_data['ticker'][4] = ticker_current_price
+    update.message.reply_text(
+        'Введите целевую стоимость актива (take-profit).'
+        'Если вы не хотите отслеживать целевую стоимость - '
+        'нажмите на кнопку "Пропустить"'
+    )
+    return add_step_3
     
     
 def add_step_3(update, context):
-    pass    
+    if update.message.text == 'Пропустить':
+        context.user_data['ticker'].append(0)
+    else:
+        try:
+            ticker_target_price = float(update.message.text)
+        except ValueError:
+            update.message.reply_text(
+                'В введенной стоимости присутствуют ошибки. '
+                'Повторите ввод или нажмите кнопку '
+                '"Пропустить".'
+            )
+            return add_step_3
+        context.user_data['ticker'].append(ticker_target_price)
+    update.message.reply_text(
+        'Введите минимальную стоимость актива (stop-loss).'
+        'Если вы не хотите отслеживать целевую стоимость - '
+        'нажмите на кнопку "Пропустить"'
+    )
+    return add_step_4
+        
+def add_step_4(update, context):
+    if update.message.text == 'Пропустить':
+        context.user_data['ticker'].append(0)
+    else:
+        try:
+            ticker_min_price = float(update.message.text)
+        except ValueError:
+            update.message.reply_text(
+                'В введенной стоимости присутствуют ошибки. '
+                'Повторите ввод или нажмите кнопку '
+                '"Пропустить".'
+            )
+            return add_step_4
+        context.user_data['ticker'].append(ticker_min_price)
+    logging.info(f'Added asset {context.user_data["ticker"]}')
+    # Обраотчик True/False
+    Asset().add_asset(context.user_data['ticker'])
+    context.user_data.pop('ticker', None) 
+    update.message.reply_text('Инструмент успешно добавлен!')
+    return ConversationHandler.END
     
 def operation_cancel(update, context):
     context.user_data.pop('ticker', None) 
@@ -82,6 +124,9 @@ def main():
             ],
             add_step_3:[
                 MessageHandler(Filters.text & (~Filters.regex('(Отмена)')), add_step_3)
+            ],
+            add_step_4:[
+                MessageHandler(Filters.text & (~Filters.regex('(Отмена)')), add_step_4)
             ],
         },
         fallbacks = [MessageHandler(Filters.regex('(Отмена)'), operation_cancel)]
