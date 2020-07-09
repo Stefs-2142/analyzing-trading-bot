@@ -1,4 +1,5 @@
 ﻿from keyboards import main_shares_keyboard
+from telegram.ext import ConversationHandler
 
 
 # Функция-обработчик команды /start
