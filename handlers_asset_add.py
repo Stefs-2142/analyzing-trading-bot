@@ -42,7 +42,7 @@ def add_step_1(update, context):
 def add_step_2(update, context):
     if update.message.text != 'Пропустить':
         try:
-            ticker_current_price = float(update.message.text)
+            ticker_current_price = float(update.message.text.replace(',','.'))
         except ValueError:
             update.message.reply_text(
                 'В введенной стоимости присутствуют ошибки. '
@@ -65,7 +65,7 @@ def add_step_3(update, context):
         context.user_data['ticker'].append(0)
     else:
         try:
-            ticker_target_price = float(update.message.text)
+            ticker_target_price = float(update.message.text.replace(',','.'))
         except ValueError:
             update.message.reply_text(
                 'В введенной стоимости присутствуют ошибки. '
@@ -87,7 +87,7 @@ def add_step_4(update, context):
         context.user_data['ticker'].append(0)
     else:
         try:
-            ticker_min_price = float(update.message.text)
+            ticker_min_price = float(update.message.text.replace(',','.'))
         except ValueError:
             update.message.reply_text(
                 'В введенной стоимости присутствуют ошибки. '
