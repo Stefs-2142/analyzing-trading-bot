@@ -19,8 +19,9 @@ def delete_start(update, context):
         asset_name = asset[0]
         context.user_data['del_candidates'].append([i, asset_name])
         reply_text += f'{i}. {asset[0]}\r\n'
-    reply_text += '\r\nДля удаления актива отправьте его номер ответным сообщением.'
-
+    reply_text += (
+        '\r\nДля удаления актива отправьте его номер ответным сообщением.'
+    )
     update.message.reply_text(
         reply_text, reply_markup=cancel_keyboard()
     )
@@ -28,12 +29,17 @@ def delete_start(update, context):
 
 
 def delete_confirm(update, context):
+    user_assets = context.user_data['del_candidates']
     try:
         selected = int(update.message.text)
-        del_ticker = [i[1] for i in context.user_data['del_candidates'] if i[0] == selected]
+        del_ticker = [
+            i[1] for i in user_assets if i[0] == selected
+        ]
     except ValueError:
         selected = update.message.text
-        del_ticker = [i[1] for i in context.user_data['del_candidates'] if i[1] == selected]
+        del_ticker = [
+            i[1] for i in user_assets if i[1] == selected
+        ]
 
     if del_ticker:
         Asset().del_asset(update.effective_user.id, del_ticker[0])
@@ -47,6 +53,7 @@ def delete_confirm(update, context):
         return ConversationHandler.END
     else:
         update.message.reply_text(
-            'Введеный номер или тикер не найден - повторите ввод.', reply_markup=cancel_keyboard()
+            'Введеный номер или тикер не найден - повторите ввод.',
+            reply_markup=cancel_keyboard()
         )
         return delete_confirm
