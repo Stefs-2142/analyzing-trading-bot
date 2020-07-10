@@ -1,6 +1,7 @@
 from handlers_asset_add import add_start, add_step_1
 from handlers_asset_add import add_step_2, add_step_3, add_step_4
 from handlers_asset_del import delete_start, delete_confirm
+from handlers_asset_view import asset_view
 from handlers_utils import greet_user, unknown_text, operation_cancel
 from keyboards import main_shares_keyboard
 from models import User, Asset
@@ -23,6 +24,7 @@ def main():
     dp = atb_bot.dispatcher
 
     dp.add_handler(CommandHandler("start", greet_user))
+    dp.add_handler(MessageHandler(Filters.regex('Мои\sинструменты'), asset_view))
     dp.add_handler(ConversationHandler(
         entry_points=[MessageHandler(Filters.regex('Добавить'), add_start)],
         states={

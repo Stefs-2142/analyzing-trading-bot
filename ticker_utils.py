@@ -1,4 +1,4 @@
-﻿from yahoo_fin import stock_info
+﻿from yahoo_fin import stock_info as si
 import numpy
 
 
@@ -9,13 +9,18 @@ def get_ticker_price(ticker):
     возвращает False
     """
     try:
-        price = stock_info.get_live_price(ticker)
+        price = si.get_live_price(ticker)
     except (AssertionError, KeyError):
         return False
     if numpy.isnan(price):
         return False
     else:
         return float(round(price, 8))
+
+
+def get_prev_close(ticker):
+    prev_close_price = si.get_quote_table(ticker).get('Previous Close')
+    return prev_close_price
 
 
 def ticker_pricing(tickers):
@@ -33,7 +38,7 @@ def ticker_pricing(tickers):
         ticker_name = ticker[0]
         target_price = ticker[1]
         min_price = ticker[2]
-        current_price = stock_info.get_live_price(ticker_name)
+        current_price = si.get_live_price(ticker_name)
         if current_price >= target_price:
             alerted_tickers.append([ticker_name, True, min_price])
         elif current_price <= min_price:
