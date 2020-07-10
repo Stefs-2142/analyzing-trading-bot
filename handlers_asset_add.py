@@ -41,17 +41,26 @@ def add_step_1(update, context):
 
 def add_step_2(update, context):
     if update.message.text != 'Пропустить':
+        error_text = (
+            'Повторите ввод или нажмите кнопку '
+            '"Пропустить" чтобы использовать текущую стоимость.'
+        )
         try:
             ticker_current_price = float(update.message.text.replace(',', '.'))
         except ValueError:
             update.message.reply_text(
-                'В введенной стоимости присутствуют ошибки. '
-                'Повторите ввод или нажмите кнопку '
-                '"Пропустить" чтобы использовать текущую стоимость.',
+                f'В введенной стоимости присутствуют ошибки. {error_text}',
                 reply_markup=skip_keyboard()
             )
             return add_step_2
-        context.user_data['ticker'][4] = ticker_current_price
+        if ticker_current_price <= 0:
+            update.message.reply_text(
+                f'Стоимость не может быть равной или ниже нуля. {error_text}',
+                reply_markup=skip_keyboard()
+            )
+            return add_step_2
+        else:
+            context.user_data['ticker'][4] = ticker_current_price
     update.message.reply_text(
         'Введите целевую стоимость актива (take-profit).'
         'Если вы не хотите отслеживать целевую стоимость - '
@@ -64,16 +73,25 @@ def add_step_3(update, context):
     if update.message.text == 'Пропустить':
         context.user_data['ticker'].append(0)
     else:
+        error_text = (
+            'Повторите ввод или нажмите кнопку "Пропустить".'
+        )
         try:
             ticker_target_price = float(update.message.text.replace(',', '.'))
         except ValueError:
             update.message.reply_text(
-                'В введенной стоимости присутствуют ошибки. '
-                'Повторите ввод или нажмите кнопку '
-                '"Пропустить".', reply_markup=skip_keyboard()
+                f'В введенной стоимости присутствуют ошибки. {error_text}',
+                reply_markup=skip_keyboard()
             )
             return add_step_3
-        context.user_data['ticker'].append(ticker_target_price)
+        if ticker_target_price <= 0:
+            update.message.reply_text(
+                f'Стоимость не может быть равной или ниже нуля. {error_text}',
+                reply_markup=skip_keyboard()
+            )
+            return add_step_3
+        else:
+            context.user_data['ticker'].append(ticker_target_price)
     update.message.reply_text(
         'Введите минимальную стоимость актива (stop-loss).'
         'Если вы не хотите отслеживать целевую стоимость - '
@@ -86,16 +104,26 @@ def add_step_4(update, context):
     if update.message.text == 'Пропустить':
         context.user_data['ticker'].append(0)
     else:
+        error_text = (
+            'Повторите ввод или нажмите кнопку "Пропустить".'
+        )
         try:
             ticker_min_price = float(update.message.text.replace(',', '.'))
         except ValueError:
             update.message.reply_text(
-                'В введенной стоимости присутствуют ошибки. '
-                'Повторите ввод или нажмите кнопку '
-                '"Пропустить".', reply_markup=skip_keyboard()
+                f'В введенной стоимости присутствуют ошибки. {error_text}',
+                reply_markup=skip_keyboard()
             )
             return add_step_4
-        context.user_data['ticker'].append(ticker_min_price)
+        if ticker_min_price <= 0:
+            update.message.reply_text(
+                f'Стоимость не может быть равной или ниже нуля. {error_text}',
+                reply_markup=skip_keyboard()
+            )
+            return add_step_4
+        else:
+            context.user_data['ticker'].append(ticker_min_price)
+    print(context.user_data['ticker'])
     result = Asset().add_asset(context.user_data['ticker'])
     if result:
         update.message.reply_text(
