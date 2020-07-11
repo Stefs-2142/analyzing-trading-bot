@@ -2,6 +2,7 @@ from binance.client import Client
 from binance.enums import SIDE_BUY, ORDER_TYPE_LIMIT, TIME_IN_FORCE_GTC
 from settings import API_KEY, SECRET_KEY, EXCEPTION_LIST
 import logging
+from tasks import alert_status
 
 
 client = Client(API_KEY, SECRET_KEY)
@@ -123,3 +124,11 @@ class BinanceClient():
             logging.info(f'Возникла ошибка - {ex}')
         else:
             return combined_trades
+
+    def set_alert(self, ticket_1, ticket_2, target):
+
+        """ Устанавливает отслеживание вхождения цены в алертное состояние. """
+
+        alert_status.delay(ticket_1, ticket_2, target)
+        logging.info('Таргет установлен.')
+        return True
