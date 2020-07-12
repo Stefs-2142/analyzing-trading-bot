@@ -20,14 +20,14 @@ def skip_keyboard():
         ['Пропустить'], ['Отмена']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
-    
+
 def edit_del_keyboard():
     return ReplyKeyboardMarkup([
         ['Изменить', 'Удалить'],
         ['Отмена']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
-    
-    
+
+
 def edit_choose_keyboard():
     return ReplyKeyboardMarkup([
         ['Максимальная', 'Минимальная'],

@@ -59,7 +59,9 @@ def edit_delete_choose(update, context):
 
 def delete_price_choose(update, context):
     if update.message.text == 'Удалить':
-        Asset().del_asset(update.effective_user.id, context.user_data['candidates'])
+        Asset().del_asset(
+            update.effective_user.id, context.user_data['candidates']
+        )
         update.message.reply_text(
             'Инструмент успешно удален!', reply_markup=main_shares_keyboard()
         )
@@ -70,7 +72,8 @@ def delete_price_choose(update, context):
         return ConversationHandler.END
     else:
         update.message.reply_text(
-            'Укажите стоимость для изменения', reply_markup=edit_choose_keyboard()
+            'Укажите стоимость для изменения',
+            reply_markup=edit_choose_keyboard()
         )
         return edit_choose_confirm
 
@@ -78,12 +81,13 @@ def delete_price_choose(update, context):
 def edit_choose_confirm(update, context):
     if update.message.text == 'Максимальная':
         context.user_data['action'] = True
-    elif  update.message.text == 'Минимальная':
+    elif update.message.text == 'Минимальная':
         context.user_data['action'] = False
     update.message.reply_text(
         'Укажите новую стоимость', reply_markup=cancel_keyboard()
     )
     return edit_price
+
 
 def edit_price(update, context):
     error_text = (
@@ -106,15 +110,15 @@ def edit_price(update, context):
     else:
         user_id = update.effective_user.id
         ticker = context.user_data['candidates']
-        if context.user_data['action'] == True:
+        if context.user_data['action']:
             Asset().edit_t_price(user_id, ticker, new_price)
             logging.info(
-                f'Target price for asset {ticker} was updated by user {user_id}'
+                f'Target price for {ticker} was updated by user {user_id}'
             )
         else:
             Asset().edit_m_price(user_id, ticker, new_price)
             logging.info(
-                f'Min price for asset {ticker} was updated by user {user_id}'
+                f'Min price for {ticker} was updated by user {user_id}'
             )
         context.user_data.pop('candidates', None)
         context.user_data.pop('action', None)
