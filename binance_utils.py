@@ -126,7 +126,6 @@ class BinanceClient():
             return combined_trades
 
     def set_alert(self, ticket_1, ticket_2, target):
-
         """ Устанавливает отслеживание вхождения цены в алертное состояние. """
 
         alert_status.delay(ticket_1, ticket_2, target)

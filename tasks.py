@@ -1,4 +1,5 @@
 from celery import Celery
+from bnb_client import binance_client
 from time import sleep
 import logging
 
@@ -17,13 +18,11 @@ def make_celery():
     return celery
 
 
-celery = make_celery()
+celery_app = make_celery()
 
 
-@celery.task
+@celery_app.task
 def alert_status(ticket_1, ticket_2, target):
-
-    from client_app import binance_client
 
     three_percent = 0.03
     sub_target_low = round((target - target * three_percent), 1)  # Зададём границы таргета в 3%

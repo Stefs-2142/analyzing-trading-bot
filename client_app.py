@@ -1,8 +1,5 @@
-from binance_utils import BinanceClient
+from bnb_client import binance_client
 import logging
-
-
-binance_client = BinanceClient()
 
 
 def main():
