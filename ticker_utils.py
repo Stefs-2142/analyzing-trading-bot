@@ -19,6 +19,9 @@ def get_ticker_price(ticker):
 
 
 def get_prev_close(ticker):
+    """
+    Функция возвращает цену последнего закрытия для переданного тикера
+    """
     prev_close_price = si.get_quote_table(ticker).get('Previous Close')
     return prev_close_price
 
