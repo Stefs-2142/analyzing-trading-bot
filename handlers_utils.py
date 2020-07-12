@@ -16,7 +16,8 @@ def unknown_text(update, context):
 
 def operation_cancel(update, context):
     context.user_data.pop('ticker', None)
-    context.user_data.pop('del_candidates', None)
+    context.user_data.pop('candidates', None)
+    context.user_data.pop('action', None)
     update.message.reply_text(
         'Операция прервана', reply_markup=main_shares_keyboard()
     )
