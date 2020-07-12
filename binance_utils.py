@@ -3,6 +3,7 @@ from binance.enums import SIDE_BUY, ORDER_TYPE_LIMIT, TIME_IN_FORCE_GTC
 from settings import API_KEY, SECRET_KEY, EXCEPTION_LIST
 import logging
 from tasks import alert_status
+from functools import wraps
 
 
 client = Client(API_KEY, SECRET_KEY)
@@ -11,36 +12,48 @@ logging.basicConfig(filename='binance.log', level=logging.INFO,
                     datefmt='%Y-%m-%d %H:%M:%S',)
 
 
+def wrap_try_except(func):
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except EXCEPTION_LIST as ex:
+            logging.info(f'Возникла ошибка - {ex}')
+    return wrapper
+
+
 class BinanceClient():
 
     def __init__(self):
         self.client = Client(API_KEY, SECRET_KEY)
 
+    def __make_client_call(self, method_name, *args, **kwargs):
+        result = getattr(self.client, method_name)(*args, **kwargs)
+        return result
+
+    @wrap_try_except()
     def set_order(self, ticket_1, ticket_2):
         """" Выставляет ордер с заданными параметрами. """
 
-        try:
-            order = client.create_test_order(  # Создаём тестовый ордер в тестовой сети.
-                symbol=f'{ticket_1}{ticket_2}',
-                side=SIDE_BUY,
-                type=ORDER_TYPE_LIMIT,
-                timeInForce=TIME_IN_FORCE_GTC,
-                quantity=1,
-                price=9800)
-        except EXCEPTION_LIST as ex:
-            logging.info(f'Возникла ошибка - {ex}')
-        else:
+        order = self.__make_client_call('create_test_order',  # Создаём тестовый ордер в тестовой сети.
+                                        symbol=f'{ticket_1}{ticket_2}',
+                                        side=SIDE_BUY,
+                                        type=ORDER_TYPE_LIMIT,
+                                        timeInForce=TIME_IN_FORCE_GTC,
+                                        quantity=1,
+                                        price=9800
+                                        )
+        if order is not None:
             logging.info('Выполнено.')
             return order
 
     def get_average_price(self, ticket_1, ticket_2):
         """ Возвращает текущую цену заданной пары. """
 
-        try:
-            avg_price = client.get_avg_price(symbol=f'{ticket_1}{ticket_2}')  # Получаем среднее значение цены за 5 мин.
-        except EXCEPTION_LIST as ex:
-            logging.info(f'Возникла ошибка - {ex}')
-        else:
+        avg_price = self.__make_client_call('get_avg_price', symbol=f'{ticket_1}{ticket_2}')
+
+        if avg_price is not None:
             formated_avg_price = str(round(float(avg_price['price']), 1)) + " " + str(ticket_2)
             logging.info(formated_avg_price)
             return formated_avg_price
@@ -48,54 +61,50 @@ class BinanceClient():
     def get_all_open_orders(self):
         """ Возвращает список открытых сделок. """
 
-        try:
-            orders = client.get_open_orders()  # Получаем список открытых сделок.
-        except EXCEPTION_LIST as ex:
-            logging.info(f'Возникла ошибка - {ex}')
-        else:
-            logging.info(f'Список открытых ордеров - {orders}')
-            return orders
+        open_orders = self.__make_client_call('get_open_orders')  # Получаем список открытых сделок.
+        if open_orders is not None:
+            logging.info(f'Список открытых ордеров - {open_orders}')
+            return open_orders
 
     def close_order(self, ticket_1, ticket_2, orderId):
         """ Закрывает ордер. """
 
-        orders = self.get_all_open_orders()  # Проверяем есть ли ордер на закрытие.
-        for order in orders:
+        open_orders = self.__make_client_call('get_open_orders')  # Проверяем есть ли ордер на закрытие.
+        for order in open_orders:
             if order.get('symbol') == f'{ticket_1}{ticket_2}' and order.get('orderId') == orderId:
-                try:
-                    result = client.cancel_order(symbol=f'{ticket_1}{ticket_2}', orderId='orderId')
+                result = self.__make_client_call('cancel_order', symbol=f'{ticket_1}{ticket_2}', orderId='orderId')
+                if result is not None:
                     logging.info('Выполнено.')
                     return result
-                except EXCEPTION_LIST as ex:
-                    logging.info(f'Возникла ошибка - {ex}')
-            else:
+                else:
+                    return logging.info('Ошибка.')
+
                 return logging.info('К сожалению, нет ордеров на закрытие.')
 
     def get_balance(self):
         """ Возвращает баланс пользователя. """
 
-        info = client.get_account()
+        info = self.__make_client_call('get_account')
         balance = {}  # Создаём словарь с балансом пользователя.{'BTC':2, 'ETC':12}
-        for crypto in info['balances']:
-            if crypto['free'] != '0.00000000':
-                balance[crypto['asset']] = crypto['free']
-        logging.info(balance)
-        return balance
+        if info is not None:
+            for crypto in info['balances']:
+                if crypto['free'] != '0.00000000':
+                    balance[crypto['asset']] = crypto['free']
+            logging.info(balance)
+            return balance
 
     def average_price(self, ticket_1, ticket_2):
         """ Возвращает значение цены заданой пары """
-        try:
-            price = client.get_avg_price(symbol=f'{ticket_1}{ticket_2}')  # Получаем среднее значение цены за 5 мин.
-        except EXCEPTION_LIST as ex:
-            logging.info(f'Возникла ошибка - {ex}')
-        else:
+
+        price = self.__make_client_call('get_avg_price', symbol=f'{ticket_1}{ticket_2}')  # Получаем среднее значение цены за 5 мин.
+        if price is not None:
             return round(float(price['price']), 1)
 
     def get_trade_history(self, ticket_1, ticket_2):
         """ Возвращает историю торгов по заданой паре. """
 
-        try:
-            trades = client.get_my_trades(symbol=f'{ticket_1}{ticket_2}')
+        trades = self.__make_client_call('get_my_trades', symbol=f'{ticket_1}{ticket_2}')
+        if trades is not None:
             combined_trades = []
             for trade in trades:
 
@@ -119,10 +128,6 @@ class BinanceClient():
                         'order_type': order_type, 'quantity': quantity,
                         'quoteQty': quoteQty, 'price': price})
             logging.info(combined_trades)
-
-        except EXCEPTION_LIST as ex:
-            logging.info(f'Возникла ошибка - {ex}')
-        else:
             return combined_trades
 
     def set_alert(self, ticket_1, ticket_2, target):
