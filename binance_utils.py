@@ -32,7 +32,7 @@ class BinanceClient():
         result = getattr(self.client, method_name)(*args, **kwargs)
         return result
 
-    @wrap_try_except()
+    @wrap_try_except
     def set_order(self, ticket_1, ticket_2):
         """" Выставляет ордер с заданными параметрами. """
 
