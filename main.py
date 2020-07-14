@@ -1,27 +1,34 @@
+import logging
+import settings
+import telegram
+
+
 from handlers_asset_add import add_start, add_step_1
 from handlers_asset_add import add_step_2, add_step_3, add_step_4
-from handlers_asset_edit_del import edit_delete_start, delete_price_choose
-from handlers_asset_edit_del import edit_delete_choose
-from handlers_asset_edit_del import edit_choose_confirm, edit_price
+from handlers_asset_edit_del import (
+    edit_delete_start, delete_price_choose, edit_delete_choose,
+    edit_choose_confirm, edit_price
+)
 from handlers_asset_view import asset_view
 from handlers_utils import greet_user, unknown_text, operation_cancel
 from keyboards import main_shares_keyboard
 from models import User, Asset
 from settings import API_KEY
-from telegram.ext import Updater, CommandHandler
-from telegram.ext import MessageHandler, Filters, ConversationHandler
+from tasks import polling
+from telegram.ext import (
+    Updater, CommandHandler,
+    MessageHandler, Filters, ConversationHandler
+)
 from ticker_utils import get_ticker_price, ticker_pricing
-
-
-import logging
-import settings
 
 
 logging.basicConfig(filename='bot.log', level=logging.INFO)
 
 
 def main():
-    atb_bot = Updater(settings.API_KEY, use_context=True)
+    bot = telegram.Bot(API_KEY)
+
+    atb_bot = Updater(bot=bot, use_context=True)
 
     dp = atb_bot.dispatcher
 
@@ -93,6 +100,8 @@ def main():
 
     logging.info("Bot started")
     atb_bot.start_polling()
+    polling.delay()
+
     atb_bot.idle()
 
 
