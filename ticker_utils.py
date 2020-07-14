@@ -1,5 +1,7 @@
-﻿from yahoo_fin import stock_info as si
-import numpy
+﻿import numpy
+
+
+from yahoo_fin import stock_info as si
 
 
 def get_ticker_price(ticker):
@@ -19,9 +21,7 @@ def get_ticker_price(ticker):
 
 
 def get_prev_close(ticker):
-    """
-    Функция возвращает цену последнего закрытия для переданного тикера
-    """
+    # Функция возвращает цену последнего закрытия для переданного тикера
     prev_close_price = si.get_quote_table(ticker).get('Previous Close')
     return prev_close_price
 
@@ -29,7 +29,7 @@ def get_prev_close(ticker):
 def ticker_pricing(tickers):
     """
     Функция принимает на вход список со вложенными списками такого вида:
-    [['YNDX', 45.5, 40.1],['AAPL', 350.1, 340.1]]
+    [[user_id, 'YNDX', 45.5, 40.1],[user_id, 'AAPL', 350.1, 340.1]]
     Через цикл прогоняется полученный список, если таргет/минимальная цены
     достигнуты - они заменяются на True и записываются в новый список.
     В конце цикла функция возвращает список списком в тикерами, где была
@@ -38,12 +38,12 @@ def ticker_pricing(tickers):
     """
     alerted_tickers = []
     for ticker in tickers:
-        ticker_name = ticker[0]
-        target_price = ticker[1]
-        min_price = ticker[2]
-        current_price = si.get_live_price(ticker_name)
-        if current_price >= target_price:
-            alerted_tickers.append([ticker_name, True, min_price])
-        elif current_price <= min_price:
-            alerted_tickers.append([ticker_name, target_price, True])
+        user_id, ticker_id, t_price, m_price = ticker
+        current_price = si.get_live_price(ticker_id)
+        if t_price != 0:
+            if current_price >= t_price:
+                alerted_tickers.append([user_id, ticker_id, True, m_price])
+        if m_price != 0:
+            if current_price <= m_price:
+                alerted_tickers.append([user_id, ticker_id, t_price, True])
     return alerted_tickers
