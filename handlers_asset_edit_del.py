@@ -1,10 +1,12 @@
-﻿from models import Asset
-from keyboards import main_shares_keyboard, cancel_keyboard, edit_del_keyboard
-from keyboards import edit_choose_keyboard
+﻿import logging
+
+
+from models import Asset
+from keyboards import (
+    main_shares_keyboard, cancel_keyboard, edit_del_keyboard,
+    edit_choose_keyboard
+)
 from telegram.ext import ConversationHandler
-
-
-import logging
 
 
 def edit_delete_start(update, context):
@@ -13,8 +15,8 @@ def edit_delete_start(update, context):
     если у пользователя таких нет - сообщаем ему об этом
     """
     user_assets = Asset().get_user_assets(update.effective_user.id)
-    if len(user_assets) == 0:
-        update.message.reply_text('У вас нет отслеживаемых инструментов')
+    if not user_assets:
+        update.message.reply_text('У вас нет отслеживаемых инструментов.')
         return ConversationHandler.END
     context.user_data['candidates'] = []
 
@@ -97,11 +99,11 @@ def delete_price_choose(update, context):
         )
         context.user_data.pop('candidates', None)
         return ConversationHandler.END
-    """
-    Если пользователь хочет изменить данные об инструменте - запрашиваем
-    какие именно
-    """
     else:
+        """
+        Если пользователь хочет изменить данные об инструменте - запрашиваем
+        какие именно
+        """
         update.message.reply_text(
             'Укажите стоимость для изменения',
             reply_markup=edit_choose_keyboard()
@@ -146,26 +148,23 @@ def edit_price(update, context):
             reply_markup=cancel_keyboard()
         )
         return edit_price
-    else:
-        """
-        Если всё ок - изменяем стоимость соответствующим методом класса
-        """
-        user_id = update.effective_user.id
-        ticker = context.user_data['candidates']
-        if context.user_data['action']:
-            Asset().edit_t_price(user_id, ticker, new_price)
-            logging.info(
-                f'Target price for {ticker} was updated by user {user_id}'
-            )
-        else:
-            Asset().edit_m_price(user_id, ticker, new_price)
-            logging.info(
-                f'Min price for {ticker} was updated by user {user_id}'
-            )
-        context.user_data.pop('candidates', None)
-        context.user_data.pop('action', None)
-        update.message.reply_text(
-            'Стоимость успешно изменена!',
-            reply_markup=main_shares_keyboard()
+    # Если всё ок - изменяем стоимость соответствующим методом класса
+    user_id = update.effective_user.id
+    ticker = context.user_data['candidates']
+    if context.user_data['action']:
+        Asset().edit_t_price(user_id, ticker, new_price)
+        logging.info(
+            f'Target price for {ticker} was updated by user {user_id}'
         )
-        return ConversationHandler.END
+    else:
+        Asset().edit_m_price(user_id, ticker, new_price)
+        logging.info(
+            f'Min price for {ticker} was updated by user {user_id}'
+        )
+    context.user_data.pop('candidates', None)
+    context.user_data.pop('action', None)
+    update.message.reply_text(
+        'Стоимость успешно изменена!',
+        reply_markup=main_shares_keyboard()
+    )
+    return ConversationHandler.END

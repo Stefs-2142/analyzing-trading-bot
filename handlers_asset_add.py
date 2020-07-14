@@ -17,9 +17,7 @@ def add_start(update, context):
     update.message.reply_text(
         'Введите название тикера', reply_markup=cancel_keyboard()
     )
-    """
-    Сразу записываем в контекст id пользователя
-    """
+    # Сразу записываем в контекст id пользователя
     context.user_data['ticker'] = [update.effective_user.id]
     return add_step_1
 
@@ -168,23 +166,19 @@ def add_step_4(update, context):
             return add_step_4
         else:
             context.user_data['ticker'].append(ticker_min_price)
-    """
-    Записываем содержимое context в БД и получаем результат
-    """
+    # Записываем содержимое context в БД и получаем результат
     result = Asset().add_asset(context.user_data['ticker'])
-    """
-    Если результат True - извещаем пользоваеля
-    """
+    # Если результат True - извещаем пользоваеля
     if result:
         update.message.reply_text(
             'Инструмент успешно добавлен!', reply_markup=main_shares_keyboard()
         )
         logging.info(f'Added asset {context.user_data["ticker"]}')
-    """
-    Если результат False, то это значит, что инструмент уже отслеживается,
-    извещаем юзера
-    """
     else:
+        """
+        Если результат False, то это значит, что инструмент уже отслеживается,
+        извещаем юзера
+        """
         update.message.reply_text(
             'Данный инструмент вами уже отслеживается.'
             'Если вы хотите удалить или внести изменения в '
