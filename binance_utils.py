@@ -96,9 +96,11 @@ class BinanceClient():
                     logging.info('Выполнено.')
                     return result
                 else:
-                    return logging.info('Ошибка.')
+                    logging.info('Ошибка.')
+                    return
 
-                return logging.info('К сожалению, нет ордеров на закрытие.')
+                logging.info('К сожалению, нет ордеров на закрытие.')
+                return
 
     def get_balance(self):
         """ Возвращает баланс пользователя. """
@@ -132,9 +134,9 @@ class BinanceClient():
                 quoteQty = trade['quoteQty']
                 order_id = trade['orderId']
 
-                order = client.get_order(
-                    symbol=f'{ticket_1}{ticket_2}',
-                    orderId=order_id)
+                order = self.__make_client_call('get_order',
+                                                symbol=f'{ticket_1}{ticket_2}',
+                                                orderId=order_id)
 
                 order_side = order['side']
                 order_status = order['status']
