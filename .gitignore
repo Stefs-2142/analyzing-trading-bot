@@ -1,6 +1,9 @@
 # Project-related stuff
 settings.py
-*.log
+bot.log
+gists.py
+*backup.py
+db_utils.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -107,7 +110,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-.vscode
 
 # Spyder project settings
 .spyderproject
