@@ -32,7 +32,6 @@ pyOpenSSL==19.1.0
 python-binance==0.7.5
 python-dateutil==2.8.1
 pytz==2020.1
-redis==3.5.3
 regex==2020.6.8
 requests==2.24.0
 service-identity==18.1.0
