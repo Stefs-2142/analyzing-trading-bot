@@ -1,5 +1,6 @@
 from binance_utils import BinanceClient
 import logging
+from tasks import set_alert
 
 binance_client = BinanceClient()
 
@@ -7,8 +8,8 @@ binance_client = BinanceClient()
 def main():
 
     logging.info("Клиент запущен.")
-    binance_client.set_alert('BTT', 'USDT', 6)
-    binance_client.set_order('BTC', 'USDT')
+    set_alert.delay('ETC', 'USDT', 6)
+    binance_client.set_order('BTC', 'USDT', 'limit', 'buy')
     binance_client.get_average_price('ETC', 'USDT')
     binance_client.get_average_price('BTC', 'USDT')
     binance_client.get_all_open_orders()

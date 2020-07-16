@@ -1,8 +1,7 @@
 from binance.client import Client
-from binance.enums import SIDE_BUY, ORDER_TYPE_LIMIT, TIME_IN_FORCE_GTC
+from binance.enums import SIDE_BUY, SIDE_SELL, ORDER_TYPE_LIMIT, ORDER_TYPE_MARKET, TIME_IN_FORCE_GTC
 from settings import API_KEY, SECRET_KEY, EXCEPTION_LIST
 import logging
-from tasks import alert_status
 from functools import wraps
 
 
@@ -28,24 +27,44 @@ class BinanceClient():
     def __init__(self):
         self.client = Client(API_KEY, SECRET_KEY)
 
+    @wrap_try_except
     def __make_client_call(self, method_name, *args, **kwargs):
         result = getattr(self.client, method_name)(*args, **kwargs)
         return result
 
-    @wrap_try_except
-    def set_order(self, ticket_1, ticket_2):
-        """" Выставляет ордер с заданными параметрами. """
+    def set_order(self, ticket_1, ticket_2, order_type, side):
+        """"
+        Выставляет ордер с заданными параметрами.
+        Собираем из аргументов запрос на возможные оредра:
+        Лимитный ордер на покупку,
+        Лимитный ордер на продажу,
+        Маркет ордер на покупку,
+        Маркет ордер на продажу.
+        """
+        formated_call = 'order_'
+        if order_type == 'limit':
+            order_type = ORDER_TYPE_LIMIT
+            formated_call += 'limit'
+        elif order_type == 'market':
+            order_type = ORDER_TYPE_MARKET
+            formated_call += 'market'
+        elif side == 'buy':
+            side = SIDE_BUY
+            formated_call += 'buy'
+        elif side == 'sell':
+            side = SIDE_SELL
+            formated_call += 'sell'
 
-        order = self.__make_client_call('create_test_order',  # Создаём тестовый ордер в тестовой сети.
+        order = self.__make_client_call(f'{formated_call}',  # Создаём тестовый ордер в тестовой сети.
                                         symbol=f'{ticket_1}{ticket_2}',
-                                        side=SIDE_BUY,
-                                        type=ORDER_TYPE_LIMIT,
+                                        side=f'{side}',
+                                        type=type,
                                         timeInForce=TIME_IN_FORCE_GTC,
                                         quantity=1,
                                         price=9800
                                         )
         if order is not None:
-            logging.info('Выполнено.')
+            logging.info('Выполнено. ', order)
             return order
 
     def get_average_price(self, ticket_1, ticket_2):
@@ -129,10 +148,3 @@ class BinanceClient():
                         'quoteQty': quoteQty, 'price': price})
             logging.info(combined_trades)
             return combined_trades
-
-    def set_alert(self, ticket_1, ticket_2, target):
-        """ Устанавливает отслеживание вхождения цены в алертное состояние. """
-
-        alert_status.delay(ticket_1, ticket_2, target)
-        logging.info('Таргет установлен.')
-        return True
