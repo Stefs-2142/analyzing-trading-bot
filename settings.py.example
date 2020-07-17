@@ -1,4 +1,15 @@
-API_KEY = "your_key"
+from binance.exceptions import *
+
+TELEGRAM_API_KEY = "your_key"
 DB_CONNECT = "postgresql:///DB_NAME"
 BACKEND_PATH = "rpc://"
 BROKER_PATH = "pyamqp://guest@localhost//"
+BINANCE_API_KEY = 'your_key'
+SECRET_KEY = 'your_secret_key'
+
+EXCEPTION_LIST = (
+                BinanceRequestException, BinanceAPIException, BinanceOrderException,
+                BinanceOrderMinAmountException, BinanceOrderMinPriceException,
+                BinanceOrderMinTotalException, BinanceOrderUnknownSymbolException,
+                BinanceOrderInactiveSymbolException
+                )
