@@ -1,6 +1,21 @@
 ﻿from telegram import ReplyKeyboardMarkup
 
 
+def main_menu_keyboard():
+    return ReplyKeyboardMarkup([
+        ['Меню binance', 'Меню акций']
+    ], row_width=1, resize_keyboard=True)
+
+
+def main_binance_keyboard():
+    return ReplyKeyboardMarkup([
+        ['Создать ордер', 'Отменить ордер'],
+        ['Открытые ордеры', 'Узнать баланс'],
+        ['Текущий курс', 'История торгов'],
+        ['Начать отслеживать', 'Помощь']
+    ], row_width=1, resize_keyboard=True)
+
+
 def main_shares_keyboard():
     return ReplyKeyboardMarkup([
         ['Мои инструменты'],
