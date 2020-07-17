@@ -1,8 +1,12 @@
-from base import session, Engine, Base
-from sqlalchemy import create_engine, exists, Column, literal
-from sqlalchemy import BigInteger, Boolean, Integer, Text, Date, Float
-from sqlalchemy.ext.declarative import declarative_base
 import sqlalchemy.exc
+
+
+from base import session, Engine, Base
+from sqlalchemy import (
+    create_engine, exists, Column, literal,
+    BigInteger, Boolean, Integer, Text, Date, Float
+)
+from sqlalchemy.ext.declarative import declarative_base
 
 
 class User(Base):
@@ -239,6 +243,25 @@ class Asset(Base):
                 elem.ticker,
                 elem.add_date,
                 elem.initial_price,
+                elem.target_price,
+                elem.min_price
+            ])
+
+        return packed_assets
+
+    def get_polling_data(self):
+        """
+        Функция получает из ДБ все активы всех пользователей
+        и возвращает список следующего содержимого
+        [[user_id, ticker, target_price, min_price],...]
+        """
+        assets = session.query(Asset).all()
+
+        packed_assets = []
+        for elem in assets:
+            packed_assets.append([
+                elem.user_id,
+                elem.ticker,
                 elem.target_price,
                 elem.min_price
             ])

@@ -1,2 +1,4 @@
 API_KEY = "your_key"
 DB_CONNECT = "postgresql:///DB_NAME"
+BACKEND_PATH = "rpc://"
+BROKER_PATH = "pyamqp://guest@localhost//"
