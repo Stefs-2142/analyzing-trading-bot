@@ -10,7 +10,9 @@ from handlers_asset_edit_del import (
     edit_choose_confirm, edit_price
 )
 from handlers_asset_view import asset_view
-from handlers_utils import greet_user, unknown_text, operation_cancel
+from handlers_utils import (
+    greet_user, unknown_text, operation_cancel, show_help
+)
 from keyboards import main_shares_keyboard
 from models import User, Asset
 from settings import TELEGRAM_API_KEY
@@ -36,6 +38,7 @@ def main():
     dp.add_handler(
         MessageHandler(Filters.regex('Мои\sинструменты'), asset_view)
     )
+    dp.add_handler(MessageHandler(Filters.regex('Помощь'), show_help))
     dp.add_handler(ConversationHandler(
         entry_points=[MessageHandler(Filters.regex('Добавить'), add_start)],
         states={

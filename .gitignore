@@ -4,6 +4,7 @@ bot.log
 gists.py
 *backup.py
 db_utils.py
+help.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
