@@ -5,7 +5,7 @@ import logging
 from binance_utils import BinanceClient
 from celery import Celery
 from models import Asset
-from settings import API_KEY, BACKEND_PATH, BROKER_PATH
+from settings import TELEGRAM_API_KEY, BACKEND_PATH, BROKER_PATH
 from ticker_utils import ticker_pricing
 from time import sleep
 
@@ -63,7 +63,7 @@ def set_alert(ticket_1, ticket_2, target):
 
 @app.task
 def polling():
-    bot = telegram.Bot(API_KEY)
+    bot = telegram.Bot(TELEGRAM_API_KEY)
     text_end = (
         'Отслеживание стоимости для инструмента прекращено, '
         'для установки новой стоимости для отслеживания - '

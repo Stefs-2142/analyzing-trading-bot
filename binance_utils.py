@@ -1,11 +1,11 @@
 from binance.client import Client
 from binance.enums import SIDE_BUY, SIDE_SELL, ORDER_TYPE_LIMIT, ORDER_TYPE_MARKET, TIME_IN_FORCE_GTC
-from settings import API_KEY, SECRET_KEY, EXCEPTION_LIST
+from settings import BINANCE_API_KEY, SECRET_KEY, EXCEPTION_LIST
 import logging
 from functools import wraps
 
 
-client = Client(API_KEY, SECRET_KEY)
+client = Client(BINANCE_API_KEY, SECRET_KEY)
 logging.basicConfig(filename='binance.log', level=logging.INFO,
                     format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S',)
@@ -25,7 +25,7 @@ def wrap_try_except(func):
 class BinanceClient():
 
     def __init__(self):
-        self.client = Client(API_KEY, SECRET_KEY)
+        self.client = Client(BINANCE_API_KEY, SECRET_KEY)
 
     @wrap_try_except
     def __make_client_call(self, method_name, *args, **kwargs):

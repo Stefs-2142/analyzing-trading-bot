@@ -13,7 +13,7 @@ from handlers_asset_view import asset_view
 from handlers_utils import greet_user, unknown_text, operation_cancel
 from keyboards import main_shares_keyboard
 from models import User, Asset
-from settings import API_KEY
+from settings import TELEGRAM_API_KEY
 from tasks import polling
 from telegram.ext import (
     Updater, CommandHandler,
@@ -26,7 +26,7 @@ logging.basicConfig(filename='bot.log', level=logging.INFO)
 
 
 def main():
-    bot = telegram.Bot(API_KEY)
+    bot = telegram.Bot(TELEGRAM_API_KEY)
 
     atb_bot = Updater(bot=bot, use_context=True)
 
