@@ -3,7 +3,7 @@ import sqlalchemy.exc
 
 from base import session, Engine, Base
 from sqlalchemy import (
-    create_engine, exists, Column, literal
+    create_engine, exists, Column, literal,
     BigInteger, Boolean, Integer, Text, Date, Float
 )
 from sqlalchemy.ext.declarative import declarative_base
