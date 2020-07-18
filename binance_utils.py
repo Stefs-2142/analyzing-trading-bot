@@ -32,7 +32,7 @@ class BinanceClient():
         result = getattr(self.client, method_name)(*args, **kwargs)
         return result
 
-    def set_order(self, ticket_1, ticket_2, order_type, side):
+    def set_order(self, ticket_1, ticket_2, order_type, side, quantity, price=None):
         """"
         Выставляет ордер с заданными параметрами.
         Собираем из аргументов запрос на возможные оредра:
@@ -60,8 +60,8 @@ class BinanceClient():
                                         side=f'{side}',
                                         type=type,
                                         timeInForce=TIME_IN_FORCE_GTC,
-                                        quantity=1,
-                                        price=9800
+                                        quantity=quantity,
+                                        price=price
                                         )
         if order is not None:
             logging.info('Выполнено. ', order)
