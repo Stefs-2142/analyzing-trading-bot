@@ -109,7 +109,7 @@ class BinanceClient():
         balance = {}  # Создаём словарь с балансом пользователя.{'BTC':2, 'ETC':12}
         if info is not None:
             for crypto in info['balances']:
-                if crypto['free'] != '0.00000000':
+                if crypto['free'] != '0.00000000' and crypto['free'] != '0.00'
                     balance[crypto['asset']] = crypto['free']
             logging.info(balance)
             return balance
