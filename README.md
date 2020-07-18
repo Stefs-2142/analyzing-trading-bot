@@ -32,7 +32,7 @@ docker run -d -p 6379:6379 redis
 	[program:celery]
 	command = PATH/alyzing-trading-bot/env/bin/celery -A tasks worker --loglevel=info
 	directory = PATH/analyzing-trading-bot
-	user = ganhart
+	user = USER
 	autostart = true
 	autorestart = true
 	startretries = 3
@@ -41,9 +41,9 @@ docker run -d -p 6379:6379 redis
 Конфигурация для бота:
 
 	[program:bot-stock-tracker]
-	command = bash -c 'sleep 5 && /home/ganhart/analyzing-trading-bot/env/bin/python3.6 /home/ganhart/analyzing-trading-bot/main.py'
-	directory = /home/ganhart/analyzing-trading-bot
-	user = ganhart
+	command = bash -c 'sleep 5 && PATH/analyzing-trading-bot/env/bin/python3.6 PATH/analyzing-trading-bot/main.py'
+	directory = PATH/analyzing-trading-bot
+	user = USER
 	autostart = true
 	autorestart = true
 	startretries = 3
