@@ -3,7 +3,8 @@ import settings
 import telegram
 
 
-from binance_utils import BinanceClient
+from handlers_binance_calls import binance_comands, get_balance
+
 from handlers_asset_add import add_start, add_step_1
 from handlers_asset_add import add_step_2, add_step_3, add_step_4
 from handlers_asset_edit_del import (
@@ -12,7 +13,8 @@ from handlers_asset_edit_del import (
 )
 from handlers_asset_view import asset_view
 from handlers_utils import (
-    greet_user, unknown_text, operation_cancel, show_help
+    greet_user, unknown_text, operation_cancel, show_help,
+    shares_comands
 )
 from keyboards import main_shares_keyboard
 from models import User, Asset
@@ -27,36 +29,36 @@ from ticker_utils import get_ticker_price, ticker_pricing
 
 logging.basicConfig(filename='bot.log', level=logging.INFO)
 
+PROXY = {'proxy_url': settings.PROXY_URL, 'urllib3_proxy_kwargs': {
+    'username': settings.PROXY_USERNAME, 'password': settings.PROXY_PASSWORD}}
+
 
 def main():
     bot = telegram.Bot(TELEGRAM_API_KEY)
 
-    atb_bot = Updater(bot=bot, use_context=True)
+    atb_bot = Updater(bot=bot, use_context=True, request_kwargs=PROXY)
 
     dp = atb_bot.dispatcher
 
     dp.add_handler(CommandHandler("start", greet_user))
 
-    dp.add_handler(CommandHandler("set_order", BinanceClient().set_order))
-    dp.add_handler(CommandHandler(
-        "get_average_price", BinanceClient().get_average_price
-    ))
-    dp.add_handler(CommandHandler(
-        "get_all_open_orders", BinanceClient().get_all_open_orders
-    ))
-    dp.add_handler(CommandHandler("close_order", BinanceClient().close_order))
-    dp.add_handler(CommandHandler("get_balance", BinanceClient().get_balance))
-    dp.add_handler(CommandHandler(
-        "average_price", BinanceClient().average_price
-    ))
-    dp.add_handler(CommandHandler(
-        "get_trade_history", BinanceClient().get_trade_history
-    ))
+    dp.add_handler(
+        MessageHandler(Filters.regex('Меню\sBinance'), binance_comands)
+    )
+
+    dp.add_handler(
+        MessageHandler(Filters.regex('Меню\sакций'), shares_comands)
+    )
+
+    dp.add_handler(
+        MessageHandler(Filters.regex('Узнать\sбаланс'), get_balance)
+    )
 
     dp.add_handler(
         MessageHandler(Filters.regex('Мои\sинструменты'), asset_view)
     )
     dp.add_handler(MessageHandler(Filters.regex('Помощь'), show_help))
+
     dp.add_handler(ConversationHandler(
         entry_points=[MessageHandler(Filters.regex('Добавить'), add_start)],
         states={
@@ -117,6 +119,7 @@ def main():
         },
         fallbacks=[MessageHandler(Filters.regex('(Отмена)'), operation_cancel)]
     ))
+
     dp.add_handler(MessageHandler(Filters.text, unknown_text))
 
     logging.info("Bot started")

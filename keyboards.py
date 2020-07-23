@@ -3,7 +3,7 @@
 
 def main_menu_keyboard():
     return ReplyKeyboardMarkup([
-        ['Меню binance', 'Меню акций']
+        ['Меню Binance', 'Меню акций']
     ], row_width=1, resize_keyboard=True)
 
 
@@ -12,7 +12,8 @@ def main_binance_keyboard():
         ['Создать ордер', 'Отменить ордер'],
         ['Открытые ордеры', 'Узнать баланс'],
         ['Текущий курс', 'История торгов'],
-        ['Начать отслеживать', 'Помощь']
+        ['Начать отслеживать'],
+        ['Главное меню', 'Помощь']
     ], row_width=1, resize_keyboard=True)
 
 
