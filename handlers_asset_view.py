@@ -8,19 +8,22 @@ def asset_view(update, context):
     Выгружаем все отслеживаемые пользователем инструменты из БД
     """
     user_assets = Asset().get_user_assets(update.effective_user.id)
-    update.message.reply_text('Сейчас отслеживаются следующие инструменты:')
-    """
-    Циклом проходим по каждому инструменту:
-    Получаем текущую стоимость актива и стоимость последнего закрытия
-    Добавляем эти две стоимости в список, который получили из БД и
-    передаем его в соседнюю функцию для компиляции сообщений пользователю
-    """
-    for asset in user_assets:
-        ticker = asset[0]
-        asset.append(get_ticker_price(ticker))
-        asset.append(get_prev_close(ticker))
-        reply_text = compile_message(asset)
-        update.message.reply_text(reply_text)
+    if user_assets:
+        update.message.reply_text('Сейчас отслеживаются следующие инструменты:')
+        """
+        Циклом проходим по каждому инструменту:
+        Получаем текущую стоимость актива и стоимость последнего закрытия
+        Добавляем эти две стоимости в список, который получили из БД и
+        передаем его в соседнюю функцию для компиляции сообщений пользователю
+        """
+        for asset in user_assets:
+            ticker = asset[0]
+            asset.append(get_ticker_price(ticker))
+            asset.append(get_prev_close(ticker))
+            reply_text = compile_message(asset)
+            update.message.reply_text(reply_text)
+    else:
+        update.message.reply_text('Ещё нет отсеживаемых инструментов.')
 
 
 def compile_message(asset):
