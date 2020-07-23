@@ -23,7 +23,7 @@ def asset_view(update, context):
             reply_text = compile_message(asset)
             update.message.reply_text(reply_text)
     else:
-        update.message.reply_text('Ещё нет отсеживаемых инструментов.')
+        update.message.reply_text('Ещё нет отслеживаемых инструментов.')
 
 
 def compile_message(asset):
