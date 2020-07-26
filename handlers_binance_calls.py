@@ -46,7 +46,6 @@ def get_step_1(update, context):
     ticker_pair = update.message.text.upper().split(' ')
 
     # Провереяем что пользователь ввёл 2 тикера.
-    print(ticker_pair)
     if len(ticker_pair) != 2:
         update.message.reply_text(
             'К сожалению, введена неверная пара, попробуйте ещё раз'
