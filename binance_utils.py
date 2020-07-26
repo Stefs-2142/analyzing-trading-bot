@@ -73,7 +73,7 @@ class BinanceClient():
         avg_price = self.__make_client_call('get_avg_price', symbol=f'{ticket_1}{ticket_2}')
 
         if avg_price is not None:
-            formated_avg_price = str(round(float(avg_price['price']), 1)) + " " + str(ticket_2)
+            formated_avg_price = str(round(float(avg_price['price']), 3)) + " " + str(ticket_2)
             logging.info(formated_avg_price)
             return formated_avg_price
 

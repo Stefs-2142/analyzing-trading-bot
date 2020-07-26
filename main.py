@@ -3,7 +3,8 @@ import settings
 import telegram
 
 
-from handlers_binance_calls import binance_comands, get_balance
+from handlers_binance_calls import binance_comands, get_balance, get_price
+from handlers_binance_calls import get_step_1, get_step_2
 
 from handlers_asset_add import add_start, add_step_1
 from handlers_asset_add import add_step_2, add_step_3, add_step_4
@@ -16,46 +17,41 @@ from handlers_utils import (
     greet_user, unknown_text, operation_cancel, show_help,
     shares_comands
 )
-from keyboards import main_shares_keyboard
-from models import User, Asset
+
 from settings import TELEGRAM_API_KEY
 from tasks import polling
 from telegram.ext import (
     Updater, CommandHandler,
     MessageHandler, Filters, ConversationHandler
 )
-from ticker_utils import get_ticker_price, ticker_pricing
 
 
 logging.basicConfig(filename='bot.log', level=logging.INFO)
-
-PROXY = {'proxy_url': settings.PROXY_URL, 'urllib3_proxy_kwargs': {
-    'username': settings.PROXY_USERNAME, 'password': settings.PROXY_PASSWORD}}
 
 
 def main():
     bot = telegram.Bot(TELEGRAM_API_KEY)
 
-    atb_bot = Updater(bot=bot, use_context=True, request_kwargs=PROXY)
+    atb_bot = Updater(bot=bot, use_context=True)
 
     dp = atb_bot.dispatcher
 
     dp.add_handler(CommandHandler("start", greet_user))
 
     dp.add_handler(
-        MessageHandler(Filters.regex('Меню\sBinance'), binance_comands)
+        MessageHandler(Filters.regex('Меню Binance'), binance_comands)
     )
 
     dp.add_handler(
-        MessageHandler(Filters.regex('Меню\sакций'), shares_comands)
+        MessageHandler(Filters.regex('Меню акций'), shares_comands)
     )
 
     dp.add_handler(
-        MessageHandler(Filters.regex('Узнать\sбаланс'), get_balance)
+        MessageHandler(Filters.regex('Узнать баланс'), get_balance)
     )
 
     dp.add_handler(
-        MessageHandler(Filters.regex('Мои\sинструменты'), asset_view)
+        MessageHandler(Filters.regex('Мои инструменты'), asset_view)
     )
     dp.add_handler(MessageHandler(Filters.regex('Помощь'), show_help))
 
@@ -85,6 +81,7 @@ def main():
         },
         fallbacks=[MessageHandler(Filters.regex('(Отмена)'), operation_cancel)]
     ))
+
     dp.add_handler(ConversationHandler(
         entry_points=[MessageHandler(
             Filters.regex('Изменить/Удалить'), edit_delete_start
@@ -116,6 +113,24 @@ def main():
                     ), edit_price
                 )
             ],
+        },
+        fallbacks=[MessageHandler(Filters.regex('(Отмена)'), operation_cancel)]
+    ))
+
+    dp.add_handler(ConversationHandler(
+        entry_points=[MessageHandler(Filters.regex('Текущий курс'), get_price)],
+        states={
+            'ticker': [
+                MessageHandler(
+                    Filters.text & (~Filters.regex('(Отмена)')), get_step_1
+                )
+            ],
+            'step_2': [
+                MessageHandler(
+                    Filters.text & (~Filters.regex('(Отмена)')), get_step_2
+                )
+            ]
+
         },
         fallbacks=[MessageHandler(Filters.regex('(Отмена)'), operation_cancel)]
     ))

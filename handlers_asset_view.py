@@ -1,5 +1,4 @@
 ﻿from models import Asset
-from keyboards import main_shares_keyboard
 from ticker_utils import get_ticker_price, get_prev_close
 
 

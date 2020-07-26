@@ -49,3 +49,9 @@ def edit_choose_keyboard():
         ['Максимальная', 'Минимальная'],
         ['Отмена']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
+
+
+def another_pair_keyboard():
+    return ReplyKeyboardMarkup([
+        ['Другая пара', 'Отмена']
+    ], one_time_keyboard=True, row_width=1, resize_keyboard=True)

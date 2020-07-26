@@ -1,4 +1,4 @@
-﻿from keyboards import main_shares_keyboard, main_menu_keyboard, main_binance_keyboard
+﻿from keyboards import main_shares_keyboard, main_menu_keyboard
 from telegram.ext import ConversationHandler
 
 
@@ -35,18 +35,12 @@ def operation_cancel(update, context):
     context.user_data.pop('candidates', None)
     context.user_data.pop('action', None)
     update.message.reply_text(
-        'Операция прервана', reply_markup=main_shares_keyboard()
+        'Операция прервана', reply_markup=main_menu_keyboard()
     )
     return ConversationHandler.END
 
-    
+
 def show_help(update, context):
     with open('help.txt', 'r') as stocks_info:
         reply_text = stocks_info.read()
     update.message.reply_text(reply_text)
-
-
-
-
-
-
