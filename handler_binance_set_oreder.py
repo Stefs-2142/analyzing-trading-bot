@@ -11,7 +11,7 @@ def set_order(update, context):
     """
 
     update.message.reply_text(
-        'Какой тип ордер необходио выставить?',
+        'Какой тип ордера необходимо выставить?',
         reply_markup=order_type_keyboard()
     )
 
