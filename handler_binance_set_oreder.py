@@ -1,10 +1,10 @@
-from setting import ORDERS_TYPE
+from settings import ORDERS_TYPE
 from keyboards import cancel_keyboard, order_type_keyboard
 from handlers_binance_calls import binance_client
 from telegram.ext import ConversationHandler
 
 
-def set_order(update, contet):
+def set_order(update, context):
     """
     Функция с которой начинается диалог для
     выставления ордера на бирже.
