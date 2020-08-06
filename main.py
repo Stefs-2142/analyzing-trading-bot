@@ -5,6 +5,8 @@ import telegram
 
 from handlers_binance_calls import binance_comands, get_balance, get_price
 from handlers_binance_calls import get_step_1, get_step_2
+from handler_binance_set_oreder import set_order, set_step_1
+from handler_binance_set_oreder import set_step_2, set_step_3
 
 from handlers_asset_add import add_start, add_step_1
 from handlers_asset_add import add_step_2, add_step_3, add_step_4
@@ -120,16 +122,40 @@ def main():
     dp.add_handler(ConversationHandler(
         entry_points=[MessageHandler(Filters.regex('Текущий курс'), get_price)],
         states={
-            'ticker': [
+            'get_step_1': [
                 MessageHandler(
                     Filters.text & (~Filters.regex('(Отмена)')), get_step_1
                 )
             ],
-            'step_2': [
+            'get_step_2': [
                 MessageHandler(
                     Filters.text & (~Filters.regex('(Отмена)')), get_step_2
                 )
             ]
+
+        },
+        fallbacks=[MessageHandler(Filters.regex('(Отмена)'), operation_cancel)]
+    ))
+
+    dp.add_handler(ConversationHandler(
+        entry_points=[MessageHandler(Filters.regex('Создать ордер'), set_order)],
+        states={
+            'set_step_1': [
+                MessageHandler(
+                    Filters.text & (~Filters.regex('(Отмена)')), set_step_1
+                )
+            ],
+            'set_step_2': [
+                MessageHandler(
+                    Filters.text & (~Filters.regex('(Отмена)')), set_step_2
+                )
+            ],
+            'set_step_3': [
+                MessageHandler(
+                    Filters.text & (~Filters.regex('(Отмена)')), set_step_3
+                )
+            ],
+
 
         },
         fallbacks=[MessageHandler(Filters.regex('(Отмена)'), operation_cancel)]
