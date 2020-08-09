@@ -15,21 +15,24 @@ def set_order(update, context):
         reply_markup=order_type_keyboard()
     )
 
-    return 'set_step_1'
+    return "set_step_1"
 
 
 def set_step_1(update, context):
-    """Проверяем выбрал ли пользователь доступный тип ордера."""
+    """
+    Проверяем выбрал ли пользователь доступный тип ордера.
+    Сейчас доступны: Limit order и Market order.
+    """
 
     if update.message.text not in ORDERS_TYPE:
         update.message.reply_text(
-            'Пожалуйста, выберите одну из доступных команд',
+            'Пожалуйста, выберите тип ордера.',
             reply_markup=order_type_keyboard()
             )
-        return 'set_step_1'
+        return "set_step_1"
+    # Cохраняем выбранный пользователем тип ордера.
     context.user_data['order_type'] = update.message.text
-    update.message.reply_text(context.user_data)
-    return 'set_step_2'
+    return "set_step_2"
 
 
 def set_step_2(update, context):
@@ -48,21 +51,21 @@ def set_step_2(update, context):
             ' или нажмите "Отмена" для завершения операции.',
             reply_markup=cancel_keyboard()
             )
-        return 'set_step_2'
+        return "set_step_2"
     result = binance_client.get_average_price(
         ticker_pair[0], ticker_pair[1]
             )
     if result is not None:
         update.message.reply_text(
-            f'Текущая цена заданной пары -{result}',
+            f'Текущая цена заданной пары {result}',
             reply_markup=cancel_keyboard()
             )
-        return 'set_step_3'
+        return "set_step_3"
 
     update.message.reply_text(
         'К сожалению, введена неверная пара, попробуйте ещё раз.'
         )
-    return 'set_step_2'
+    return "set_step_2"
 
 
 def set_step_3(update, context):
