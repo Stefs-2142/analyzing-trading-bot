@@ -1,5 +1,4 @@
 import logging
-import settings
 import telegram
 
 
@@ -27,7 +26,6 @@ from telegram.ext import (
     MessageHandler, Filters, ConversationHandler
 )
 
-
 logging.basicConfig(filename='bot.log', level=logging.INFO)
 
 
@@ -38,26 +36,7 @@ def main():
 
     dp = atb_bot.dispatcher
 
-    dp.add_handler(CommandHandler("start", greet_user))
-
-    dp.add_handler(
-        MessageHandler(Filters.regex('Меню Binance'), binance_comands)
-    )
-
-    dp.add_handler(
-        MessageHandler(Filters.regex('Меню акций'), shares_comands)
-    )
-
-    dp.add_handler(
-        MessageHandler(Filters.regex('Узнать баланс'), get_balance)
-    )
-
-    dp.add_handler(
-        MessageHandler(Filters.regex('Мои инструменты'), asset_view)
-    )
-    dp.add_handler(MessageHandler(Filters.regex('Помощь'), show_help))
-
-    dp.add_handler(ConversationHandler(
+    assets = ConversationHandler(
         entry_points=[MessageHandler(Filters.regex('Добавить'), add_start)],
         states={
             add_step_1: [
@@ -82,9 +61,9 @@ def main():
             ],
         },
         fallbacks=[MessageHandler(Filters.regex('(Отмена)'), operation_cancel)]
-    ))
+    )
 
-    dp.add_handler(ConversationHandler(
+    edit_asssets = ConversationHandler(
         entry_points=[MessageHandler(
             Filters.regex('Изменить/Удалить'), edit_delete_start
         )],
@@ -117,49 +96,58 @@ def main():
             ],
         },
         fallbacks=[MessageHandler(Filters.regex('(Отмена)'), operation_cancel)]
-    ))
+    )
 
-    dp.add_handler(ConversationHandler(
+    price = ConversationHandler(
         entry_points=[MessageHandler(Filters.regex('Текущий курс'), get_price)],
         states={
-            'get_step_1': [
+            "get_step_1": [
                 MessageHandler(
                     Filters.text & (~Filters.regex('(Отмена)')), get_step_1
                 )
             ],
-            'get_step_2': [
+            "get_step_2": [
                 MessageHandler(
                     Filters.text & (~Filters.regex('(Отмена)')), get_step_2
                 )
             ]
-
         },
         fallbacks=[MessageHandler(Filters.regex('(Отмена)'), operation_cancel)]
-    ))
+    )
 
-    dp.add_handler(ConversationHandler(
+    orders = ConversationHandler(
         entry_points=[MessageHandler(Filters.regex('Создать ордер'), set_order)],
         states={
-            'set_step_1': [
+            "set_step_1": [
                 MessageHandler(
                     Filters.text & (~Filters.regex('(Отмена)')), set_step_1
                 )
             ],
-            'set_step_2': [
+            "set_step_2": [
                 MessageHandler(
                     Filters.text & (~Filters.regex('(Отмена)')), set_step_2
                 )
             ],
-            'set_step_3': [
+            "set_step_3": [
                 MessageHandler(
                     Filters.text & (~Filters.regex('(Отмена)')), set_step_3
                 )
             ],
-
-
         },
         fallbacks=[MessageHandler(Filters.regex('(Отмена)'), operation_cancel)]
-    ))
+    )
+
+    dp.add_handler(CommandHandler("start", greet_user))
+    dp.add_handler(MessageHandler(Filters.regex('Меню Binance'), binance_comands))
+    dp.add_handler(MessageHandler(Filters.regex('Меню акций'), shares_comands))
+    dp.add_handler(MessageHandler(Filters.regex('Узнать баланс'), get_balance))
+    dp.add_handler(MessageHandler(Filters.regex('Мои инструменты'), asset_view))
+    dp.add_handler(MessageHandler(Filters.regex('Помощь'), show_help))
+
+    dp.add_handler(assets)
+    dp.add_handler(edit_asssets)
+    dp.add_handler(price)
+    dp.add_handler(orders)
 
     dp.add_handler(MessageHandler(Filters.text, unknown_text))
 
