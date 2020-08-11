@@ -30,16 +30,14 @@ def get_balance(update, contet):
 
 
 def get_price(update, context):
-    """Зпрашиаем у пользователя пару тикеров для получения актуальной цены.
-    Активирует диалог.
-    """
+    """Зпрашиаем у пользователя пару тикеров для получения актуальной цены."""
 
     update.message.reply_text(
         'Введите пару тикеров в формате ETC USDT',
         reply_markup=cancel_keyboard()
     )
 
-    return "get_step_1"
+    return 'ticker'
 
 
 def get_step_1(update, context):
@@ -53,17 +51,17 @@ def get_step_1(update, context):
             'К сожалению, введена неверная пара, попробуйте ещё раз'
             ' или нажмите "Отмена" для завершения операции.'
             )
-        return "get_step_1"
+        return 'ticker'
     result = binance_client.get_average_price(
         ticker_pair[0], ticker_pair[1]
             )
     if result is not None:
         update.message.reply_text(result, reply_markup=another_pair_keyboard())
-        return "get_step_2"
+        return 'step_2'
     update.message.reply_text(
         'К сожалению, введена неверная пара, попробуйте ещё раз.'
         )
-    return "get_step_1"
+    return 'ticker'
 
 
 def get_step_2(update, context):
@@ -74,10 +72,10 @@ def get_step_2(update, context):
             'Пожалуйста, выберите одну из доступных команд.',
             reply_markup=another_pair_keyboard()
         )
-        return "get_step_2"
+        return 'step_2'
 
     update.message.reply_text(
         'Введите пару тикеров в формате ETC USDT',
         reply_markup=cancel_keyboard()
     )
-    return "get_step_1"
+    return 'ticker'
