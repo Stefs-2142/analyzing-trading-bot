@@ -55,7 +55,7 @@ class BinanceClient():
             side = SIDE_SELL
             formated_call += 'sell'
 
-        order = self.__make_client_call(f'{formated_call}',  # Создаём тестовый ордер в тестовой сети.
+        order = self.__make_client_call(f'{formated_call}',
                                         symbol=f'{ticket_1}{ticket_2}',
                                         side=f'{side}',
                                         type=type,
