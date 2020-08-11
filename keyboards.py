@@ -64,8 +64,8 @@ def order_type_keyboard():
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
 
-def buy_sell_keyboard():
+def buy_sell_keyboard(balance_ticker_1, balance_ticker_2):
     return ReplyKeyboardMarkup([
-        ['Купить', 'Продать'],
+        [f'Купить | Доступно {balance_ticker_1}', f'Продать | Доступно {balance_ticker_2}'],
         ['Отмена']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)

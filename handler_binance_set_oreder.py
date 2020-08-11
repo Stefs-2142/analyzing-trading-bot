@@ -43,8 +43,12 @@ def choosing_order_type(update, context):
 
 
 def set_step_2(update, context):
-    """Спрашиваем для какой пары необходимо выставить ордер."""
+    """
+    Проверям валидность введёной пары тикеров для ордера,
+    выбираем сторону сделки если пара валидна.
+    """
 
+    # Форируем пару тикеров из прошлого пользовательского ввода.
     ticker_pair = update.message.text.upper().split(' ')
 
     # Провереяем что пользователь ввёл 2 тикера.
@@ -58,13 +62,19 @@ def set_step_2(update, context):
     result = binance_client.get_average_price(
         ticker_pair[0], ticker_pair[1]
             )
+
+    # Делаем запрос к API и узнаём текущий курс.
     if result is not None:
+        balance = binance_client.get_balance()
         update.message.reply_text(
             f'Текущая цена заданной пары {result}',
-            reply_markup=buy_sell_keyboard()
+
+            # В клавиатуре выводим доступный баланс выбранной пары.
+            reply_markup=buy_sell_keyboard(balance[ticker_pair[1]], balance[ticker_pair[0]])
             )
         return "set_step_3"
 
+    # Возвращаем на шаг назад если пара тикеров невалидна.
     update.message.reply_text(
         'К сожалению, введена неверная пара, попробуйте ещё раз.'
         )
@@ -73,6 +83,5 @@ def set_step_2(update, context):
 
 def set_step_3(update, context):
 
-    pass
-
+    # TODO Продолжить процесс выставления ордера.
     return ConversationHandler.END
