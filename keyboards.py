@@ -62,3 +62,10 @@ def order_type_keyboard():
         ['Limit order', 'Market order'],
         ['Отмена']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
+
+
+def buy_sell_keyboard():
+    return ReplyKeyboardMarkup([
+        ['Купить', 'Продать'],
+        ['Отмена']
+    ], one_time_keyboard=True, row_width=1, resize_keyboard=True)

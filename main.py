@@ -1,10 +1,10 @@
 import logging
 import telegram
-
+from telegram.utils.request import Request
 
 from handlers_binance_calls import binance_comands, get_balance, get_price
 from handlers_binance_calls import get_step_1, get_step_2
-from handler_binance_set_oreder import set_order, set_step_1
+from handler_binance_set_oreder import set_order, choosing_order_type
 from handler_binance_set_oreder import set_step_2, set_step_3
 
 from handlers_asset_add import add_start, add_step_1
@@ -30,10 +30,11 @@ logging.basicConfig(filename='bot.log', level=logging.INFO)
 
 
 def main():
-    bot = telegram.Bot(TELEGRAM_API_KEY)
+
+    request = Request(con_pool_size=8)
+    bot = telegram.Bot(TELEGRAM_API_KEY, request=request)
 
     atb_bot = Updater(bot=bot, use_context=True)
-
     dp = atb_bot.dispatcher
 
     assets = ConversationHandler(
@@ -120,7 +121,7 @@ def main():
         states={
             "set_step_1": [
                 MessageHandler(
-                    Filters.text & (~Filters.regex('(Отмена)')), set_step_1
+                    Filters.text & (~Filters.regex('(Отмена)')), choosing_order_type
                 )
             ],
             "set_step_2": [
