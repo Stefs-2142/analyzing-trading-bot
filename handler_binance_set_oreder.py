@@ -45,7 +45,7 @@ def choosing_order_type(update, context):
 def set_step_2(update, context):
     """
     Проверям валидность введёной пары тикеров для ордера,
-    выбираем сторону сделки если пара валидна.
+    выбираем сторону сделки и показываем доступный баланс, если пара валидна.
     """
 
     # Форируем пару тикеров из прошлого пользовательского ввода.
@@ -66,11 +66,13 @@ def set_step_2(update, context):
     # Делаем запрос к API и узнаём текущий курс.
     if result is not None:
         balance = binance_client.get_balance()
+        print(balance)
         update.message.reply_text(
             f'Текущая цена заданной пары {result}',
 
             # В клавиатуре выводим доступный баланс выбранной пары.
-            reply_markup=buy_sell_keyboard(balance[ticker_pair[1]], balance[ticker_pair[0]])
+            reply_markup=buy_sell_keyboard(
+                balance.get(ticker_pair[1], 0), balance.get(ticker_pair[0], 0))
             )
         return "set_step_3"
 
