@@ -66,14 +66,17 @@ def set_step_2(update, context):
     # Делаем запрос к API и узнаём текущий курс.
     if result is not None:
         balance = binance_client.get_balance()
-        print(balance)
+
+        # Создаём 2 строки для передачи в клавиатуру.
+        ticker_1 = balance.get(ticker_pair[1], '0') + " " + ticker_pair[1]
+        ticker_2 = balance.get(ticker_pair[0], '0') + " " + ticker_pair[0]
         update.message.reply_text(
             f'Текущая цена заданной пары {result}',
 
+
             # В клавиатуре выводим доступный баланс выбранной пары.
-            reply_markup=buy_sell_keyboard(
-                balance.get(ticker_pair[1], 0), balance.get(ticker_pair[0], 0))
-            )
+            reply_markup=buy_sell_keyboard(ticker_1, ticker_2)
+        )
         return "set_step_3"
 
     # Возвращаем на шаг назад если пара тикеров невалидна.
