@@ -77,3 +77,10 @@ def quantity_keyboard():
         ['25%', '50%', '75%', '100%'],
         ['Отмена']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
+
+
+def aply_order_keyboard():
+    return ReplyKeyboardMarkup([
+        ['Да', 'Нет'],
+        ['Отмена']
+    ], one_time_keyboard=True, row_width=1, resize_keyboard=True)

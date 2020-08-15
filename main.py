@@ -5,7 +5,8 @@ from telegram.utils.request import Request
 from handlers_binance_calls import binance_comands, get_balance, get_price
 from handlers_binance_calls import get_step_1, get_step_2
 from handler_binance_set_oreder import set_order, choosing_order_type
-from handler_binance_set_oreder import set_step_2, set_step_3
+from handler_binance_set_oreder import choosing_pair, choosing_order_side
+from handler_binance_set_oreder import making_order, order_status
 
 from handlers_asset_add import add_start, add_step_1
 from handlers_asset_add import add_step_2, add_step_3, add_step_4
@@ -121,17 +122,27 @@ def main():
         states={
             "set_step_1": [
                 MessageHandler(
-                    Filters.text & (~Filters.regex('(Отмена)')), choosing_order_type
+                    Filters.text & (~Filters.regex('(Отмена)')), choosing_pair
                 )
             ],
             "set_step_2": [
                 MessageHandler(
-                    Filters.text & (~Filters.regex('(Отмена)')), set_step_2
+                    Filters.text & (~Filters.regex('(Отмена)')), choosing_order_type
                 )
             ],
             "set_step_3": [
                 MessageHandler(
-                    Filters.text & (~Filters.regex('(Отмена)')), set_step_3
+                    Filters.text & (~Filters.regex('(Отмена)')), choosing_order_side    
+                )
+            ],
+            "set_step_4": [
+                MessageHandler(
+                    Filters.text & (~Filters.regex('(Отмена)')), making_order
+                )
+            ],
+            "set_step_5": [
+                MessageHandler(
+                    Filters.text & (~Filters.regex('(Отмена)')), order_status
                 )
             ],
         },
