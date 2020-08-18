@@ -1,5 +1,9 @@
 ﻿from telegram import ReplyKeyboardMarkup
 
+KEYBOARD_PERCENT_POOL = ['25%', '50%', '75%', '100%']
+ORDERS_TYPE = ['Limit order', 'Market order']
+ORDERS_SIDE = ['Buy', 'Sell']
+
 
 def main_menu_keyboard():
     return ReplyKeyboardMarkup([
@@ -53,7 +57,8 @@ def edit_choose_keyboard():
 
 def another_pair_keyboard():
     return ReplyKeyboardMarkup([
-        ['Другая пара', 'Отмена']
+        ['Другая пара', 'Отмена'],
+        ['Создать ордер']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
 
@@ -67,7 +72,7 @@ def order_type_keyboard():
 def buy_sell_keyboard(balance_ticker_1, balance_ticker_2):
     return ReplyKeyboardMarkup([
         [f'Доступно {balance_ticker_1}', f'Доступно {balance_ticker_2}'],
-        ['Купить', 'Продать'],
+        ['Buy', 'Sell'],
         ['Отмена'],
     ], one_time_keyboard=False, row_width=1, resize_keyboard=True)
 
