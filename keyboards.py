@@ -57,8 +57,7 @@ def edit_choose_keyboard():
 
 def another_pair_keyboard():
     return ReplyKeyboardMarkup([
-        ['Другая пара', 'Отмена'],
-        ['Создать ордер']
+        ['Другая пара', 'Отмена']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
 
