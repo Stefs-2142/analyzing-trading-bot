@@ -1,4 +1,5 @@
 ﻿from keyboards import main_shares_keyboard, main_menu_keyboard
+from keyboards import main_binance_keyboard
 from telegram.ext import ConversationHandler
 
 
@@ -17,6 +18,15 @@ def shares_comands(update, context):
     update.message.reply_text(reply, reply_markup=main_shares_keyboard())
 
 
+def binance_comands(update, context):
+    """
+    Функция, представляет доступные
+    команды для работы с Binance
+    """
+    reply = 'Доступные команды.'
+    update.message.reply_text(reply, reply_markup=main_binance_keyboard())
+
+
 def unknown_text(update, context):
     """
     Функция, обрабатывающая любой текст, который не является текстом из
@@ -31,9 +41,19 @@ def operation_cancel(update, context):
     Функция fallback команды "Отмена" - удаляет данные из контекстов и
     завершает текущий Conversation
     """
+
+    # shares_context
     context.user_data.pop('ticker', None)
     context.user_data.pop('candidates', None)
     context.user_data.pop('action', None)
+
+    # binance_context
+    context.user_data.pop('ticker_pair', None)
+    context.user_data.pop('order_side', None)
+    context.user_data.pop('order_type', None)
+    context.user_data.pop('quantity', None)
+    context.user_data.pop('balance', None)
+
     update.message.reply_text(
         'Операция прервана', reply_markup=main_menu_keyboard()
     )
