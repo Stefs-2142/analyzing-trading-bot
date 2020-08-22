@@ -2,7 +2,7 @@
 
 KEYBOARD_PERCENT_POOL = ['25%', '50%', '75%', '100%']
 ORDERS_TYPE = ['Limit order', 'Market order']
-ORDERS_SIDE = ['Buy', 'Sell']
+ORDERS_SIDE = ['buy', 'sell']
 
 
 def main_menu_keyboard():
@@ -71,7 +71,7 @@ def order_type_keyboard():
 def buy_sell_keyboard(balance_ticker_1, balance_ticker_2):
     return ReplyKeyboardMarkup([
         [f'Доступно {balance_ticker_1}', f'Доступно {balance_ticker_2}'],
-        ['Buy', 'Sell'],
+        ['buy', 'sell'],
         ['Отмена'],
     ], one_time_keyboard=False, row_width=1, resize_keyboard=True)
 
@@ -83,8 +83,8 @@ def quantity_keyboard():
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
 
-def aply_order_keyboard():
+def aply_order_keyboard(order_side):
     return ReplyKeyboardMarkup([
-        ['Да', 'Нет'],
+        [f'{order_side}'],
         ['Отмена']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
