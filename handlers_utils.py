@@ -36,6 +36,25 @@ def unknown_text(update, context):
     update.message.reply_text(reply, reply_markup=main_menu_keyboard())
 
 
+def clear_all_crypto(update, context):
+    """Очищает данные из контекста."""
+
+    context.user_data.pop('ticker_pair', None)
+    context.user_data.pop('order_side', None)
+    context.user_data.pop('order_type', None)
+    context.user_data.pop('quantity', None)
+    context.user_data.pop('balance', None)
+    context.user_data.pop('price', None)
+
+
+def clear_all_shares(update, context):
+    """Очищает данные из контекста."""
+
+    context.user_data.pop('ticker', None)
+    context.user_data.pop('candidates', None)
+    context.user_data.pop('action', None)
+
+
 def operation_cancel(update, context):
     """
     Функция fallback команды "Отмена" - удаляет данные из контекстов и
@@ -43,16 +62,10 @@ def operation_cancel(update, context):
     """
 
     # shares_context
-    context.user_data.pop('ticker', None)
-    context.user_data.pop('candidates', None)
-    context.user_data.pop('action', None)
+    clear_all_shares(update, context)
 
     # binance_context
-    context.user_data.pop('ticker_pair', None)
-    context.user_data.pop('order_side', None)
-    context.user_data.pop('order_type', None)
-    context.user_data.pop('quantity', None)
-    context.user_data.pop('balance', None)
+    clear_all_crypto(update, context)
 
     update.message.reply_text(
         'Операция прервана', reply_markup=main_menu_keyboard()
@@ -64,3 +77,4 @@ def show_help(update, context):
     with open('help.txt', 'r') as stocks_info:
         reply_text = stocks_info.read()
     update.message.reply_text(reply_text)
+
