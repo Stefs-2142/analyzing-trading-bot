@@ -1,4 +1,4 @@
-﻿from telegram import ReplyKeyboardMarkup
+from telegram import ReplyKeyboardMarkup
 
 KEYBOARD_PERCENT_POOL = ['25%', '50%', '75%', '100%']
 ORDERS_TYPE = ['Limit order', 'Market order']
@@ -88,3 +88,4 @@ def aply_order_keyboard(order_side):
         [f'{order_side}'],
         ['Отмена']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
+ 
