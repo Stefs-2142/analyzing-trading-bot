@@ -1,6 +1,5 @@
 from binance.client import Client
-from binance.enums import SIDE_BUY, SIDE_SELL, ORDER_TYPE_LIMIT
-from binance.enums import ORDER_TYPE_MARKET, TIME_IN_FORCE_GTC
+from binance.enums import SIDE_BUY, SIDE_SELL, ORDER_TYPE_LIMIT, ORDER_TYPE_MARKET, TIME_IN_FORCE_GTC
 from settings import BINANCE_API_KEY, SECRET_KEY, EXCEPTION_LIST
 import logging
 from functools import wraps
@@ -33,7 +32,7 @@ class BinanceClient():
         result = getattr(self.client, method_name)(*args, **kwargs)
         return result
 
-    def set_order(self, ticker_1, ticker_2, order_type, side, quantity, price=None):
+    def set_order(self, ticket_1, ticket_2, order_type, side, quantity, price=None):
         """"
         Выставляет ордер с заданными параметрами.
         Собираем из аргументов запрос на возможные оредра:
@@ -56,13 +55,8 @@ class BinanceClient():
             side = SIDE_SELL
             formated_call += 'sell'
 
-
-        order = self.__make_client_call(f'{formated_call}',
-                                        symbol=f'{ticker_1}{ticker_2}',
-
         order = self.__make_client_call(f'{formated_call}',  # Создаём тестовый ордер в тестовой сети.
                                         symbol=f'{ticket_1}{ticket_2}',
-
                                         side=f'{side}',
                                         type=type,
                                         timeInForce=TIME_IN_FORCE_GTC,
@@ -73,13 +67,13 @@ class BinanceClient():
             logging.info('Выполнено. ', order)
             return order
 
-    def get_average_price(self, ticker_1, ticker_2):
+    def get_average_price(self, ticket_1, ticket_2):
         """ Возвращает текущую цену заданной пары. """
 
-        avg_price = self.__make_client_call('get_avg_price', symbol=f'{ticker_1}{ticker_2}')
+        avg_price = self.__make_client_call('get_avg_price', symbol=f'{ticket_1}{ticket_2}')
 
         if avg_price is not None:
-            formated_avg_price = str(round(float(avg_price['price']), 3)) + " " + str(ticker_2)
+            formated_avg_price = str(round(float(avg_price['price']), 3)) + " " + str(ticket_2)
             logging.info(formated_avg_price)
             return formated_avg_price
 
@@ -91,13 +85,13 @@ class BinanceClient():
             logging.info(f'Список открытых ордеров - {open_orders}')
             return open_orders
 
-    def close_order(self, ticker_1, ticker_2, orderId):
+    def close_order(self, ticket_1, ticket_2, orderId):
         """ Закрывает ордер. """
 
         open_orders = self.__make_client_call('get_open_orders')  # Проверяем есть ли ордер на закрытие.
         for order in open_orders:
-            if order.get('symbol') == f'{ticker_1}{ticker_2}' and order.get('orderId') == orderId:
-                result = self.__make_client_call('cancel_order', symbol=f'{ticker_1}{ticker_2}', orderId='orderId')
+            if order.get('symbol') == f'{ticket_1}{ticket_2}' and order.get('orderId') == orderId:
+                result = self.__make_client_call('cancel_order', symbol=f'{ticket_1}{ticket_2}', orderId='orderId')
                 if result is not None:
                     logging.info('Выполнено.')
                     return result
@@ -120,17 +114,17 @@ class BinanceClient():
             logging.info(balance)
             return balance
 
-    def average_price(self, ticker_1, ticker_2):
+    def average_price(self, ticket_1, ticket_2):
         """ Возвращает значение цены заданой пары """
 
-        price = self.__make_client_call('get_avg_price', symbol=f'{ticker_1}{ticker_2}')  # Получаем среднее значение цены за 5 мин.
+        price = self.__make_client_call('get_avg_price', symbol=f'{ticket_1}{ticket_2}')  # Получаем среднее значение цены за 5 мин.
         if price is not None:
             return round(float(price['price']), 1)
 
-    def get_trade_history(self, ticker_1, ticker_2):
+    def get_trade_history(self, ticket_1, ticket_2):
         """ Возвращает историю торгов по заданой паре. """
 
-        trades = self.__make_client_call('get_my_trades', symbol=f'{ticker_1}{ticker_2}')
+        trades = self.__make_client_call('get_my_trades', symbol=f'{ticket_1}{ticket_2}')
         if trades is not None:
             combined_trades = []
             for trade in trades:
@@ -141,7 +135,7 @@ class BinanceClient():
                 order_id = trade['orderId']
 
                 order = self.__make_client_call('get_order',
-                                                symbol=f'{ticker_1}{ticker_2}',
+                                                symbol=f'{ticket_1}{ticket_2}',
                                                 orderId=order_id)
 
                 order_side = order['side']
