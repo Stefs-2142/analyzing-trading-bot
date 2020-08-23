@@ -1,9 +1,18 @@
 from binance_utils import BinanceClient
-from keyboards import cancel_keyboard
+from keyboards import cancel_keyboard, main_binance_keyboard
 from keyboards import another_pair_keyboard
 
 
 binance_client = BinanceClient()
+
+
+def binance_comands(update, context):
+    """
+    Функция, представляет доступные
+    команды для работы с Binance
+    """
+    reply = 'Доступные команды.'
+    update.message.reply_text(reply, reply_markup=main_binance_keyboard())
 
 
 def get_balance(update, contet):
