@@ -1,6 +1,6 @@
 import logging
-import settings
 import telegram
+from telegram.utils.request import Request
 
 from handlers_binance_calls import get_balance, get_price
 from handlers_binance_calls import get_step_1, get_step_2
@@ -33,10 +33,11 @@ logging.basicConfig(filename='bot.log', level=logging.INFO)
 
 
 def main():
+
+    request = Request(con_pool_size=8)
     bot = telegram.Bot(TELEGRAM_API_KEY)
 
     atb_bot = Updater(bot=bot, use_context=True)
-
     dp = atb_bot.dispatcher
 
     dp.add_handler(CommandHandler("start", greet_user))
