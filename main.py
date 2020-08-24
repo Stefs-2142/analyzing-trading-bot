@@ -2,11 +2,11 @@ import logging
 import telegram
 from telegram.utils.request import Request
 
-from handlers_binance_calls import get_balance, get_price
-from handlers_binance_calls import get_step_1, get_step_2
+from handlers_binance_calls import get_balance
 from handlers_binance_set_order import set_order, choosing_order_type
 from handlers_binance_set_order import choosing_pair, choosing_order_side
 from handlers_binance_set_order import prepearing_order, making_order, checking_price
+from handlers_binance_get_price import get_price, getting_pair_price, getting_another_pair
 
 from handlers_asset_add import add_start, add_step_1
 from handlers_asset_add import add_step_2, add_step_3, add_step_4
@@ -105,12 +105,12 @@ def main():
         states={
             "get_step_1": [
                 MessageHandler(
-                    Filters.text & (~Filters.regex('(Отмена)')), get_step_1
+                    Filters.text & (~Filters.regex('(Отмена)')), getting_pair_price
                 )
             ],
             "get_step_2": [
                 MessageHandler(
-                    Filters.text & (~Filters.regex('(Отмена)')), get_step_2
+                    Filters.text & (~Filters.regex('(Отмена)')), getting_another_pair
                 )
             ]
         },

@@ -1,7 +1,7 @@
 from keyboards import cancel_keyboard, order_type_keyboard, quantity_keyboard
 from keyboards import buy_sell_keyboard, aply_order_keyboard
 from keyboards import KEYBOARD_PERCENT_POOL, ORDERS_TYPE, ORDERS_SIDE
-from handlers_binance_calls import binance_client
+from binance_utils import binance_client
 from telegram.ext import ConversationHandler
 
 from handlers_utils import clear_all_crypto
@@ -212,7 +212,7 @@ def prepearing_order(update, context):  # set_step_5
                 message = f"Купить {formated_quantity} {ticker_pair[1]} по текущему курсу {result} ?"
                 return message
             elif order_type == 'limit':
-                message = f"Выставить ордер на покупку {formated_quantity} {ticker_pair[1]} по курсу {price} {ticker_pair[0]} ?"
+                message = f"Выставить ордер на покупку {formated_quantity} {ticker_pair[0]} по курсу {price} {ticker_pair[1]} ?"
                 return message
         else:
             formated_quantity = percent * float(balance[ticker_pair[0]])

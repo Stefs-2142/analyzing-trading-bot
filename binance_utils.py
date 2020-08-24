@@ -151,3 +151,7 @@ class BinanceClient():
                         'quoteQty': quoteQty, 'price': price})
             logging.info(combined_trades)
             return combined_trades
+
+
+# Создаём экземпляр нашего класса.
+binance_client = BinanceClient()
