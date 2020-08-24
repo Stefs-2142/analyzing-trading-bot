@@ -7,6 +7,7 @@ from handlers_binance_set_order import set_order, choosing_order_type
 from handlers_binance_set_order import choosing_pair, choosing_order_side
 from handlers_binance_set_order import prepearing_order, making_order, checking_price
 from handlers_binance_get_price import get_price, getting_pair_price, getting_another_pair
+from handlers_open_orders import get_open_orers
 
 from handlers_asset_add import add_start, add_step_1
 from handlers_asset_add import add_step_2, add_step_3, add_step_4
@@ -160,11 +161,13 @@ def main():
     dp.add_handler(MessageHandler(Filters.regex('Узнать баланс'), get_balance))
     dp.add_handler(MessageHandler(Filters.regex('Мои инструменты'), asset_view))
     dp.add_handler(MessageHandler(Filters.regex('Помощь'), show_help))
+    dp.add_handler(MessageHandler(Filters.regex('Открытые ордеры'), get_open_orers))
 
     dp.add_handler(assets)
     dp.add_handler(edit_asssets)
     dp.add_handler(price)
     dp.add_handler(orders)
+    
 
     dp.add_handler(MessageHandler(Filters.text, unknown_text))
 
