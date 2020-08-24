@@ -92,7 +92,7 @@ class BinanceClient():
         open_orders = self.__make_client_call('get_open_orders')  # Проверяем есть ли ордер на закрытие.
         for order in open_orders:
             if order.get('symbol') == f'{ticker_1}{ticker_2}' and order.get('orderId') == orderId:
-                result = self.__make_client_call('cancel_order', symbol=f'{ticker_1}{ticker_2}', orderId='orderId')
+                result = self.__make_client_call('cancel_order', symbol=f'{ticker_1}{ticker_2}', orderId=orderId)
                 if result is not None:
                     logging.info('Выполнено.')
                     return result
