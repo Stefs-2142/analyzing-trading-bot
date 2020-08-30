@@ -9,7 +9,7 @@ def choosing_order_for_close(update, context):
     """Спрашиваем у пользователя какой ордер закрыть."""
 
     open_orders = binance_client.get_all_open_orders()
-    
+
     # Сохраняем открытые ордера.
     context.user_data['open_orders'] = open_orders
 
@@ -46,7 +46,7 @@ def applying_closing(update, context):
     return 'close_step_2'
 
 
-def closing(update, context):
+def closing_order(update, context):
     """Закрываем ордер."""
 
     if update.message.text != 'Да':
