@@ -3,6 +3,7 @@
 KEYBOARD_PERCENT_POOL = ['25%', '50%', '75%', '100%']
 ORDERS_TYPE = ['Limit order', 'Market order']
 ORDERS_SIDE = ['buy', 'sell']
+NUMBERS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
 
 
 def main_menu_keyboard():
@@ -63,7 +64,7 @@ def another_pair_keyboard():
 
 def order_type_keyboard():
     return ReplyKeyboardMarkup([
-        ['Limit order', 'Market order'],
+        ORDERS_TYPE,
         ['Отмена']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
@@ -71,14 +72,14 @@ def order_type_keyboard():
 def buy_sell_keyboard(balance_ticker_1, balance_ticker_2):
     return ReplyKeyboardMarkup([
         [f'Доступно {balance_ticker_1}', f'Доступно {balance_ticker_2}'],
-        ['buy', 'sell'],
+        ORDERS_SIDE,
         ['Отмена'],
     ], one_time_keyboard=False, row_width=1, resize_keyboard=True)
 
 
 def quantity_keyboard():
     return ReplyKeyboardMarkup([
-        ['25%', '50%', '75%', '100%'],
+        KEYBOARD_PERCENT_POOL,
         ['Отмена']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
@@ -86,5 +87,19 @@ def quantity_keyboard():
 def aply_order_keyboard(order_side):
     return ReplyKeyboardMarkup([
         [f'{order_side}'],
+        ['Отмена']
+    ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
+
+
+def numbers_keyboard():
+    return ReplyKeyboardMarkup([
+        NUMBERS,
+        ['Отмена']
+    ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
+
+
+def yes_no_keyboard():
+    return ReplyKeyboardMarkup([
+        ['Да', 'Нет'],
         ['Отмена']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
