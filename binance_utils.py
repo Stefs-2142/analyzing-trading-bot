@@ -86,13 +86,13 @@ class BinanceClient():
             logging.info(f'Список открытых ордеров - {open_orders}')
             return open_orders
 
-    def close_order(self, ticker_1, ticker_2, orderId):
+    def close_order(self, ticker_pair, orderId):
         """ Закрывает ордер. """
 
         open_orders = self.__make_client_call('get_open_orders')  # Проверяем есть ли ордер на закрытие.
         for order in open_orders:
-            if order.get('symbol') == f'{ticker_1}{ticker_2}' and order.get('orderId') == orderId:
-                result = self.__make_client_call('cancel_order', symbol=f'{ticker_1}{ticker_2}', orderId=orderId)
+            if order.get('symbol') == f'{ticker_pair}' and order.get('orderId') == orderId:
+                result = self.__make_client_call('cancel_order', symbol=f'{ticker_pair}', orderId=orderId)
                 if result is not None:
                     logging.info('Выполнено.')
                     return result
@@ -106,12 +106,23 @@ class BinanceClient():
     def get_balance(self):
         """ Возвращает баланс пользователя. """
 
+        # Получаем полную сводку по пользователю, включая весь баланс.
         info = self.__make_client_call('get_account')
-        balance = {}  # Создаём словарь с балансом пользователя.{'BTC':2, 'ETC':12}
+
         if info is not None:
+            # Создаём словарь с балансом пользователя.
+            # {'BTC': {'free': 2, 'locked': 12}, 'ETC': {...}
+            balance = {}
+
             for crypto in info['balances']:
                 if crypto['free'] != '0.00000000' and crypto['free'] != '0.00':
-                    balance[crypto['asset']] = crypto['free']
+                    balance[crypto['asset']] = {'free': crypto['free']}
+
+                if crypto['locked'] != '0.00000000' and crypto['locked'] != '0.00':
+                    try:
+                        balance[crypto['asset']].update({'locked': crypto['locked']})
+                    except KeyError:
+                        balance[crypto['asset']] = {'locked': crypto['locked']}
             logging.info(balance)
             return balance
 
