@@ -1,8 +1,10 @@
+from telegram.ext import ConversationHandler
+
 from keyboards import cancel_keyboard, order_type_keyboard, quantity_keyboard
-from keyboards import buy_sell_keyboard, aply_order_keyboard
+from keyboards import buy_sell_keyboard, aply_order_keyboard, main_menu_keyboard
 from keyboards import KEYBOARD_PERCENT_POOL, ORDERS_TYPE, ORDERS_SIDE
 from binance_utils import binance_client
-from telegram.ext import ConversationHandler
+
 
 from handlers_utils import clear_all_crypto
 
@@ -28,9 +30,6 @@ def choosing_pair(update, context):  # set_step_1
     # Формируем пару тикеров из прошлого пользовательского ввода.
     ticker_pair = update.message.text.upper().split(' ')
 
-    # Сохраняем введёную пару тикеров.
-    context.user_data['ticker_pair'] = ticker_pair
-
     # Провереяем что пользователь ввёл 2 тикера.
     if len(ticker_pair) != 2:
         update.message.reply_text(
@@ -39,6 +38,9 @@ def choosing_pair(update, context):  # set_step_1
             reply_markup=cancel_keyboard()
         )
         return "set_step_1"
+
+    # Сохраняем введёную пару тикеров.
+    context.user_data['ticker_pair'] = ticker_pair
 
     # Делаем запрос к API и узнаём текущий курс.
     result = binance_client.get_average_price(
@@ -71,7 +73,7 @@ def choosing_order_type(update, context):  # set_step_2
         update.message.reply_text(
             'Пожалуйста, выберите тип ордера или нажмите "Отмена".',
             reply_markup=order_type_keyboard()
-            )
+        )
         return "set_step_2"
 
     # Cохраняем выбранный пользователем тип ордера.
@@ -81,17 +83,20 @@ def choosing_order_type(update, context):  # set_step_2
     ticker_pair = context.user_data['ticker_pair']
 
     # Сохраняем баланс пользователя.
-    balance = binance_client.get_balance()
+    balance = binance_client.get_balance(full=False)
     context.user_data['balance'] = balance
 
     # Создаём 2 строчки и записываем достуный баланс выбранных пар.
     ticker_1 = balance.get(ticker_pair[1], '0') + " " + ticker_pair[1]
     ticker_2 = balance.get(ticker_pair[0], '0') + " " + ticker_pair[0]
 
-    update.message.reply_text(
-        "Выберите сторону сделки.", reply_markup=buy_sell_keyboard(ticker_1, ticker_2)
-    )
+    context.user_data['ticker_1'] = ticker_1
+    context.user_data['ticker_2'] = ticker_2
 
+    update.message.reply_text(
+        "Выберите сторону сделки.",
+        reply_markup=buy_sell_keyboard(ticker_1, ticker_2)
+    )
     return "set_step_3"
 
 
@@ -101,13 +106,9 @@ def choosing_order_side(update, context):  # set_step_3
     Доступны 'Купить', 'Продать'.
     """
 
-    # Забираем ранее сохранённый список пары тикеров.
-    balance = binance_client.get_balance()
-    ticker_pair = context.user_data['ticker_pair']
-
-    # Создаём 2 строчки и записываем достуный баланс выбранных пар.
-    ticker_1 = balance.get(ticker_pair[1], '0') + " " + ticker_pair[1]
-    ticker_2 = balance.get(ticker_pair[0], '0') + " " + ticker_pair[0]
+    # Забираем ранее сохранённые балансы пар.
+    ticker_1 = context.user_data['ticker_1']
+    ticker_2 = context.user_data['ticker_2']
 
     if update.message.text not in ORDERS_SIDE:
         update.message.reply_text(
@@ -118,26 +119,33 @@ def choosing_order_side(update, context):  # set_step_3
 
     # Cохраняем сторону сделки.
     context.user_data['order_side'] = update.message.text
+    # Возвращаем в начало шага если баланс выбранного тикера равен 0.
+    allowed_balance = ''
+    if context.user_data['order_side'] == 'sell':
+        if float(ticker_2.split()[0]) == 0:
+            update.message.reply_text(
+                'Недостаточно средств.', keyboard_markup=main_menu_keyboard()
+                )
+            return 'set_step_3'
+        allowed_balance += ticker_2
+    else:
+        if float(ticker_1.split()[0]) == 0:
+            update.message.reply_text(
+                'Недостаточно средств.', keyboard_markup=main_menu_keyboard()
+                )
+            return 'set_step_3'
+        allowed_balance += ticker_1
 
     if context.user_data['order_type'] == 'limit':
-
         update.message.reply_text(
             'Введите цену.', reply_markup=cancel_keyboard()
         )
         return 'set_step_4'
 
-    allowed_balance = ''
-    if context.user_data['order_side'] == 'sell':
-        allowed_balance += ticker_2
-    else:
-        allowed_balance += ticker_1
-
     update.message.reply_text(
         f'Выберите количество.\n Доступно - {allowed_balance}',
         reply_markup=quantity_keyboard()
-
     )
-
     return 'set_step_5'
 
 
@@ -232,7 +240,6 @@ def prepearing_order(update, context):  # set_step_5
     update.message.reply_text(
         message, reply_markup=aply_order_keyboard(order_side)
         )
-
     return 'set_step_6'
 
 
@@ -257,10 +264,34 @@ def making_order(update, context):  # set_step_6
     order_type = context.user_data['order_type']
 
     # Забираем ранее сохранённое количество для сделки.
-    quantity = int(context.user_data['quantity'])
+    quantity = context.user_data['quantity']
 
     # Забирем цену, оставляем пустой если Marker order.
     price = context.user_data.get('price', None)
+
+    # Минимально допустимая сумма сделки.
+    min_order_summ_in_usdt = 10
+
+    # Если ордер создаётся для пары без $
+    # Например BNB/BTC - расчитываем price в $
+    if ticker_pair[1] != 'USDT':
+        result_usdt = binance_client.get_average_price(
+            ticker_pair[1], 'USDT'
+        )
+        price *= float(result_usdt.split()[0])
+
+    # Сумма ордера.
+    current_order_summ = price*quantity
+
+    # Проверяем сумму ордера и если она меньше 10$ отправляем обратно.
+    if current_order_summ < min_order_summ_in_usdt:
+        message = f'Ордер должна быть не меньше {min_order_summ_in_usdt}'
+        message += f'\nВаш - {current_order_summ}$'
+        update.message.reply_text(
+            message,
+            keyboard_markup=cancel_keyboard()
+            )
+        return 'set_step_4'
 
     # Формируем сделку.
     result = binance_client.set_order(
@@ -268,10 +299,11 @@ def making_order(update, context):  # set_step_6
             order_type, order_side, quantity, price
         )
     if result is not None:
-        update.message.reply_text('Ордер выставлен!')
+        update.message.reply_text(
+            'Ордер выставлен!', reply_markup=main_menu_keyboard()
+        )
 
         clear_all_crypto(update, context)
-
         return ConversationHandler.END
 
     update.message.reply_text(
@@ -279,3 +311,4 @@ def making_order(update, context):  # set_step_6
         reply_markup=cancel_keyboard()
     )
     clear_all_crypto(update, context)
+    return ConversationHandler.END
