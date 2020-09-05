@@ -5,6 +5,10 @@ from telegram.ext import ConversationHandler
 
 def greet_user(update, context):
     # Дописать нормальный текст
+
+    clear_all_shares(update, context)
+    clear_all_crypto(update, context)
+
     update.message.reply_text(
         "Привет! Выбери нужный раздел.", reply_markup=main_menu_keyboard())
 
@@ -32,7 +36,7 @@ def unknown_text(update, context):
     Функция, обрабатывающая любой текст, который не является текстом из
     кнопок, которые начинают Conversation
     """
-    reply = ("Нажмите на одну из доступных кнопок")
+    reply = ("Выберите доступный раздел.")
     update.message.reply_text(reply, reply_markup=main_menu_keyboard())
 
 
