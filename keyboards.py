@@ -91,9 +91,9 @@ def aply_order_keyboard(order_side):
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
 
-def numbers_keyboard():
+def numbers_keyboard(n):
     return ReplyKeyboardMarkup([
-        NUMBERS,
+        (str(n) for n in range(1, n)),
         ['Отмена']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
