@@ -3,7 +3,6 @@
 KEYBOARD_PERCENT_POOL = ['25%', '50%', '75%', '100%']
 ORDERS_TYPE = ['Limit order', 'Market order']
 ORDERS_SIDE = ['buy', 'sell']
-NUMBERS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
 
 
 def main_menu_keyboard():
