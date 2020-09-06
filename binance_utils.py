@@ -7,6 +7,8 @@ from functools import wraps
 
 
 client = Client(BINANCE_API_KEY, SECRET_KEY)
+
+logger = logging.getLogger(__name__)
 logging.basicConfig(filename='binance.log', level=logging.INFO,
                     format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S',)
@@ -19,7 +21,7 @@ def wrap_try_except(func):
         try:
             return func(*args, **kwargs)
         except EXCEPTION_LIST as ex:
-            logging.info(f'Возникла ошибка - {ex}')
+            logger.info(f'Возникла ошибка - {ex}')
     return wrapper
 
 
@@ -103,28 +105,38 @@ class BinanceClient():
                 logging.info('К сожалению, нет ордеров на закрытие.')
                 return
 
-    def get_balance(self):
-        """ Возвращает баланс пользователя. """
+    def get_balance(self, full=True):
+        """
+        Возвращает баланс пользователя.
+        Ecли вызванно с 'full=True',
+        возвращаем полный баланс с замороженными средствами,
+        которые могут находиться в ордерах.
+         """
 
         # Получаем полную сводку по пользователю, включая весь баланс.
         info = self.__make_client_call('get_account')
 
         if info is not None:
-            # Создаём словарь с балансом пользователя.
-            # {'BTC': {'free': 2, 'locked': 12}, 'ETC': {...}
+            #  full - {'BTC': {'free': 2, 'locked': 12}, 'ETC': {...}
+            #  not_full - {'BTC': 2, 'ETC': 12}
             balance = {}
+            if full:
+                for crypto in info['balances']:
+                    if crypto['free'] != '0.00000000' and crypto['free'] != '0.00':
+                        balance[crypto['asset']] = {'free': crypto['free']}
 
-            for crypto in info['balances']:
-                if crypto['free'] != '0.00000000' and crypto['free'] != '0.00':
-                    balance[crypto['asset']] = {'free': crypto['free']}
-
-                if crypto['locked'] != '0.00000000' and crypto['locked'] != '0.00':
-                    try:
-                        balance[crypto['asset']].update({'locked': crypto['locked']})
-                    except KeyError:
-                        balance[crypto['asset']] = {'locked': crypto['locked']}
-            logging.info(balance)
-            return balance
+                    if crypto['locked'] != '0.00000000' and crypto['locked'] != '0.00':
+                        try:
+                            balance[crypto['asset']].update({'locked': crypto['locked']})
+                        except KeyError:
+                            balance[crypto['asset']] = {'locked': crypto['locked']}
+                logging.info(balance)
+                return balance
+            else:
+                for crypto in info['balances']:
+                    if crypto['free'] != '0.00000000' and crypto['free'] != '0.00':
+                        balance[crypto['asset']] = crypto['free']
+                return balance
 
     def average_price(self, ticker_1, ticker_2):
         """ Возвращает значение цены заданой пары """

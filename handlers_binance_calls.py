@@ -5,12 +5,8 @@ from keyboards import cancel_keyboard
 def get_balance(update, contet):
     """Возвращает баланс пользователя на Binance"""
 
-    result = binance_client.get_balance()
-    result_str = 'Ваш баланс:\n\n'
-    for k, v in result.items():
-        result_str += k
-        result_str += ' - '
-        result_str += v
-        result_str += '\n'
-
-    update.message.reply_text(result_str, reply_markup=cancel_keyboard())
+    result = binance_client.get_balance(full=True)
+    message = "Баланс:\n"
+    for ticker, value in result.items():
+        message += f"{ticker}: Свободно - {value.get('free', '0')}, Замороженно - {value.get('locked', '0')}\n"
+    update.message.reply_text(message, reply_markup=cancel_keyboard())
