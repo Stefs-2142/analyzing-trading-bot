@@ -23,7 +23,7 @@ def choosing_order_for_close(update, context):
 
     update.message.reply_text(
         f"{formated_orders}\nВыберите ордер для закрытия.",
-        reply_markup=numbers_keyboard()
+        reply_markup=numbers_keyboard(order_count)
         )
     return 'close_step_1'
 
