@@ -159,17 +159,23 @@ class BinanceClient():
                 order = self.__make_client_call('get_order',
                                                 symbol=f'{ticker_1}{ticker_2}',
                                                 orderId=order_id)
+                print(order)
 
                 order_side = order['side']
                 order_status = order['status']
                 order_type = order['type']
                 price = order['price']
+                time_stamp = order['time']
                 logging.info(f'{symbol} {order_type} {order_side} {quantity} {quoteQty} {price} {order_status}')
 
                 combined_trades.append(
-                    {'symbol': symbol, 'order_side': order_side,
+                    {
+                        'symbol': symbol, 'order_side': order_side,
                         'order_type': order_type, 'quantity': quantity,
-                        'quoteQty': quoteQty, 'price': price})
+                        'quoteQty': quoteQty, 'price': price,
+                        'time': time_stamp
+                    }
+                    )
             logging.info(combined_trades)
             return combined_trades
 
