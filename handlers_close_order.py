@@ -36,7 +36,7 @@ def choosing_order_for_close(update, context):
     update.message.reply_text(
         'Нет открытых ордеров.', keyboard_markup=main_menu_keyboard()
         )
-    clear_all_crypto()
+    clear_all_crypto(update, context)
     return ConversationHandler.END
 
 
