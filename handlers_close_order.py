@@ -76,6 +76,7 @@ def closing_order(update, context):
         update.message.reply_text(
             'Что дальше?', reply_markup=main_menu_keyboard()
         )
+        clear_all_crypto(update, context)
         return ConversationHandler.END
 
     # Cохраняем выбранный ордер для закрытия.
@@ -96,4 +97,5 @@ def closing_order(update, context):
         update.message.reply_text(
             "Ордер закрыт!", reply_markup=main_menu_keyboard()
         )
+        clear_all_crypto(update, context)
         return ConversationHandler.END
