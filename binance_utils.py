@@ -5,10 +5,8 @@ from settings import BINANCE_API_KEY, SECRET_KEY, EXCEPTION_LIST
 import logging
 from functools import wraps
 
-
 client = Client(BINANCE_API_KEY, SECRET_KEY)
 
-logger = logging.getLogger(__name__)
 logging.basicConfig(filename='binance.log', level=logging.INFO,
                     format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S',)
@@ -21,7 +19,7 @@ def wrap_try_except(func):
         try:
             return func(*args, **kwargs)
         except EXCEPTION_LIST as ex:
-            logger.info(f'Возникла ошибка - {ex}')
+            logging.info(f'Возникла ошибка - {ex}')
     return wrapper
 
 
@@ -174,6 +172,12 @@ class BinanceClient():
                         'quoteQty': quoteQty, 'price': price})
             logging.info(combined_trades)
             return combined_trades
+
+    def get_symbol_info(self, symbol):
+        """Получаем список параметров для торговли у запрашиваемого символа."""
+
+        symbol_info = self.__make_client_call('get_symbol_info', symbol=symbol)
+        return symbol_info
 
 
 # Создаём экземпляр нашего класса.
