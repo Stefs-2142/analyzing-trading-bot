@@ -2,8 +2,9 @@ from binance.client import Client
 from binance.enums import SIDE_BUY, SIDE_SELL, ORDER_TYPE_LIMIT
 from binance.enums import ORDER_TYPE_MARKET, TIME_IN_FORCE_GTC
 from settings import BINANCE_API_KEY, SECRET_KEY, EXCEPTION_LIST
-import logging
 from functools import wraps
+import logging
+from datetime import datetime
 
 client = Client(BINANCE_API_KEY, SECRET_KEY)
 
@@ -143,8 +144,11 @@ class BinanceClient():
         if price is not None:
             return round(float(price['price']), 1)
 
-    def get_trade_history(self, ticker_1, ticker_2):
-        """ Возвращает историю торгов по заданой паре. """
+    def get_trade_history(self, ticker_1, ticker_2, is_time_stamp=True):
+        """
+        Возвращает историю торгов по заданой паре.
+        По умолчанию возвращает c 'time' в time_stamp
+        """
 
         trades = self.__make_client_call('get_my_trades', symbol=f'{ticker_1}{ticker_2}')
         if trades is not None:
@@ -159,13 +163,19 @@ class BinanceClient():
                 order = self.__make_client_call('get_order',
                                                 symbol=f'{ticker_1}{ticker_2}',
                                                 orderId=order_id)
-                print(order)
 
                 order_side = order['side']
                 order_status = order['status']
                 order_type = order['type']
                 price = order['price']
-                time_stamp = order['time']
+
+                if is_time_stamp:
+                    time = order['time']
+                else:
+                    # Деление на 1000 меняет формат с миллисекунд на секунды.
+                    # Преобразуем datetime в строку.
+                    time = datetime.fromtimestamp(order['time'] / 1000)
+                    time = time.strftime("%m/%d/%Y, %H:%M:%S")
                 logging.info(f'{symbol} {order_type} {order_side} {quantity} {quoteQty} {price} {order_status}')
 
                 combined_trades.append(
@@ -173,7 +183,7 @@ class BinanceClient():
                         'symbol': symbol, 'order_side': order_side,
                         'order_type': order_type, 'quantity': quantity,
                         'quoteQty': quoteQty, 'price': price,
-                        'time': time_stamp
+                        'time': time
                     }
                     )
             logging.info(combined_trades)
