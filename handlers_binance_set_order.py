@@ -293,16 +293,34 @@ def making_order(update, context):  # set_step_6
     # Минимально допустимая сумма сделки.
     min_order_summ_in_usdt = 10
 
-    # Если ордер создаётся для пары без $
-    # Например BNB/BTC - расчитываем price в $
-    if ticker_pair[1] != 'USDT':
-        result_usdt = binance_client.get_average_price(
-            ticker_pair[1], 'USDT'
-        )
-        price *= float(result_usdt.split()[0])
+    def __preaparing_order_summ(price=price):
+        """
+        Если ордер создаётся для пары без $
+        Например BNB/BTC - расчитываем price в $
+        """
+        if ticker_pair[1] != 'USDT' and order_type == 'limit':
+            result_usdt = binance_client.get_average_price(
+                ticker_pair[0], 'USDT'
+            )
+            price *= float(result_usdt.split()[0])
+
+        elif ticker_pair[1] != 'USDT' and order_type == 'market':
+            result_usdt = binance_client.get_average_price(
+                ticker_pair[0], 'USDT'
+            )
+            price = float(result_usdt.split()[0])
+
+        elif order_type == 'market':
+            result_usdt = binance_client.get_average_price(
+                ticker_pair[0], 'USDT'
+            )
+            price = float(result_usdt.split()[0])
+
+        current_order_summ = price*quantity
+        return current_order_summ
 
     # Сумма ордера.
-    current_order_summ = price*quantity
+    current_order_summ = __preaparing_order_summ()
 
     # Проверяем сумму ордера и если она меньше 10$ отправляем обратно.
     if current_order_summ < min_order_summ_in_usdt:
