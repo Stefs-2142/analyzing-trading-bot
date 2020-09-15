@@ -5,7 +5,6 @@ from keyboards import buy_sell_keyboard, aply_order_keyboard, main_menu_keyboard
 from keyboards import KEYBOARD_PERCENT_POOL, ORDERS_TYPE, ORDERS_SIDE
 from binance_utils import binance_client
 
-
 from handlers_utils import clear_all_crypto
 
 
@@ -202,6 +201,25 @@ def prepearing_order(update, context):  # set_step_5
         ticker_pair[0], ticker_pair[1]
         )
 
+    def __prepearing_quantity(quantity):
+        """
+        Расчитывем разрешённое количество для сделки,
+        загружая данные по заданной паре тикеров.
+        Ecли пользователь хочет продать 0.5215215365434 ETC
+        Проданно будет 0.52, так как stepSize для ETC = 0.01
+        """
+
+        symbol_info = binance_client.get_symbol_info(ticker_pair[0]+ticker_pair[1])
+        for filters in symbol_info['filters']:
+            if filters['filterType'] == 'LOT_SIZE':
+                symbol_step_size = filters.get('stepSize')
+
+        # Cчитаем количество знаков после точки.
+        len_num = len(symbol_step_size.rstrip('0').split('.')[1])
+
+        prepared_quantity = int(quantity * 10 ** len_num) / 10 ** len_num
+        return prepared_quantity
+
     def __prepearing_message(
         context=context, update=update,
         ticker_pair=ticker_pair, order_side=order_side,
@@ -209,9 +227,9 @@ def prepearing_order(update, context):  # set_step_5
         price=price, result=result
     ):
         """Формируем сообщение."""
-
         if order_side == 'buy':
-            formated_quantity = percent * float(balance[ticker_pair[1]])
+            allowed_quantity = percent * float(balance[ticker_pair[1]])
+            formated_quantity = __prepearing_quantity(allowed_quantity)
 
             # Cохраняем выбранное количество для сделки.
             context.user_data['quantity'] = formated_quantity
@@ -222,8 +240,11 @@ def prepearing_order(update, context):  # set_step_5
             elif order_type == 'limit':
                 message = f"Выставить ордер на покупку {formated_quantity} {ticker_pair[0]} по курсу {price} {ticker_pair[1]} ?"
                 return message
+
+        # order_side = 'sell'
         else:
-            formated_quantity = percent * float(balance[ticker_pair[0]])
+            allowed_quantity = percent * float(balance[ticker_pair[0]])
+            formated_quantity = __prepearing_quantity(allowed_quantity)
 
             # Cохраняем выбранное количество для сделки.
             context.user_data['quantity'] = formated_quantity
@@ -285,15 +306,15 @@ def making_order(update, context):  # set_step_6
 
     # Проверяем сумму ордера и если она меньше 10$ отправляем обратно.
     if current_order_summ < min_order_summ_in_usdt:
-        message = f'Ордер должна быть не меньше {min_order_summ_in_usdt}'
+        message = f'Ордер должен быть не меньше {min_order_summ_in_usdt}$'
         message += f'\nВаш - {current_order_summ}$'
         update.message.reply_text(
             message,
-            keyboard_markup=cancel_keyboard()
+            reply_markup=cancel_keyboard()
             )
         return 'set_step_4'
 
-    # Формируем сделку.
+    # Формируем и совершаем сделку.
     result = binance_client.set_order(
             ticker_pair[0], ticker_pair[1],
             order_type, order_side, quantity, price
