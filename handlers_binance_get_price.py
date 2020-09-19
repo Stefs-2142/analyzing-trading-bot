@@ -41,7 +41,7 @@ def getting_pair_price(update, context):
     return "get_step_1"
 
 
-def getting_another_pair(update, context):
+def getting_another_pair_price(update, context):
     """На этом шаге позволяем пользователю выбрать другой тикер."""
 
     if update.message.text != 'Другая пара':
