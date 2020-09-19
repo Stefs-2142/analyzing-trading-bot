@@ -151,7 +151,6 @@ class BinanceClient():
         """
 
         trades = self.__make_client_call('get_my_trades', symbol=f'{ticker_1}{ticker_2}')
-        print(trades)
         if trades is not None and trades is not []:
             combined_trades = []
             for trade in trades:
@@ -165,7 +164,6 @@ class BinanceClient():
                 order = self.__make_client_call('get_order',
                                                 symbol=f'{ticker_1}{ticker_2}',
                                                 orderId=order_id)
-                print(order)
                 order_side = order['side']
                 order_status = order['status']
                 order_type = order['type']
