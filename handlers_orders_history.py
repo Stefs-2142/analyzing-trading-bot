@@ -1,7 +1,5 @@
 from binance_utils import binance_client
-from keyboards import cancel_keyboard
-
-from telegram.ext import ConversationHandler
+from keyboards import cancel_keyboard, another_pair_keyboard
 
 
 def get_trade_history(update, context):
@@ -9,7 +7,7 @@ def get_trade_history(update, context):
 
     update.message.reply_text(
         'Пришлите пару тикеров в формате "ETC USDT"',
-        keyboard_markup=cancel_keyboard()
+        reply_markup=cancel_keyboard()
         )
     return 'history_step_1'
 
@@ -31,16 +29,52 @@ def prepearing_trade_history(update, context):  # history_step_1
         )
         return "history_step_1"
 
+    update.message.reply_text(
+        'Проверяю, пару, загружаю данные...', reply_markup=cancel_keyboard()
+        )
     trade_history = binance_client.get_trade_history(
         ticker_pair[0], ticker_pair[1], is_time_stamp=False
         )
-    update.message.reply_text(
-        trade_history, keyboard_markup=cancel_keyboard()
+    # Проверяем существует ли история по введённой паре.
+    if trade_history:
+        formated_message = __form_a_message(trade_history)
+        update.message.reply_text(
+            formated_message, reply_markup=another_pair_keyboard()
+            )
+        return 'history_step_2'
+    else:
+        update.message.reply_text(
+            'Нет истории по заданной паре. Попробуйте ещё раз.',
+            reply_markup=cancel_keyboard()
+            )
+        return 'history_step_1'
+
+
+def getting_another_pair_orders(update, context):  # history_step_2
+    """На этом шаге позволяем пользователю выбрать другую пару."""
+
+    if update.message.text != 'Другая пара':
+        update.message.reply_text(
+            'Пожалуйста, выберите одну из доступных команд.',
+            reply_markup=another_pair_keyboard()
         )
-    return ConversationHandler.END
+        return "history_step_2"
+
+    update.message.reply_text(
+        'Введите пару тикеров в формате ETC USDT',
+        reply_markup=cancel_keyboard()
+    )
+    return "history_step_1"
 
 
-def __formated_message(update, context, trade_history):
+def __form_a_message(trade_history):
     """Формируем сообщение из полученного списка 'trade_history'"""
-
-    pass
+    message = ''
+    for trade in trade_history:
+        message += f"{trade['time']} "
+        message += f"{trade['symbol']} "
+        message += f"{trade['order_side']} "
+        message += f"{trade['price']} "
+        message += f"{trade['quantity']} "
+        message += f"{trade['quoteQty']}\n"
+    return message
