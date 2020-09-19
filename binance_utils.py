@@ -151,7 +151,8 @@ class BinanceClient():
         """
 
         trades = self.__make_client_call('get_my_trades', symbol=f'{ticker_1}{ticker_2}')
-        if trades is not None:
+        print(trades)
+        if trades is not None and trades is not []:
             combined_trades = []
             for trade in trades:
 
@@ -159,15 +160,15 @@ class BinanceClient():
                 quantity = trade['qty']
                 quoteQty = trade['quoteQty']
                 order_id = trade['orderId']
+                price = trade['price']
 
                 order = self.__make_client_call('get_order',
                                                 symbol=f'{ticker_1}{ticker_2}',
                                                 orderId=order_id)
-
+                print(order)
                 order_side = order['side']
                 order_status = order['status']
                 order_type = order['type']
-                price = order['price']
 
                 if is_time_stamp:
                     time = order['time']
@@ -175,7 +176,7 @@ class BinanceClient():
                     # Деление на 1000 меняет формат с миллисекунд на секунды.
                     # Преобразуем datetime в строку.
                     time = datetime.fromtimestamp(order['time'] / 1000)
-                    time = time.strftime("%m/%d/%Y, %H:%M:%S")
+                    time = time.strftime("%d-%m-%Y, %H:%M:%S")
                 logging.info(f'{symbol} {order_type} {order_side} {quantity} {quoteQty} {price} {order_status}')
 
                 combined_trades.append(
@@ -188,6 +189,7 @@ class BinanceClient():
                     )
             logging.info(combined_trades)
             return combined_trades
+        return None
 
     def get_symbol_info(self, symbol):
         """Получаем список параметров для торговли у запрашиваемого символа."""
