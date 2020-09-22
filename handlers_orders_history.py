@@ -68,13 +68,16 @@ def getting_another_pair_orders(update, context):  # history_step_2
 
 
 def __form_a_message(trade_history):
-    """Формируем сообщение из полученного списка 'trade_history'"""
-    message = ''
+    """
+    Формируем сообщение из полученного списка 'trade_history'
+    Отбрасываем лишние нули
+    """
+    message = 'Дата || Пара || Сторона || Цена || Количество || Сумма\n'
     for trade in trade_history:
-        message += f"{trade['time']} "
-        message += f"{trade['symbol']} "
-        message += f"{trade['order_side']} "
-        message += f"{trade['price']} "
-        message += f"{trade['quantity']} "
-        message += f"{trade['quoteQty']}\n"
+        message += f"{trade['time']}| "
+        message += f"{trade['symbol']}| "
+        message += f"{trade['order_side']}| "
+        message += f"{float(trade['price'])}| "
+        message += f"{float(trade['quantity'])}| "
+        message += f"{float(trade['quoteQty'])}\n"
     return message
