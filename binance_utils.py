@@ -69,6 +69,26 @@ class BinanceClient():
             logging.info('Выполнено. ', order)
             return order
 
+    def set_order_market_sell(self, ticker_1, ticker_2, quantity):
+
+        order = self.__make_client_call('order_market_sell',
+                                        symbol=f'{ticker_1}{ticker_2}',
+                                        quantity=quantity,
+                                        )
+        if order is not None:
+            logging.info('Выполнено. ', order)
+            return order
+
+    def set_order_market_buy(self, ticker_1, ticker_2, quantity):
+
+        order = self.__make_client_call('order_market_buy',
+                                        symbol=f'{ticker_1}{ticker_2}',
+                                        quantity=quantity,
+                                        )
+        if order is not None:
+            logging.info('Выполнено. ', order)
+            return order
+
     def get_average_price(self, ticker_1, ticker_2):
         """ Возвращает текущую цену заданной пары. """
 
