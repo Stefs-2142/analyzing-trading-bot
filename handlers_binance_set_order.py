@@ -172,6 +172,7 @@ def checking_price(update, context):  # set_step_4
 
 
 def prepearing_order(update, context):  # set_step_5
+    """Собираем все данные для сделки."""
 
     if update.message.text not in KEYBOARD_PERCENT_POOL:
         update.message.reply_text(
@@ -194,6 +195,7 @@ def prepearing_order(update, context):  # set_step_5
     order_type = context.user_data['order_type']
 
     # Забираем ранее сохранённую цену.
+    # None если выбран market order.
     price = context.user_data.get('price', None)
 
     # Делаем повторный запрос для актуализиции данных.
@@ -205,18 +207,20 @@ def prepearing_order(update, context):  # set_step_5
         """
         Расчитывем разрешённое количество для сделки,
         загружая данные по заданной паре тикеров.
-        Ecли пользователь хочет продать 0.5215215365434 ETC
-        Проданно будет 0.52, так как stepSize для ETC = 0.01
+        Ecли пользователь хочет купить/продать 0.5215215365434 ETC
+        Проданно/куплено будет 0.52, так как stepSize для ETC = 0.01
         """
 
+        # Получаем торговые свойства пары.
         symbol_info = binance_client.get_symbol_info(ticker_pair[0]+ticker_pair[1])
+
         for filters in symbol_info['filters']:
             if filters['filterType'] == 'LOT_SIZE':
                 symbol_step_size = filters.get('stepSize')
 
         # Cчитаем количество знаков после точки.
         len_num = len(symbol_step_size.rstrip('0').split('.')[1])
-
+        # Отсекаем лишнее.
         prepared_quantity = int(quantity * 10 ** len_num) / 10 ** len_num
         return prepared_quantity
 
@@ -226,16 +230,19 @@ def prepearing_order(update, context):  # set_step_5
         balance=balance, order_type=order_type,
         price=price, result=result
     ):
-        """Формируем сообщение."""
+        """
+        Формируем итоговое сообщение в котором
+        содержится вся информация по сделке.
+        """
         if order_side == 'buy':
-            allowed_quantity = percent * float(balance[ticker_pair[1]])
+            allowed_quantity = ((float(balance[ticker_pair[1]]) * percent) / float(result.split()[0]))
             formated_quantity = __prepearing_quantity(allowed_quantity)
 
             # Cохраняем выбранное количество для сделки.
             context.user_data['quantity'] = formated_quantity
 
             if order_type == 'market':
-                message = f"Купить {formated_quantity} {ticker_pair[1]} по текущему курсу {result} ?"
+                message = f"Купить {formated_quantity} {ticker_pair[0]} по текущему курсу {result} ?"
                 return message
             elif order_type == 'limit':
                 message = f"Выставить ордер на покупку {formated_quantity} {ticker_pair[0]} по курсу {price} {ticker_pair[1]} ?"
@@ -332,11 +339,22 @@ def making_order(update, context):  # set_step_6
             )
         return 'set_step_4'
 
-    # Формируем и совершаем сделку.
-    result = binance_client.set_order(
+    if order_type == 'market' and order_side == 'sell':
+        result = binance_client.set_order_market_sell(
             ticker_pair[0], ticker_pair[1],
-            order_type, order_side, quantity, price
+            quantity
         )
+    elif order_type == 'market' and order_side == 'buy':
+        result = binance_client.set_order_market_buy(
+            ticker_pair[0], ticker_pair[1],
+            quantity
+        )
+    # Формируем и совершаем сделку.
+    elif order_type == 'limit':
+        result = binance_client.set_order(
+                ticker_pair[0], ticker_pair[1],
+                order_type, order_side, quantity, price
+            )
     if result is not None:
         update.message.reply_text(
             'Ордер выставлен!', reply_markup=main_menu_keyboard()
