@@ -62,7 +62,7 @@ def checking_price_for_target(update, context):  # set_target_step_2
         1 / float(update.message.text) and float(update.message.text)
     except (ValueError, TypeError, ZeroDivisionError) as err:
         update.message.reply_text(
-            f'Введите цену ещё раз в формате "356.7", отличную от нуля.{err}',
+            f'Введите цену отличную от нуля.\nВы ввели {update.message.text}',
             reply_markup=cancel_keyboard()
         )
         return "set_target_step_2"
