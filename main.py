@@ -17,6 +17,9 @@ from handlers_close_order import choosing_order_for_close, applying_closing, clo
 from handlers_orders_history import get_trade_history, prepearing_trade_history
 from handlers_orders_history import getting_another_pair_orders
 
+from handlers_set_target import set_target, choosing_pair_for_target, checking_price_for_target
+from handlers_set_target import aplying_target
+
 from handlers_asset_add import add_start, add_step_1
 from handlers_asset_add import add_step_2, add_step_3, add_step_4
 from handlers_asset_edit_del import (
@@ -199,6 +202,28 @@ def main():
         fallbacks=[MessageHandler(Filters.regex('(Отмена)'), operation_cancel)]
     )
 
+    target = ConversationHandler(
+        entry_points=[MessageHandler(Filters.regex('Начать отслеживать'), set_target)],
+        states={
+            "set_target_step_1": [
+                MessageHandler(
+                    Filters.text & (~Filters.regex('(Отмена)')), choosing_pair_for_target
+                )
+            ],
+            "set_target_step_2": [
+                MessageHandler(
+                    Filters.text & (~Filters.regex('(Отмена)')), checking_price_for_target
+                )
+            ],
+            "set_target_step_3": [
+                MessageHandler(
+                    Filters.text & (~Filters.regex('(Отмена)')), aplying_target
+                )
+            ],
+        },
+        fallbacks=[MessageHandler(Filters.regex('(Отмена)'), operation_cancel)]
+    )
+
     dp.add_handler(CommandHandler("start", greet_user))
     dp.add_handler(MessageHandler(Filters.regex('Меню Binance'), binance_comands))
     dp.add_handler(MessageHandler(Filters.regex('Меню акций'), shares_comands))
@@ -213,6 +238,7 @@ def main():
     dp.add_handler(orders)
     dp.add_handler(close_order)
     dp.add_handler(pair_trade_history)
+    dp.add_handler(target)
 
     dp.add_handler(MessageHandler(Filters.text, unknown_text))
 
