@@ -72,8 +72,10 @@ def checking_price_for_target(update, context):  # set_target_step_2
         context.user_data['target_price'] = target_price
         # Забираем ранее сохранённую пару.
         ticker_pair = context.user_data['ticker_pair']
+
         # Формируем сообщение.
-        message = f'Установить таргет для пары {ticker_pair} {target_price} {ticker_pair[1]}?'
+        message = f'Установить таргет для пары {ticker_pair[0]}/{ticker_pair[1]}'
+        message += f' {target_price} {ticker_pair[1]}?'
         update.message.reply_text(message, reply_markup=yes_no_keyboard())
         return "set_target_step_3"
 
@@ -92,10 +94,11 @@ def aplying_target(update, context):  # set_target_step_3
         # Забираем ранее сохранённую пару и таргет.
         ticker_pair = context.user_data['ticker_pair']
         target_price = context.user_data['target_price']
-        update.message.reply_text(
-            f'Вы получите уведомление когда пара {ticker_pair} дотстигнет {target_price} {ticker_pair[1]}',
-            reply_markup=main_menu_keyboard()
-            )
+        # Формируем сообщение.
+        message = f'Вы получите уведомление, когда пара {ticker_pair[0]}/{ticker_pair[1]}\n'
+        message += f'дотстигнет цены - {target_price} {ticker_pair[1]}'
+        update.message.reply_text(message, reply_markup=main_menu_keyboard())
+
         # TODO: Передаём в Celery задачу.
 
         clear_all_crypto(update, context)
