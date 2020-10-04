@@ -1,6 +1,5 @@
 import sqlalchemy.exc
 
-
 from base import session, Engine, Base
 from sqlalchemy import (
     create_engine, exists, Column, literal,
@@ -228,7 +227,7 @@ class Asset(Base):
     def get_user_assets(self, query_user_id):
         """
         Функция получает из ДБ все активы пользователя
-        и упаковывает их во вложенный список
+        и упаковывает их во вложенный список.
         """
         user_assets = session.query(
                 Asset
@@ -244,9 +243,9 @@ class Asset(Base):
                 elem.add_date,
                 elem.initial_price,
                 elem.target_price,
-                elem.min_price
+                elem.min_price,
+                elem.is_crypto
             ])
-
         return packed_assets
 
     def get_polling_data(self):
