@@ -16,7 +16,7 @@ def main_binance_keyboard():
         ['Создать ордер', 'Отменить ордер'],
         ['Открытые ордеры', 'Узнать баланс'],
         ['Текущий курс', 'История торгов'],
-        ['Начать отслеживать'],
+        ['Уведомления'],
         ['Главное меню', 'Помощь']
     ], row_width=1, resize_keyboard=True)
 
@@ -25,6 +25,14 @@ def main_shares_keyboard():
     return ReplyKeyboardMarkup([
         ['Мои инструменты'],
         ['Добавить', 'Изменить/Удалить'],
+        ['Главное меню', 'Помощь']
+    ], row_width=1, resize_keyboard=True)
+
+
+def main_krypto_shares_keyboard():
+    return ReplyKeyboardMarkup([
+        ['Отслеживаемые'],
+        ['Add', 'Edit/Delete'],
         ['Главное меню', 'Помощь']
     ], row_width=1, resize_keyboard=True)
 
