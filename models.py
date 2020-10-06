@@ -224,7 +224,7 @@ class Asset(Base):
         asset.min_price = value
         session.commit()
 
-    def get_user_assets(self, query_user_id):
+    def get_user_assets(self, query_user_id, classic_asset=True):
         """
         Функция получает из ДБ все активы пользователя
         и упаковывает их во вложенный список.
@@ -246,7 +246,12 @@ class Asset(Base):
                 elem.min_price,
                 elem.is_crypto
             ])
-        return packed_assets
+        if classic_asset:
+            packed_assets = [asset for asset in packed_assets if asset[5] is False]
+            return packed_assets
+        else:
+            packed_assets = [asset for asset in packed_assets if asset[5] is True]
+            return packed_assets
 
     def get_polling_data(self):
         """
