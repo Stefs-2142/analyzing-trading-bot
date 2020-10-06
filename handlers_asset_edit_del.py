@@ -1,11 +1,10 @@
 ﻿import logging
-
-
 from models import Asset
 from keyboards import (
     main_shares_keyboard, cancel_keyboard, edit_del_keyboard,
     edit_choose_keyboard
 )
+from handlers_utils import clear_all_shares
 from telegram.ext import ConversationHandler
 
 
@@ -14,7 +13,7 @@ def edit_delete_start(update, context):
     Выгружаем из БД отслеживаемые пользователем инструменты,
     если у пользователя таких нет - сообщаем ему об этом
     """
-    user_assets = Asset().get_user_assets(update.effective_user.id)
+    user_assets = Asset().get_user_assets(update.effective_user.id, True)
     if not user_assets:
         update.message.reply_text('У вас нет отслеживаемых инструментов.')
         return ConversationHandler.END
@@ -95,9 +94,9 @@ def delete_price_choose(update, context):
             'Инструмент успешно удален!', reply_markup=main_shares_keyboard()
         )
         logging.info(
-            f'Deleted asset {del_ticker} for user {update.effective_user.id}'
+            f"Deleted asset {context.user_data['candidates']} for user {update.effective_user.id}"
         )
-        context.user_data.pop('candidates', None)
+        clear_all_shares(update, context)
         return ConversationHandler.END
     else:
         """
