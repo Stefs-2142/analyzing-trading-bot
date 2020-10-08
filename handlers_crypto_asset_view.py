@@ -7,9 +7,7 @@ def crypto_asset_view(update, context):
     """
     Выгружаем все отслеживаемые пользователем инструменты из БД
     """
-    user_assets = Asset().get_user_assets(update.effective_user.id)
-    # Пересобираем список оставляя крипто-активы.
-    user_assets = [asset for asset in user_assets if asset[5] is True]
+    user_assets = Asset().get_user_assets(update.effective_user.id, False)
     if user_assets:
         update.message.reply_text('Сейчас отслеживаются следующие инструменты:')
         """
