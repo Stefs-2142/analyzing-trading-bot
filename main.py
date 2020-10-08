@@ -17,8 +17,8 @@ from handlers_close_order import choosing_order_for_close, applying_closing, clo
 from handlers_orders_history import get_trade_history, prepearing_trade_history
 from handlers_orders_history import getting_another_pair_orders
 
-from handlers_set_target import set_target, choosing_pair_for_target, checking_price_for_target
-from handlers_set_target import aplying_target
+from handlers_crypto_asset_add import add_crypto, choosing_pair_for_target, checking_price_for_target
+from handlers_crypto_asset_add import aplying_target
 
 from handlers_asset_add import add_start, add_step_1
 from handlers_asset_add import add_step_2, add_step_3, add_step_4
@@ -29,7 +29,14 @@ from handlers_asset_edit_del import (
 from handlers_asset_view import asset_view
 from handlers_utils import (
     greet_user, unknown_text, operation_cancel, show_help,
-    shares_comands, binance_comands
+    shares_comands, binance_comands, crypto_shares_comands
+)
+
+from handlers_crypto_asset_view import crypto_asset_view
+
+from handlers_crypto_asset_edit_del import (
+    edit_delete_start_crypto, delete_price_choose_crypto, edit_delete_choose_crypto,
+    edit_choose_confirm_crypto, edit_price_crypto
 )
 
 from settings import TELEGRAM_API_KEY
@@ -51,7 +58,9 @@ def main():
     dp = atb_bot.dispatcher
 
     assets = ConversationHandler(
-        entry_points=[MessageHandler(Filters.regex('Добавить'), add_start)],
+        entry_points=[
+            MessageHandler(Filters.regex('Добавить'), add_start),
+        ],
         states={
             add_step_1: [
                 MessageHandler(
@@ -108,6 +117,36 @@ def main():
                     ), edit_price
                 )
             ],
+        },
+        fallbacks=[MessageHandler(Filters.regex('(Отмена)'), operation_cancel)]
+    )
+
+    edit_crypto_asssets = ConversationHandler(
+        entry_points=[MessageHandler(
+            Filters.regex('Edit/Delete'), edit_delete_start_crypto
+        )],
+        states={
+            "1": [
+                MessageHandler(
+                    Filters.text & (~Filters.regex('(Отмена)')), edit_delete_choose_crypto
+                )
+            ],
+            '2': [
+                MessageHandler(
+                    Filters.text & (~Filters.regex('(Отмена)')), delete_price_choose_crypto
+                    )
+
+            ],
+            '3': [
+                MessageHandler(
+                    Filters.text & (~Filters.regex('(Отмена)')), edit_choose_confirm_crypto
+                )
+            ],
+            '4': [
+                MessageHandler(
+                    Filters.text & (~Filters.regex('(Отмена)')), edit_price_crypto
+                )
+            ]
         },
         fallbacks=[MessageHandler(Filters.regex('(Отмена)'), operation_cancel)]
     )
@@ -202,20 +241,20 @@ def main():
         fallbacks=[MessageHandler(Filters.regex('(Отмена)'), operation_cancel)]
     )
 
-    target = ConversationHandler(
-        entry_points=[MessageHandler(Filters.regex('Начать отслеживать'), set_target)],
+    crypto_assets = ConversationHandler(
+        entry_points=[MessageHandler(Filters.regex('Add'), add_crypto)],
         states={
-            "set_target_step_1": [
+            "add_crypto_step_1": [
                 MessageHandler(
                     Filters.text & (~Filters.regex('(Отмена)')), choosing_pair_for_target
                 )
             ],
-            "set_target_step_2": [
+            "add_crypto_step_2": [
                 MessageHandler(
                     Filters.text & (~Filters.regex('(Отмена)')), checking_price_for_target
                 )
             ],
-            "set_target_step_3": [
+            "add_crypto_step_3": [
                 MessageHandler(
                     Filters.text & (~Filters.regex('(Отмена)')), aplying_target
                 )
@@ -231,14 +270,17 @@ def main():
     dp.add_handler(MessageHandler(Filters.regex('Мои инструменты'), asset_view))
     dp.add_handler(MessageHandler(Filters.regex('Помощь'), show_help))
     dp.add_handler(MessageHandler(Filters.regex('Открытые ордеры'), get_open_orers))
+    dp.add_handler(MessageHandler(Filters.regex('Уведомления'), crypto_shares_comands))
+    dp.add_handler(MessageHandler(Filters.regex('Отслеживаемые'), crypto_asset_view))
 
     dp.add_handler(assets)
     dp.add_handler(edit_asssets)
+    dp.add_handler(edit_crypto_asssets)
     dp.add_handler(price)
     dp.add_handler(orders)
     dp.add_handler(close_order)
     dp.add_handler(pair_trade_history)
-    dp.add_handler(target)
+    dp.add_handler(crypto_assets)
 
     dp.add_handler(MessageHandler(Filters.text, unknown_text))
 
