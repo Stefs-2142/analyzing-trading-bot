@@ -29,7 +29,7 @@ def main_shares_keyboard():
     ], row_width=1, resize_keyboard=True)
 
 
-def main_krypto_shares_keyboard():
+def main_crypto_shares_keyboard():
     return ReplyKeyboardMarkup([
         ['Отслеживаемые'],
         ['Add', 'Edit/Delete'],

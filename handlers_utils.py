@@ -30,6 +30,7 @@ def binance_comands(update, context):
     """
     reply = 'Доступные команды.'
     update.message.reply_text(reply, reply_markup=main_binance_keyboard())
+    return ConversationHandler.END
 
 
 def crypto_shares_comands(update, context):
@@ -84,6 +85,23 @@ def operation_cancel(update, context):
     update.message.reply_text(
         'Операция прервана', reply_markup=main_menu_keyboard()
     )
+    return ConversationHandler.END
+
+
+def back_to_menu(update, context)
+    """
+    Функция fallback команды "Назад" - удаляет данные из контекстов и
+    завершает текущий Conversation
+    """
+
+    # shares_context
+    clear_all_shares(update, context)
+
+    # binance_context
+    clear_all_crypto(update, context)
+
+    reply = 'Доступные команды.'
+    update.message.reply_text(reply, reply_markup=main_krypto_shares_keyboard())
     return ConversationHandler.END
 
 
