@@ -1,4 +1,6 @@
 ﻿from telegram import ReplyKeyboardMarkup
+from emoji import emojize
+from settings import USER_EMOJI
 
 KEYBOARD_PERCENT_POOL = ['25%', '50%', '75%', '100%']
 ORDERS_TYPE = ['Limit order', 'Market order']
@@ -43,6 +45,12 @@ def cancel_keyboard():
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
 
+def back_keyboard():
+    return ReplyKeyboardMarkup([
+        ['Назад']
+    ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
+
+
 def skip_keyboard():
     return ReplyKeyboardMarkup([
         ['Пропустить'], ['Отмена']
@@ -79,7 +87,7 @@ def edit_choose_crypto_keyboard():
 
 def another_pair_keyboard():
     return ReplyKeyboardMarkup([
-        ['Другая пара', 'Отмена']
+        ['Другая пара', 'Назад']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
 
@@ -121,7 +129,7 @@ def aply_order_keyboard(order_side):
 def numbers_keyboard(n):
     return ReplyKeyboardMarkup([
         (str(n) for n in range(1, n)),
-        ['Отмена']
+        ['Назад']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
 
@@ -129,4 +137,12 @@ def yes_no_keyboard():
     return ReplyKeyboardMarkup([
         ['Да', 'Нет'],
         ['Отмена']
+    ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
+
+
+def waiting_smile_keyboard():
+    smile = USER_EMOJI[0]
+    smile = emojize(smile, use_aliases=True)
+    return ReplyKeyboardMarkup([
+        [f'{smile}'],
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
