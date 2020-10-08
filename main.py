@@ -58,9 +58,7 @@ def main():
     dp = atb_bot.dispatcher
 
     assets = ConversationHandler(
-        entry_points=[
-            MessageHandler(Filters.regex('Добавить'), add_start),
-        ],
+        entry_points=[MessageHandler(Filters.regex('Добавить'), add_start),],
         states={
             add_step_1: [
                 MessageHandler(
@@ -87,9 +85,7 @@ def main():
     )
 
     edit_asssets = ConversationHandler(
-        entry_points=[MessageHandler(
-            Filters.regex('Изменить/Удалить'), edit_delete_start
-        )],
+        entry_points=[MessageHandler(Filters.regex('Изменить/Удалить'), edit_delete_start)],
         states={
             delete_price_choose: [
                 MessageHandler(
@@ -122,9 +118,7 @@ def main():
     )
 
     edit_crypto_asssets = ConversationHandler(
-        entry_points=[MessageHandler(
-            Filters.regex('Edit/Delete'), edit_delete_start_crypto
-        )],
+        entry_points=[MessageHandler(Filters.regex('Edit/Delete'), edit_delete_start_crypto)],
         states={
             "1": [
                 MessageHandler(
@@ -218,8 +212,6 @@ def main():
                     Filters.text & (~Filters.regex('(Отмена)')), closing_order
                 )
             ],
-
-
         },
         fallbacks=[MessageHandler(Filters.regex('(Отмена)'), operation_cancel)]
     )
