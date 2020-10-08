@@ -72,12 +72,12 @@ def __form_a_message(trade_history):
     Формируем сообщение из полученного списка 'trade_history'
     Отбрасываем лишние нули
     """
-    message = 'Дата || Пара || Сторона || Цена || Количество || Сумма\n'
+    message = 'Дата || Пара || Сторона || Цена || Количество || Сумма\n\n\n'
     for trade in trade_history:
         message += f"{trade['time']}| "
         message += f"{trade['symbol']}| "
         message += f"{trade['order_side']}| "
         message += f"{float(trade['price'])}| "
         message += f"{float(trade['quantity'])}| "
-        message += f"{float(trade['quoteQty'])}\n"
+        message += f"{float(trade['quoteQty'])}\n\n\n"
     return message

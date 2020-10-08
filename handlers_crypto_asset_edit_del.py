@@ -2,8 +2,8 @@ import logging
 
 from models import Asset
 from keyboards import (
-    main_krypto_shares_keyboard, cancel_keyboard, edit_del_crypto_keyboard,
-    edit_choose_crypto_keyboard
+    main_crypto_shares_keyboard, edit_del_crypto_keyboard,
+    edit_choose_crypto_keyboard, back_keyboard
 )
 from telegram.ext import ConversationHandler
 
@@ -38,7 +38,7 @@ def edit_delete_start_crypto(update, context):
         'отправьте его номер или название ответным сообщением.'
     )
     update.message.reply_text(
-        reply_text, reply_markup=cancel_keyboard()
+        reply_text, reply_markup=back_keyboard()
     )
     return '1'
 
@@ -78,7 +78,7 @@ def edit_delete_choose_crypto(update, context):
     else:
         update.message.reply_text(
             'Введеный номер или тикер не найден - повторите ввод.',
-            reply_markup=cancel_keyboard()
+            reply_markup=back_keyboard()
         )
         return '1'
 
@@ -94,7 +94,7 @@ def delete_price_choose_crypto(update, context):
             update.effective_user.id, context.user_data['candidates']
         )
         update.message.reply_text(
-            'Инструмент успешно удален!', reply_markup=main_krypto_shares_keyboard()
+            'Инструмент успешно удален!', reply_markup=main_crypto_shares_keyboard()
         )
         logging.info(
             f"Deleted asset {context.user_data['candidates']} for user {update.effective_user.id}"
@@ -114,7 +114,7 @@ def delete_price_choose_crypto(update, context):
         return '3'
     else:
         update.message.reply_text(
-            'Выберите доступную команду.', reply_markup=cancel_keyboard()
+            'Выберите доступную команду.', reply_markup=back_keyboard()
             )
         return '2'
 
@@ -129,7 +129,7 @@ def edit_choose_confirm_crypto(update, context):
     elif update.message.text == 'Min':
         context.user_data['action'] = False
     update.message.reply_text(
-        'Укажите новую стоимость', reply_markup=cancel_keyboard()
+        'Укажите новую стоимость', reply_markup=back_keyboard()
     )
     return '4'
 
@@ -147,13 +147,13 @@ def edit_price_crypto(update, context):
     except ValueError:
         update.message.reply_text(
             f'В введенной стоимости присутствуют ошибки. {error_text}',
-            reply_markup=cancel_keyboard()
+            reply_markup=back_keyboard()
         )
         return '4'
     if new_price <= 0:
         update.message.reply_text(
             f'Стоимость не может быть равной или ниже нуля. {error_text}',
-            reply_markup=cancel_keyboard()
+            reply_markup=back_keyboard()
         )
         return '4'
     # Если всё ок - изменяем стоимость соответствующим методом класса
@@ -170,11 +170,9 @@ def edit_price_crypto(update, context):
         logging.info(
             f'Min price for {ticker} was updated by user {user_id}'
         )
-    context.user_data.pop('candidates', None)
-    context.user_data.pop('action', None)
     update.message.reply_text(
         'Стоимость успешно изменена!',
-        reply_markup=main_krypto_shares_keyboard()
+        reply_markup=main_crypto_shares_keyboard()
     )
     clear_all_shares(update, context)
     return ConversationHandler.END
