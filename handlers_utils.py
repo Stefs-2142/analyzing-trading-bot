@@ -1,6 +1,6 @@
 ﻿from keyboards import main_shares_keyboard, main_menu_keyboard
 from keyboards import main_binance_keyboard
-from keyboards import main_krypto_shares_keyboard
+from keyboards import main_crypto_shares_keyboard
 from telegram.ext import ConversationHandler
 
 
@@ -39,7 +39,7 @@ def crypto_shares_comands(update, context):
     команды для работы с уведомлениями Binance
     """
     reply = 'Доступные команды.'
-    update.message.reply_text(reply, reply_markup=main_krypto_shares_keyboard())
+    update.message.reply_text(reply, reply_markup=main_crypto_shares_keyboard())
 
 
 def unknown_text(update, context):
@@ -88,7 +88,7 @@ def operation_cancel(update, context):
     return ConversationHandler.END
 
 
-def back_to_menu(update, context)
+def back_to_menu(update, context):
     """
     Функция fallback команды "Назад" - удаляет данные из контекстов и
     завершает текущий Conversation
@@ -101,7 +101,7 @@ def back_to_menu(update, context)
     clear_all_crypto(update, context)
 
     reply = 'Доступные команды.'
-    update.message.reply_text(reply, reply_markup=main_krypto_shares_keyboard())
+    update.message.reply_text(reply, reply_markup=main_crypto_shares_keyboard())
     return ConversationHandler.END
 
 
