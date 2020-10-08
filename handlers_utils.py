@@ -1,6 +1,5 @@
 ﻿from keyboards import main_shares_keyboard, main_menu_keyboard
-from keyboards import main_binance_keyboard
-from keyboards import main_crypto_shares_keyboard
+from keyboards import main_binance_keyboard, main_crypto_shares_keyboard
 from telegram.ext import ConversationHandler
 
 
@@ -18,7 +17,10 @@ def shares_comands(update, context):
     """
     Функция, представляет доступные
     команды для работы с акциями
+    Добавляем флаг location для отслеживания местоположения
+    пользоателя: В Crypto-разделе или в Classic-разделе.
     """
+    context.user_data['location'] = 'classic'
     reply = 'Доступные команды.'
     update.message.reply_text(reply, reply_markup=main_shares_keyboard())
 
@@ -27,7 +29,10 @@ def binance_comands(update, context):
     """
     Функция, представляет доступные
     команды для работы с Binance
+    Добавляем флаг location для отслеживания местоположения
+    пользоателя: В Crypto-разделе или в Classic-разделе.
     """
+    context.user_data['location'] = 'crypto'
     reply = 'Доступные команды.'
     update.message.reply_text(reply, reply_markup=main_binance_keyboard())
     return ConversationHandler.END
@@ -36,10 +41,17 @@ def binance_comands(update, context):
 def crypto_shares_comands(update, context):
     """
     Функция, представляет доступные
-    команды для работы с уведомлениями Binance
+    команды для работы с уведомлениями Binance,
+    также вызывается из fallback команды 'Назад'.
+    Удаляет данные из контекстов и
+    завершает текущий Conversation
     """
+
     reply = 'Доступные команды.'
     update.message.reply_text(reply, reply_markup=main_crypto_shares_keyboard())
+    clear_all_shares(update, context)
+    clear_all_crypto(update, context)
+    return ConversationHandler.END
 
 
 def unknown_text(update, context):
@@ -93,6 +105,14 @@ def back_to_menu(update, context):
     Функция fallback команды "Назад" - удаляет данные из контекстов и
     завершает текущий Conversation
     """
+    if context.user_data.get('location') == 'crypto':
+        update.message.reply_text(
+            'Доступные команды', reply_markup=main_binance_keyboard()
+            )
+    else:
+        update.message.reply_text(
+            'Доступные команды', reply_markup=main_shares_keyboard()
+            )
 
     # shares_context
     clear_all_shares(update, context)
@@ -100,8 +120,6 @@ def back_to_menu(update, context):
     # binance_context
     clear_all_crypto(update, context)
 
-    reply = 'Доступные команды.'
-    update.message.reply_text(reply, reply_markup=main_crypto_shares_keyboard())
     return ConversationHandler.END
 
 
