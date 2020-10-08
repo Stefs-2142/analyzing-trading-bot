@@ -1,5 +1,5 @@
 from binance_utils import binance_client
-from keyboards import main_menu_keyboard
+from keyboards import back_keyboard
 
 
 def get_open_orers(update, context):
@@ -17,9 +17,9 @@ def get_open_orers(update, context):
             order_count += 1
 
         update.message.reply_text(
-            f"{formated_orders}\n", reply_markup=main_menu_keyboard()
+            f"{formated_orders}\n", reply_markup=back_keyboard()
             )
     else:
         update.message.reply_text(
-            'Нет открытых ордеров.', keyboard_markup=main_menu_keyboard()
+            'Нет открытых ордеров.', keyboard_markup=back_keyboard()
             )
