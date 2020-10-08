@@ -83,6 +83,12 @@ def another_pair_keyboard():
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
 
+def another_pair_back_keyboard():
+    return ReplyKeyboardMarkup([
+        ['Другая пара', 'Назад']
+    ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
+
+
 def order_type_keyboard():
     return ReplyKeyboardMarkup([
         ORDERS_TYPE,
