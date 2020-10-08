@@ -56,9 +56,23 @@ def edit_del_keyboard():
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
 
+def edit_del_crypto_keyboard():
+    return ReplyKeyboardMarkup([
+        ['Edit', 'Delete'],
+        ['Отмена']
+    ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
+
+
 def edit_choose_keyboard():
     return ReplyKeyboardMarkup([
         ['Максимальная', 'Минимальная'],
+        ['Отмена']
+    ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
+
+
+def edit_choose_crypto_keyboard():
+    return ReplyKeyboardMarkup([
+        ['Max', 'Min'],
         ['Отмена']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
