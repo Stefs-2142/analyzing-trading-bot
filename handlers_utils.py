@@ -104,6 +104,9 @@ def back_to_menu(update, context):
     """
     Функция fallback команды "Назад" - удаляет данные из контекстов и
     завершает текущий Conversation
+    В зависимости от местонахождения юзера, в меню Binance (crypto) или
+    в классических инструментах (classic) - возвращает в соотеветсвующую
+    клавиуатуру, меню.
     """
     if context.user_data.get('location') == 'crypto':
         update.message.reply_text(
