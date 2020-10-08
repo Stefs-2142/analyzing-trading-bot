@@ -1,5 +1,6 @@
 ﻿from keyboards import main_shares_keyboard, main_menu_keyboard
 from keyboards import main_binance_keyboard
+from keyboards import main_krypto_shares_keyboard
 from telegram.ext import ConversationHandler
 
 
@@ -29,6 +30,15 @@ def binance_comands(update, context):
     """
     reply = 'Доступные команды.'
     update.message.reply_text(reply, reply_markup=main_binance_keyboard())
+
+
+def crypto_shares_comands(update, context):
+    """
+    Функция, представляет доступные
+    команды для работы с уведомлениями Binance
+    """
+    reply = 'Доступные команды.'
+    update.message.reply_text(reply, reply_markup=main_krypto_shares_keyboard())
 
 
 def unknown_text(update, context):
@@ -78,6 +88,7 @@ def operation_cancel(update, context):
 
 
 def show_help(update, context):
+    """Функция вызывающая подсказку."""
     with open('help.txt', 'r') as stocks_info:
         reply_text = stocks_info.read()
     update.message.reply_text(reply_text)
