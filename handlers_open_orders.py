@@ -9,12 +9,10 @@ def get_open_orers(update, context):
     # Если получаем пустой список - отрытых ордеров нет.
     if open_orders:
         formated_orders = ""
-        order_count = 1
-        for order in open_orders:
-            formated_orders += f"{order_count}. {order['symbol']}"
+        for i, order in enumerate(open_orders, start=1):
+            formated_orders += f"{i}. {order['symbol']}"
             formated_orders += f" {order['type']} {order['side']}"
             formated_orders += f" {order['price']}\n"
-            order_count += 1
 
         update.message.reply_text(
             f"{formated_orders}\n", reply_markup=back_keyboard()
