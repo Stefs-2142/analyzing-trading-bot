@@ -150,16 +150,19 @@ def main():
         states={
             "get_step_1": [
                 MessageHandler(
-                    Filters.text & (~Filters.regex('(Отмена)')), getting_pair_price
-                )
+                    Filters.text & (~Filters.regex('(Отмена|Назад)')), getting_pair_price
+                ),
             ],
             "get_step_2": [
                 MessageHandler(
-                    Filters.text & (~Filters.regex('(Отмена)')), getting_another_pair_price
-                )
+                    Filters.text & (~Filters.regex('(Отмена|Назад)')), getting_another_pair_price
+                ),
             ]
         },
-        fallbacks=[MessageHandler(Filters.regex('(Отмена)'), operation_cancel)]
+        fallbacks=[
+            MessageHandler(Filters.regex('(Отмена)'), operation_cancel),
+            MessageHandler(Filters.regex('(Назад)'), binance_comands)
+        ]
     )
 
     orders = ConversationHandler(
