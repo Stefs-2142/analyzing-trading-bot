@@ -42,7 +42,7 @@ from handlers_crypto_asset_edit_del import (
 
 
 from settings import TELEGRAM_API_KEY
-from tasks import polling
+#from tasks import classic_polling, crypto_polling
 from telegram.ext import (
     Updater, CommandHandler,
     MessageHandler, Filters, ConversationHandler
@@ -121,27 +121,30 @@ def main():
         states={
             "1": [
                 MessageHandler(
-                    Filters.text & (~Filters.regex('(Отмена)')), edit_delete_choose_crypto
+                    Filters.text & (~Filters.regex('^(Отмена|Назад)$')), edit_delete_choose_crypto
                 )
             ],
             '2': [
                 MessageHandler(
-                    Filters.text & (~Filters.regex('(Отмена)')), delete_price_choose_crypto
+                    Filters.text & (~Filters.regex('^(Отмена|Назад)$')), delete_price_choose_crypto
                     )
 
             ],
             '3': [
                 MessageHandler(
-                    Filters.text & (~Filters.regex('(Отмена)')), edit_choose_confirm_crypto
+                    Filters.text & (~Filters.regex('^(Отмена|Назад)$')), edit_choose_confirm_crypto
                 )
             ],
             '4': [
                 MessageHandler(
-                    Filters.text & (~Filters.regex('(Отмена)')), edit_price_crypto
+                    Filters.text & (~Filters.regex('^(Отмена|Назад)$')), edit_price_crypto
                 )
             ]
         },
-        fallbacks=[MessageHandler(Filters.regex('(Отмена)'), operation_cancel)]
+        fallbacks=[
+            MessageHandler(Filters.regex('^(Отмена)$'), operation_cancel),
+            MessageHandler(Filters.regex('^(Назад)$'), back_to_menu),
+        ]
     )
 
     price = ConversationHandler(
@@ -149,12 +152,12 @@ def main():
         states={
             "get_step_1": [
                 MessageHandler(
-                    Filters.text & (~Filters.regex('^^(Отмена|Назад)$$')), getting_pair_price
+                    Filters.text & (~Filters.regex('^(Отмена|Назад)$')), getting_pair_price
                 ),
             ],
             "get_step_2": [
                 MessageHandler(
-                    Filters.text & (~Filters.regex('^^(Отмена|Назад)$$')), getting_another_pair_price
+                    Filters.text & (~Filters.regex('^(Отмена|Назад)$')), getting_another_pair_price
                 ),
             ]
         },
@@ -293,8 +296,6 @@ def main():
 
     logging.info("Bot started")
     atb_bot.start_polling()
-    polling.delay()
-
     atb_bot.idle()
 
 
