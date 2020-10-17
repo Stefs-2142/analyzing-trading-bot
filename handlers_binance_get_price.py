@@ -1,4 +1,4 @@
-from keyboards import cancel_keyboard
+from keyboards import cancel_keyboard, back_keyboard
 from keyboards import another_pair_keyboard, another_pair_back_keyboard
 
 from binance_utils import binance_client
@@ -11,7 +11,7 @@ def get_price(update, context):
 
     update.message.reply_text(
         'Введите пару тикеров в формате ETC USDT',
-        reply_markup=cancel_keyboard()
+        reply_markup=back_keyboard()
     )
     return "get_step_1"
 
@@ -35,7 +35,8 @@ def getting_pair_price(update, context):
         update.message.reply_text(result, reply_markup=another_pair_back_keyboard())
         return "get_step_2"
     update.message.reply_text(
-        'К сожалению, введена неверная пара, попробуйте ещё раз.'
+        'К сожалению, введена неверная пара, попробуйте ещё раз.',
+        reply_markup=back_keyboard()
         )
     return "get_step_1"
 

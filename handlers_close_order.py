@@ -4,7 +4,7 @@ from handlers_utils import clear_all_crypto
 
 from binance_utils import binance_client
 from keyboards import numbers_keyboard, yes_no_keyboard
-from keyboards import main_menu_keyboard
+from keyboards import main_menu_keyboard, main_binance_keyboard
 
 
 def choosing_order_for_close(update, context):
@@ -95,7 +95,7 @@ def closing_order(update, context):
         )
     else:
         update.message.reply_text(
-            "Ордер закрыт!", reply_markup=main_menu_keyboard()
+            "Ордер закрыт!", reply_markup=main_binance_keyboard()
         )
         clear_all_crypto(update, context)
         return ConversationHandler.END

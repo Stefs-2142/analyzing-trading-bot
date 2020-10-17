@@ -1,3 +1,4 @@
+import logging
 from telegram.ext import ConversationHandler
 from binance_utils import binance_client
 from keyboards import cancel_keyboard, yes_no_keyboard, main_menu_keyboard
@@ -73,6 +74,7 @@ def checking_price_for_target(update, context):  # add_crypto_step_2
             f'Введите цену отличную от нуля.\nВы ввели {update.message.text}',
             reply_markup=cancel_keyboard()
         )
+        logging.info(err)
         return "add_crypto_step_2"
     else:
         # Сохраняем цену для тарегта.
@@ -90,7 +92,7 @@ def checking_price_for_target(update, context):  # add_crypto_step_2
 
 
 def aplying_target(update, context):  # add_crypto_step_3
-    """Подтверждаем тартет и выставляем его."""
+    """Подтверждаем таргет и выставляем его."""
 
     if update.message.text != 'Да':
         update.message.reply_text(
@@ -112,6 +114,7 @@ def aplying_target(update, context):  # add_crypto_step_3
             update.message.reply_text(message, reply_markup=main_menu_keyboard())
 
             # TODO: Передаём в Celery задачу.
+            #set_alert.delay(ticker_pair[0], ticker_pair[1], target_price)
 
             clear_all_crypto(update, context)
             return ConversationHandler.END

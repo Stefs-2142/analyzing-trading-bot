@@ -1,6 +1,6 @@
 import sqlalchemy.exc
 
-from base import session, Base
+from base import session,   Base
 from sqlalchemy import (
     exists, Column,
     BigInteger, Boolean, Integer, Text, Date, Float
