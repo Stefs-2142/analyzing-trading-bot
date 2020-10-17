@@ -1,9 +1,5 @@
 ﻿import numpy
-import logging
-
 from binance_utils import binance_client as bc
-
-
 from yahoo_fin import stock_info as si
 
 
@@ -55,7 +51,7 @@ def ticker_pricing(tickers):
 def ticker_crypto_pricing(tickers):
     """
     Функция принимает на вход список со вложенными списками такого вида:
-    [[user_id, 'YNDX', 45.5, 40.1],[user_id, 'AAPL', 350.1, 340.1]]
+    [[user_id, 'BTC/USDT', 11200.25, 13000.1],[user_id, 'ETC/USDT', 350.1, 340.1]]
     Через цикл прогоняется полученный список, если таргет/минимальная цены
     достигнуты - они заменяются на True и записываются в новый список.
     В конце цикла функция возвращает список списком в тикерами, где была
