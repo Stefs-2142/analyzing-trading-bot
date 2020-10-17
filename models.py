@@ -1,11 +1,10 @@
 import sqlalchemy.exc
 
-from base import session, Engine, Base
+from base import session, Base
 from sqlalchemy import (
-    create_engine, exists, Column, literal,
+    exists, Column,
     BigInteger, Boolean, Integer, Text, Date, Float
 )
-from sqlalchemy.ext.declarative import declarative_base
 
 
 class User(Base):
@@ -253,21 +252,31 @@ class Asset(Base):
             packed_assets = [asset for asset in packed_assets if asset[5] is True]
             return packed_assets
 
-    def get_polling_data(self):
+    def get_polling_data(self, is_crypto):
         """
         Функция получает из ДБ все активы всех пользователей
-        и возвращает список следующего содержимого
+        и возвращает список следующего содержимого.
+        Формирует список в зависимости от атрибута is_crypto.
         [[user_id, ticker, target_price, min_price],...]
         """
-        assets = session.query(Asset).all()
 
         packed_assets = []
-        for elem in assets:
-            packed_assets.append([
-                elem.user_id,
-                elem.ticker,
-                elem.target_price,
-                elem.min_price
-            ])
-
+        if is_crypto:
+            assets = session.query(Asset).filter(Asset.is_crypto == True).all()
+            for elem in assets:
+                packed_assets.append([
+                    elem.user_id,
+                    elem.ticker,
+                    elem.target_price,
+                    elem.min_price
+                ])
+        else:
+            assets = session.query(Asset).filter(Asset.is_crypto == False).all()
+            for elem in assets:
+                packed_assets.append([
+                    elem.user_id,
+                    elem.ticker,
+                    elem.target_price,
+                    elem.min_price
+                ])
         return packed_assets
