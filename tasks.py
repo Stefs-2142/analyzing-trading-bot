@@ -12,7 +12,7 @@ bot = telegram.Bot(TELEGRAM_API_KEY)
 
 
 @app.task
-def beat_crypto_booling():
+def beat_crypto_pooling():
 
     text_end = (
         'Отслеживание стоимости для инструмента прекращено, '
@@ -46,7 +46,7 @@ def beat_crypto_booling():
 
 
 @app.task
-def beat_classic_booling():
+def beat_classic_pooling():
 
     text_end = (
         'Отслеживание стоимости для инструмента прекращено, '

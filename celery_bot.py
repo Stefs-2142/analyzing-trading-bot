@@ -19,11 +19,11 @@ app.conf.beat_schedule = {
     # 1-ый beat_crypto_booling раз в 5 минут.
     # 2-ой beat_classic_booling раз в 5 минут.
     'checking-crypto-price-every-5-min': {
-        'task': 'tasks.beat_crypto_booling',
+        'task': 'tasks.beat_crypto_pooling',
         'schedule': crontab(minute='*/5')
     },
     'checking-classic-price-every-5-min': {
-        'task': 'tasks.beat_classic_booling',
+        'task': 'tasks.beat_classic_pooling',
         'schedule': crontab(minute='*/5')
     },
 }
