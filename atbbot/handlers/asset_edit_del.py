@@ -1,11 +1,15 @@
 ﻿import logging
+
+from telegram.ext import ConversationHandler
+
 from db.models import Asset
+
 from keyboards import (
     main_shares_keyboard, edit_del_keyboard,
     edit_choose_keyboard, back_keyboard
 )
+
 from .utils import clear_all_shares
-from telegram.ext import ConversationHandler
 
 
 def edit_delete_start(update, context):

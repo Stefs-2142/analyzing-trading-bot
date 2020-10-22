@@ -1,6 +1,7 @@
-﻿from keyboards import main_shares_keyboard, main_menu_keyboard
-from keyboards import main_binance_keyboard, main_crypto_shares_keyboard
-from telegram.ext import ConversationHandler
+﻿from telegram.ext import ConversationHandler
+
+from keyboards import (main_binance_keyboard, main_menu_keyboard,
+                       main_shares_keyboard, main_crypto_shares_keyboard)
 
 
 def greet_user(update, context):

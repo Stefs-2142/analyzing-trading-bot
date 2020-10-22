@@ -1,5 +1,7 @@
 ﻿import numpy
+
 from binance_utils import binance_client as bc
+
 from yahoo_fin import stock_info as si
 
 

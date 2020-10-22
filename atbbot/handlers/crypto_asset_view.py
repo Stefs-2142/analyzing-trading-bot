@@ -1,6 +1,6 @@
-from db.models import Asset
-
 from binance_utils import binance_client
+
+from db.models import Asset
 
 
 def crypto_asset_view(update, context):

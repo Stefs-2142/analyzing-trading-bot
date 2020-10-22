@@ -1,8 +1,13 @@
 from telegram.ext import ConversationHandler
 
-from keyboards import cancel_keyboard, order_type_keyboard, quantity_keyboard
-from keyboards import buy_sell_keyboard, aply_order_keyboard, main_menu_keyboard
-from keyboards import KEYBOARD_PERCENT_POOL, ORDERS_TYPE, ORDERS_SIDE
+from keyboards import (aply_order_keyboard, buy_sell_keyboard,
+                       cancel_keyboard, quantity_keyboard,
+                       main_menu_keyboard, order_type_keyboard)
+
+from keyboards import KEYBOARD_PERCENT_POOL
+from keyboards import ORDERS_TYPE
+from keyboards import ORDERS_SIDE
+
 from binance_utils import binance_client
 
 from .utils import clear_all_crypto

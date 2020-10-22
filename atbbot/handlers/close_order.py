@@ -1,10 +1,11 @@
 from telegram.ext import ConversationHandler
 
-from .utils import clear_all_crypto
-
 from binance_utils import binance_client
-from keyboards import numbers_keyboard, yes_no_keyboard
-from keyboards import main_menu_keyboard, main_binance_keyboard
+
+from keyboards import (numbers_keyboard, yes_no_keyboard,
+                       main_menu_keyboard, main_binance_keyboard)
+
+from .utils import clear_all_crypto
 
 
 def choosing_order_for_close(update, context):

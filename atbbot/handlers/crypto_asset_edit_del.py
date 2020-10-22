@@ -1,13 +1,13 @@
 import logging
 
-from db.models import Asset
-from keyboards import (
-    main_crypto_shares_keyboard, edit_del_crypto_keyboard,
-    edit_choose_crypto_keyboard, back_keyboard
-)
 from telegram.ext import ConversationHandler
 
-from .utils import clear_all_shares, clear_all_crypto
+from db.models import Asset
+
+from keyboards import (back_keyboard, edit_del_crypto_keyboard,
+                       edit_choose_crypto_keyboard, main_crypto_shares_keyboard)
+
+from .utils import clear_all_crypto, clear_all_shares
 
 
 def edit_delete_start_crypto(update, context):

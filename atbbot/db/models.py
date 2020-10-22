@@ -1,5 +1,4 @@
 import sqlalchemy.exc
-
 from .base import session, Base
 from sqlalchemy import (
     exists, Column,

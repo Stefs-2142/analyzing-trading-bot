@@ -1,44 +1,39 @@
-from telegram.ext import MessageHandler
-from telegram.ext import Filters
 from telegram.ext import ConversationHandler
+from telegram.ext import Filters
+from telegram.ext import MessageHandler
 
-from handlers.binance_set_order import (
-    set_order, choosing_order_type,
-    choosing_pair, choosing_order_side,
-    prepearing_order, making_order, checking_price)
+from handlers.binance_set_order import (choosing_order_type, choosing_pair,
+                                        choosing_order_side, checking_price,
+                                        prepearing_order, set_order, making_order)
 
-from handlers.binance_get_price import get_price
-from handlers.binance_get_price import getting_pair_price
 from handlers.binance_get_price import getting_another_pair_price
+from handlers.binance_get_price import getting_pair_price
+from handlers.binance_get_price import get_price
 
-from handlers.close_order import choosing_order_for_close
 from handlers.close_order import applying_closing
+from handlers.close_order import choosing_order_for_close
 from handlers.close_order import closing_order
 
 from handlers.orders_history import get_trade_history
-from handlers.orders_history import prepearing_trade_history
 from handlers.orders_history import getting_another_pair_orders
+from handlers.orders_history import prepearing_trade_history
 
-from handlers.crypto_asset_add import (
-    add_crypto, choosing_pair_for_target,
-    checking_price_for_target, aplying_target)
+from handlers.crypto_asset_add import (add_crypto, aplying_target,
+                                       choosing_pair_for_target, checking_price_for_target)
 
-from handlers.asset_add import (
-    add_start, add_step_1,
-    add_step_2, add_step_3, add_step_4)
+from handlers.asset_add import (add_start, add_step_1,
+                                add_step_2, add_step_3, add_step_4)
 
-from handlers.asset_edit_del import (
-    edit_delete_start, delete_price_choose, edit_delete_choose,
-    edit_choose_confirm, edit_price)
+from handlers.asset_edit_del import (delete_price_choose, edit_delete_choose,
+                                     edit_delete_start, edit_choose_confirm, edit_price)
 
-from handlers.crypto_asset_edit_del import (
-    edit_delete_choose_crypto,
-    edit_delete_start_crypto, delete_price_choose_crypto,
-    edit_choose_confirm_crypto, edit_price_crypto)
+from handlers.crypto_asset_edit_del import (edit_delete_choose_crypto, edit_delete_start_crypto, 
+                                            delete_price_choose_crypto, edit_choose_confirm_crypto,
+                                            edit_price_crypto)
 
-from handlers.utils import operation_cancel
 from handlers.utils import back_to_menu
 from handlers.utils import crypto_shares_comands
+from handlers.utils import operation_cancel
 
 
 assets = ConversationHandler(

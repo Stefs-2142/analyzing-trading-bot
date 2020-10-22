@@ -1,5 +1,6 @@
 from binance_utils import binance_client
-from keyboards import back_keyboard, another_pair_back_keyboard
+
+from keyboards import another_pair_back_keyboard, back_keyboard
 
 
 def get_trade_history(update, context):

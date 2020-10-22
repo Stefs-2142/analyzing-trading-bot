@@ -1,9 +1,9 @@
 from settings import TELEGRAM_API_KEY
-from ticker_utils import ticker_pricing, ticker_crypto_pricing
+import telegram
 
 from celery_bot import app
 
-import telegram
+from ticker_utils import ticker_pricing, ticker_crypto_pricing
 
 from db.models import Asset
 
