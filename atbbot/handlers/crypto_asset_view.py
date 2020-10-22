@@ -1,4 +1,4 @@
-from models import Asset
+from db.models import Asset
 
 from binance_utils import binance_client
 

@@ -1,11 +1,11 @@
 from settings import TELEGRAM_API_KEY
+from ticker_utils import ticker_pricing, ticker_crypto_pricing
 
 from celery_bot import app
 
 import telegram
 
-from models import Asset
-from ticker_utils import ticker_pricing, ticker_crypto_pricing
+from db.models import Asset
 
 
 bot = telegram.Bot(TELEGRAM_API_KEY)

@@ -1,6 +1,6 @@
 from telegram.ext import ConversationHandler
 
-from handlers_utils import clear_all_crypto
+from .utils import clear_all_crypto
 
 from binance_utils import binance_client
 from keyboards import numbers_keyboard, yes_no_keyboard

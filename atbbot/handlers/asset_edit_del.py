@@ -1,10 +1,10 @@
 ﻿import logging
-from models import Asset
+from db.models import Asset
 from keyboards import (
     main_shares_keyboard, edit_del_keyboard,
     edit_choose_keyboard, back_keyboard
 )
-from handlers_utils import clear_all_shares
+from .utils import clear_all_shares
 from telegram.ext import ConversationHandler
 
 

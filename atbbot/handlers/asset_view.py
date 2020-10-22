@@ -1,4 +1,4 @@
-﻿from models import Asset
+﻿from db.models import Asset
 from ticker_utils import get_ticker_price, get_prev_close
 
 

@@ -2,9 +2,10 @@ import logging
 from telegram.ext import ConversationHandler
 from binance_utils import binance_client
 from keyboards import cancel_keyboard, yes_no_keyboard, main_menu_keyboard
-from handlers_utils import clear_all_crypto
+from .utils import clear_all_crypto
 
-from models import Asset
+from db.models import Asset
+
 import datetime
 
 

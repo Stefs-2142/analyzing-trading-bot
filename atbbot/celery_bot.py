@@ -14,6 +14,8 @@ app.conf.update(
     result_expires=3600
 )
 
+app.autodiscover_tasks(['celery'])
+
 app.conf.beat_schedule = {
     # В планировщике задач прописываем 2 таска:
     # 1-ый beat_crypto_booling раз в 5 минут.

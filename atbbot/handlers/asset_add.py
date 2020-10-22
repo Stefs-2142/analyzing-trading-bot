@@ -1,4 +1,4 @@
-﻿from models import Asset
+﻿from db.models import Asset
 from keyboards import main_shares_keyboard, cancel_keyboard, skip_keyboard
 from ticker_utils import get_ticker_price
 from telegram.ext import ConversationHandler

@@ -1,5 +1,5 @@
-from keyboards import cancel_keyboard, back_keyboard
-from keyboards import another_pair_keyboard, another_pair_back_keyboard
+from keyboards import back_keyboard
+from keyboards import another_pair_back_keyboard
 
 from binance_utils import binance_client
 

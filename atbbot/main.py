@@ -2,47 +2,56 @@ import logging
 import telegram
 from telegram.utils.request import Request
 
-from handlers_binance_calls import get_balance
+from handlers.binance_calls import get_balance
 
-from handlers_binance_set_order import set_order, choosing_order_type
-from handlers_binance_set_order import choosing_pair, choosing_order_side
-from handlers_binance_set_order import prepearing_order, making_order, checking_price
+from handlers.binance_set_order import (
+    set_order, choosing_order_type,
+    choosing_pair, choosing_order_side,
+    prepearing_order, making_order, checking_price
+)
 
-from handlers_binance_get_price import get_price, getting_pair_price, getting_another_pair_price
+from handlers.binance_get_price import get_price, getting_pair_price, getting_another_pair_price
 
-from handlers_open_orders import get_open_orers
+from handlers.open_orders import get_open_orers
 
-from handlers_close_order import choosing_order_for_close, applying_closing, closing_order
+from handlers.close_order import choosing_order_for_close, applying_closing, closing_order
 
-from handlers_orders_history import get_trade_history, prepearing_trade_history
-from handlers_orders_history import getting_another_pair_orders
+from handlers.orders_history import get_trade_history, prepearing_trade_history
+from handlers.orders_history import getting_another_pair_orders
 
-from handlers_crypto_asset_add import add_crypto, choosing_pair_for_target, checking_price_for_target
-from handlers_crypto_asset_add import aplying_target
+from handlers.crypto_asset_add import (
+    add_crypto, choosing_pair_for_target,
+    checking_price_for_target, aplying_target
+)
 
-from handlers_asset_add import add_start, add_step_1
-from handlers_asset_add import add_step_2, add_step_3, add_step_4
-from handlers_asset_edit_del import (
+from handlers.asset_add import (
+    add_start, add_step_1,
+    add_step_2, add_step_3, add_step_4
+)
+
+from handlers.asset_edit_del import (
     edit_delete_start, delete_price_choose, edit_delete_choose,
     edit_choose_confirm, edit_price
 )
-from handlers_asset_view import asset_view
-from handlers_utils import (
+
+from handlers.asset_view import asset_view
+
+from handlers.utils import (
     greet_user, unknown_text, operation_cancel, show_help,
     shares_comands, binance_comands, crypto_shares_comands,
     back_to_menu
 )
 
-from handlers_crypto_asset_view import crypto_asset_view
+from handlers.crypto_asset_view import crypto_asset_view
 
-from handlers_crypto_asset_edit_del import (
-    edit_delete_start_crypto, delete_price_choose_crypto, edit_delete_choose_crypto,
+from handlers.crypto_asset_edit_del import (
+    edit_delete_choose_crypto,
+    edit_delete_start_crypto, delete_price_choose_crypto,
     edit_choose_confirm_crypto, edit_price_crypto
 )
 
-
 from settings import TELEGRAM_API_KEY
-#from tasks import classic_polling, crypto_polling
+
 from telegram.ext import (
     Updater, CommandHandler,
     MessageHandler, Filters, ConversationHandler

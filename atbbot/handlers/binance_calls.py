@@ -1,9 +1,6 @@
 from binance_utils import binance_client
 from keyboards import back_keyboard
 
-# testing Celery
-
-
 
 def get_balance(update, contet):
     """Возвращает баланс пользователя на Binance"""

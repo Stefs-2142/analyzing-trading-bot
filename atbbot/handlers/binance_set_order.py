@@ -5,7 +5,7 @@ from keyboards import buy_sell_keyboard, aply_order_keyboard, main_menu_keyboard
 from keyboards import KEYBOARD_PERCENT_POOL, ORDERS_TYPE, ORDERS_SIDE
 from binance_utils import binance_client
 
-from handlers_utils import clear_all_crypto
+from .utils import clear_all_crypto
 
 
 def set_order(update, context):
