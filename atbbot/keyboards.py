@@ -1,4 +1,4 @@
-from telegram import ReplyKeyboardMarkup
+﻿from telegram import ReplyKeyboardMarkup
 from emoji import emojize
 from settings import USER_EMOJI
 
@@ -147,4 +147,3 @@ def waiting_smile_keyboard():
     return ReplyKeyboardMarkup([
         [f'{smile}'],
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
-
