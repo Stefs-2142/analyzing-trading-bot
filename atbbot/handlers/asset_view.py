@@ -1,12 +1,13 @@
-﻿from models import Asset
+﻿from db.models import Asset
+
 from ticker_utils import get_ticker_price, get_prev_close
 
 
 def asset_view(update, context):
     """
-    Выгружаем все отслеживаемые пользователем инструменты из БД
+    Выгружаем все отслеживаемые пользователем  крипто-инструменты из БД
     """
-    user_assets = Asset().get_user_assets(update.effective_user.id)
+    user_assets = Asset().get_user_assets(update.effective_user.id, True)
     if user_assets:
         update.message.reply_text('Сейчас отслеживаются следующие инструменты:')
         """
@@ -27,7 +28,7 @@ def asset_view(update, context):
 
 def compile_message(asset):
     (
-        ticker, add_date, initial_price, target_price, min_price,
+        ticker, add_date, initial_price, target_price, min_price, is_crypto,
         current_price, prev_close_price
     ) = asset
     reply = f'Идентификатор инструмента:\r\n{ticker}\r\n\r\n'

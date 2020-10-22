@@ -1,5 +1,6 @@
 ﻿import numpy
 
+from binance_utils import binance_client as bc
 
 from yahoo_fin import stock_info as si
 
@@ -40,6 +41,31 @@ def ticker_pricing(tickers):
     for ticker in tickers:
         user_id, ticker_id, t_price, m_price = ticker
         current_price = si.get_live_price(ticker_id)
+        if t_price != 0:
+            if current_price >= t_price:
+                alerted_tickers.append([user_id, ticker_id, True, m_price])
+        if m_price != 0:
+            if current_price <= m_price:
+                alerted_tickers.append([user_id, ticker_id, t_price, True])
+    return alerted_tickers
+
+
+def ticker_crypto_pricing(tickers):
+    """
+    Функция принимает на вход список со вложенными списками такого вида:
+    [[user_id, 'BTC/USDT', 11200.25, 13000.1],[user_id, 'ETC/USDT', 350.1, 340.1]]
+    Через цикл прогоняется полученный список, если таргет/минимальная цены
+    достигнуты - они заменяются на True и записываются в новый список.
+    В конце цикла функция возвращает список списком в тикерами, где была
+    достигнута любая из цен (если ни одна не была достигнута - возвращается
+    пустой список)
+    """
+    alerted_tickers = []
+    for ticker in tickers:
+        user_id, ticker_id, t_price, m_price = ticker
+        ticker_id = ticker_id.split('/')
+        current_price = bc.get_average_price(ticker_id[0], ticker_id[1])
+        current_price = float(current_price.split(' ')[0])
         if t_price != 0:
             if current_price >= t_price:
                 alerted_tickers.append([user_id, ticker_id, True, m_price])

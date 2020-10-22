@@ -1,11 +1,13 @@
-﻿from models import Asset
-from keyboards import main_shares_keyboard, cancel_keyboard, skip_keyboard
-from ticker_utils import get_ticker_price
+﻿import datetime
+import logging
+
 from telegram.ext import ConversationHandler
 
+from db.models import Asset
 
-import datetime
-import logging
+from keyboards import cancel_keyboard, main_shares_keyboard, skip_keyboard
+
+from ticker_utils import get_ticker_price
 
 
 def add_start(update, context):
@@ -23,12 +25,12 @@ def add_start(update, context):
 
 
 def add_step_1(update, context):
-    ticker = update.message.text.split()[0]
     """
     Пытаемся получить цену введенного тикера.
     Если получаем True - всё ок. False - значит такого тикера
     не существует, зацикливаем повторный запрос тикера.
     """
+    ticker = update.message.text.split()[0]
     ticker_current_price = get_ticker_price(ticker)
     if ticker_current_price is False:
         update.message.reply_text(

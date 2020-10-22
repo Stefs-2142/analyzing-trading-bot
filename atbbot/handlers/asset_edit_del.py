@@ -1,12 +1,15 @@
 ﻿import logging
 
-
-from models import Asset
-from keyboards import (
-    main_shares_keyboard, cancel_keyboard, edit_del_keyboard,
-    edit_choose_keyboard
-)
 from telegram.ext import ConversationHandler
+
+from db.models import Asset
+
+from keyboards import (
+    main_shares_keyboard, edit_del_keyboard,
+    edit_choose_keyboard, back_keyboard
+)
+
+from .utils import clear_all_shares
 
 
 def edit_delete_start(update, context):
@@ -14,7 +17,7 @@ def edit_delete_start(update, context):
     Выгружаем из БД отслеживаемые пользователем инструменты,
     если у пользователя таких нет - сообщаем ему об этом
     """
-    user_assets = Asset().get_user_assets(update.effective_user.id)
+    user_assets = Asset().get_user_assets(update.effective_user.id, True)
     if not user_assets:
         update.message.reply_text('У вас нет отслеживаемых инструментов.')
         return ConversationHandler.END
@@ -36,9 +39,9 @@ def edit_delete_start(update, context):
         'отправьте его номер или название ответным сообщением.'
     )
     update.message.reply_text(
-        reply_text, reply_markup=cancel_keyboard()
+        reply_text, reply_markup=back_keyboard()
     )
-    return edit_delete_choose
+    return '1'
 
 
 def edit_delete_choose(update, context):
@@ -72,13 +75,13 @@ def edit_delete_choose(update, context):
             'Укажите желаемое действие',
             reply_markup=edit_del_keyboard()
         )
-        return delete_price_choose
+        return '2'
     else:
         update.message.reply_text(
             'Введеный номер или тикер не найден - повторите ввод.',
-            reply_markup=cancel_keyboard()
+            reply_markup=back_keyboard()
         )
-        return edit_delete_choose
+        return '1'
 
 
 def delete_price_choose(update, context):
@@ -95,9 +98,9 @@ def delete_price_choose(update, context):
             'Инструмент успешно удален!', reply_markup=main_shares_keyboard()
         )
         logging.info(
-            f'Deleted asset {del_ticker} for user {update.effective_user.id}'
+            f"Deleted asset {context.user_data['candidates']} for user {update.effective_user.id}"
         )
-        context.user_data.pop('candidates', None)
+        clear_all_shares(update, context)
         return ConversationHandler.END
     else:
         """
@@ -108,7 +111,7 @@ def delete_price_choose(update, context):
             'Укажите стоимость для изменения',
             reply_markup=edit_choose_keyboard()
         )
-        return edit_choose_confirm
+        return '3'
 
 
 def edit_choose_confirm(update, context):
@@ -121,9 +124,9 @@ def edit_choose_confirm(update, context):
     elif update.message.text == 'Минимальная':
         context.user_data['action'] = False
     update.message.reply_text(
-        'Укажите новую стоимость', reply_markup=cancel_keyboard()
+        'Укажите новую стоимость', reply_markup=back_keyboard()
     )
-    return edit_price
+    return '4'
 
 
 def edit_price(update, context):
@@ -139,15 +142,15 @@ def edit_price(update, context):
     except ValueError:
         update.message.reply_text(
             f'В введенной стоимости присутствуют ошибки. {error_text}',
-            reply_markup=cancel_keyboard()
+            reply_markup=back_keyboard()
         )
-        return edit_price
+        return '4'
     if new_price <= 0:
         update.message.reply_text(
             f'Стоимость не может быть равной или ниже нуля. {error_text}',
-            reply_markup=cancel_keyboard()
+            reply_markup=back_keyboard()
         )
-        return edit_price
+        return '4'
     # Если всё ок - изменяем стоимость соответствующим методом класса
     user_id = update.effective_user.id
     ticker = context.user_data['candidates']

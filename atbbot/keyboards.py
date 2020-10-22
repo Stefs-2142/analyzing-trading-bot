@@ -1,4 +1,7 @@
 from telegram import ReplyKeyboardMarkup
+from emoji import emojize
+from settings import USER_EMOJI
+
 
 KEYBOARD_PERCENT_POOL = ['25%', '50%', '75%', '100%']
 ORDERS_TYPE = ['Limit order', 'Market order']
@@ -16,7 +19,7 @@ def main_binance_keyboard():
         ['Создать ордер', 'Отменить ордер'],
         ['Открытые ордеры', 'Узнать баланс'],
         ['Текущий курс', 'История торгов'],
-        ['Начать отслеживать'],
+        ['Уведомления'],
         ['Главное меню', 'Помощь']
     ], row_width=1, resize_keyboard=True)
 
@@ -29,9 +32,23 @@ def main_shares_keyboard():
     ], row_width=1, resize_keyboard=True)
 
 
+def main_crypto_shares_keyboard():
+    return ReplyKeyboardMarkup([
+        ['Отслеживаемые'],
+        ['Add', 'Edit/Delete'],
+        ['Главное меню', 'Помощь']
+    ], row_width=1, resize_keyboard=True)
+
+
 def cancel_keyboard():
     return ReplyKeyboardMarkup([
         ['Отмена']
+    ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
+
+
+def back_keyboard():
+    return ReplyKeyboardMarkup([
+        ['Назад']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
 
@@ -48,6 +65,13 @@ def edit_del_keyboard():
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
 
+def edit_del_crypto_keyboard():
+    return ReplyKeyboardMarkup([
+        ['Edit', 'Delete'],
+        ['Отмена']
+    ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
+
+
 def edit_choose_keyboard():
     return ReplyKeyboardMarkup([
         ['Максимальная', 'Минимальная'],
@@ -55,15 +79,28 @@ def edit_choose_keyboard():
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
 
+def edit_choose_crypto_keyboard():
+    return ReplyKeyboardMarkup([
+        ['Max', 'Min'],
+        ['Отмена']
+    ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
+
+
 def another_pair_keyboard():
     return ReplyKeyboardMarkup([
-        ['Другая пара', 'Отмена']
+        ['Другая пара', 'Назад']
+    ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
+
+
+def another_pair_back_keyboard():
+    return ReplyKeyboardMarkup([
+        ['Другая пара', 'Назад']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
 
 def order_type_keyboard():
     return ReplyKeyboardMarkup([
-        ['Limit order', 'Market order'],
+        ORDERS_TYPE,
         ['Отмена']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
@@ -71,14 +108,14 @@ def order_type_keyboard():
 def buy_sell_keyboard(balance_ticker_1, balance_ticker_2):
     return ReplyKeyboardMarkup([
         [f'Доступно {balance_ticker_1}', f'Доступно {balance_ticker_2}'],
-        ['buy', 'sell'],
+        ORDERS_SIDE,
         ['Отмена'],
     ], one_time_keyboard=False, row_width=1, resize_keyboard=True)
 
 
 def quantity_keyboard():
     return ReplyKeyboardMarkup([
-        ['25%', '50%', '75%', '100%'],
+        KEYBOARD_PERCENT_POOL,
         ['Отмена']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
 
@@ -88,4 +125,26 @@ def aply_order_keyboard(order_side):
         [f'{order_side}'],
         ['Отмена']
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
- 
+
+
+def numbers_keyboard(n):
+    return ReplyKeyboardMarkup([
+        (str(n) for n in range(1, n)),
+        ['Назад']
+    ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
+
+
+def yes_no_keyboard():
+    return ReplyKeyboardMarkup([
+        ['Да', 'Нет'],
+        ['Отмена']
+    ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
+
+
+def waiting_smile_keyboard():
+    smile = USER_EMOJI[0]
+    smile = emojize(smile, use_aliases=True)
+    return ReplyKeyboardMarkup([
+        [f'{smile}'],
+    ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
+
