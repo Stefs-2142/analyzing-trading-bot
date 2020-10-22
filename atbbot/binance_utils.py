@@ -1,10 +1,14 @@
-from binance.client import Client
-from binance.enums import SIDE_BUY, SIDE_SELL, ORDER_TYPE_LIMIT
-from binance.enums import ORDER_TYPE_MARKET, TIME_IN_FORCE_GTC
-from settings import BINANCE_API_KEY, SECRET_KEY, EXCEPTION_LIST
-from functools import wraps
 import logging
 from datetime import datetime
+from functools import wraps
+
+from settings import BINANCE_API_KEY
+from settings import SECRET_KEY
+from settings import EXCEPTION_LIST
+
+from binance.client import Client
+from binance.enums import (SIDE_BUY, SIDE_SELL, ORDER_TYPE_LIMIT,
+                           ORDER_TYPE_MARKET, TIME_IN_FORCE_GTC)
 
 client = Client(BINANCE_API_KEY, SECRET_KEY)
 
