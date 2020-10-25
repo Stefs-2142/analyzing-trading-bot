@@ -10,7 +10,6 @@ def get_price(update, context):
         'Введите пару тикеров в формате ETC USDT',
         reply_markup=back_keyboard()
     )
-
     return "get_step_1"
 
 
