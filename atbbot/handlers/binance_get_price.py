@@ -25,7 +25,7 @@ def getting_pair_price(update, context):
             'К сожалению, введена неверная пара, попробуйте ещё раз'
             ' или нажмите "Отмена" для завершения операции.'
             )
-        return 'ticker'
+        return 'get_step_1'
     result = binance_client.get_average_price(
         ticker_pair[0], ticker_pair[1]
             )
@@ -37,7 +37,7 @@ def getting_pair_price(update, context):
         'К сожалению, введена неверная пара, попробуйте ещё раз.',
         reply_markup=back_keyboard()
         )
-    return 'ticker'
+    return 'get_step_1'
 
 
 def getting_another_pair_price(update, context):
@@ -48,10 +48,10 @@ def getting_another_pair_price(update, context):
             'Пожалуйста, выберите одну из доступных команд.',
             reply_markup=another_pair_back_keyboard()
         )
-        return 'step_2'
+        return 'get_step_2'
 
     update.message.reply_text(
         'Введите пару тикеров в формате ETC USDT',
         reply_markup=another_pair_back_keyboard()
     )
-    return 'ticker'
+    return 'get_step_1'
