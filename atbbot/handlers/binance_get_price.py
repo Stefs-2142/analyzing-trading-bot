@@ -48,10 +48,10 @@ def getting_another_pair_price(update, context):
             'Пожалуйста, выберите одну из доступных команд.',
             reply_markup=another_pair_back_keyboard()
         )
-        return 'step_2'
+        return 'get_step_2'
 
     update.message.reply_text(
         'Введите пару тикеров в формате ETC USDT',
         reply_markup=another_pair_back_keyboard()
     )
-    return 'tiget_step_1cker'
+    return 'get_step_1'
