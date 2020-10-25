@@ -1,3 +1,3 @@
 worker: python main.py $PORT
-worker: celery worker --app=tasks.app
-worker: celery beat --app=tasks.app
+celery_worker: celery -A tasks worker -l INFO
+celery_beat: celery beat tasks -l INFO
