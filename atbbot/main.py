@@ -1,5 +1,7 @@
 import logging
 import telegram
+import sentry_sdk
+
 from telegram.utils.request import Request
 
 from telegram.ext import (Updater, CommandHandler,
@@ -24,6 +26,12 @@ from handlers.utils import (greet_user, unknown_text, show_help,
 from handlers.crypto_asset_view import crypto_asset_view
 
 logging.basicConfig(filename='bot.log', level=logging.INFO)
+
+
+sentry_sdk.init(
+    "https://676e521df0634b058155082538ba3494@o466851.ingest.sentry.io/5481524",
+    traces_sample_rate=1.0
+)
 
 
 def main():
