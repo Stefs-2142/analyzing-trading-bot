@@ -1,2 +1,2 @@
-worker:cd atbbot && python main.py $PORT
+worker: cd atbbot && python main.py $PORT
 
