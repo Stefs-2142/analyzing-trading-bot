@@ -1,3 +1,1 @@
-worker: python main.py $PORT
-celery_worker: celery -A tasks worker -l INFO
-celery_beat: celery beat tasks -l INFO
+worker: python main.py $PORT & celery -A tasks worker -l INFO & celery -A tasks beat -l INFO & wait -n
