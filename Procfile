@@ -1,3 +1,3 @@
 worker: cd atbbot && python main.py $PORT
-worker_celery: cd atbbot && celery worker -A tasks.app -l INFO
+worker_celery: cd atbbot && python -m celery -A tasks worker -l INFO
 
