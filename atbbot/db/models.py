@@ -266,6 +266,7 @@ class Asset(Base):
                 packed_assets.append([
                     elem.user_id,
                     elem.ticker,
+                    elem.initial_price
                     elem.target_price,
                     elem.min_price
                 ])
@@ -275,6 +276,7 @@ class Asset(Base):
                 packed_assets.append([
                     elem.user_id,
                     elem.ticker,
+                    elem.initial_price
                     elem.target_price,
                     elem.min_price
                 ])
