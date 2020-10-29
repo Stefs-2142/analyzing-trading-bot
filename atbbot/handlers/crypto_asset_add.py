@@ -12,13 +12,11 @@ from keyboards import cancel_keyboard, yes_no_keyboard, main_menu_keyboard
 from .utils import clear_all_crypto
 
 
-
-
 def add_crypto(update, context):
     """Запрашиваем пару для установки уведомления."""
 
     update.message.reply_text(
-        'Чтобы установить Alert пришлите пару в формате BTC USDT',
+        'Чтобы установить Alert и начать отслеживать пришлите пару в формате BTC USDT',
         reply_markup=cancel_keyboard()
         )
     # Сразу записываем в контекст id пользователя
@@ -118,9 +116,6 @@ def aplying_target(update, context):  # add_crypto_step_3
             message = f'Вы получите уведомление, когда пара {ticker_pair}\n'
             message += f"дотстигнет цены - {target_price} {ticker_pair.split('/')[1]}"
             update.message.reply_text(message, reply_markup=main_menu_keyboard())
-
-            # TODO: Передаём в Celery задачу.
-            #set_alert.delay(ticker_pair[0], ticker_pair[1], target_price)
 
             clear_all_crypto(update, context)
             return ConversationHandler.END
