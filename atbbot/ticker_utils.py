@@ -63,8 +63,8 @@ def ticker_crypto_pricing(tickers):
     alerted_tickers = []
     for ticker in tickers:
         user_id, ticker_id, t_price, m_price = ticker
-        ticker_id = ticker_id.split('/')
-        current_price = bc.get_average_price(ticker_id[0], ticker_id[1])
+        ticker_pair = ticker_id.split('/')
+        current_price = bc.get_average_price(ticker_pair[0], ticker_pair[1])
         current_price = float(current_price.split(' ')[0])
         if t_price != 0:
             if current_price >= t_price:
