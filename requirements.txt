@@ -63,10 +63,7 @@ redis==3.5.3
 regex==2020.6.8
 requests==2.24.0
 requests-html==0.10.0
-<<<<<<< HEAD
-=======
 sentry-sdk==0.19.1
->>>>>>> bdfa73a1f3186ff3f2402a616a37cde1689fe32d
 service-identity==18.1.0
 six==1.15.0
 soupsieve==2.0.1
