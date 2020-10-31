@@ -6,6 +6,7 @@ BACKEND_PATH = "rpc://"
 BROKER_PATH = "pyamqp://guest@localhost//"
 BINANCE_API_KEY = 'your_key'
 SECRET_KEY = 'your_secret_key'
+ADMIN_ID = 'your_admin_id'
 
 EXCEPTION_LIST = (
                 BinanceRequestException, BinanceAPIException, BinanceOrderException,
