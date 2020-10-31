@@ -7,7 +7,7 @@ from telegram.utils.request import Request
 from telegram.ext import (Updater, CommandHandler,
                           MessageHandler, Filters)
 
-from settings import TELEGRAM_API_KEY
+from settings import TELEGRAM_API_KEY, SENTRY_URL
 
 from conversations import (assets, edit_asssets,
                            edit_crypto_asssets, price, crypto_assets,
@@ -29,7 +29,7 @@ logging.basicConfig(filename='bot.log', level=logging.INFO)
 
 
 sentry_sdk.init(
-    "https://676e521df0634b058155082538ba3494@o466851.ingest.sentry.io/5481524",
+    SENTRY_URL,
     traces_sample_rate=1.0
 )
 

@@ -2,12 +2,13 @@ import os
 
 from binance.exceptions import *
 
-TELEGRAM_API_KEY = "1273602121:AAHyItK7iNe6sx7iMpSG6mgknM9Or7NTgxg"
+TELEGRAM_API_KEY = os.environ['TELEGRAM_API_KEY']
 DB_CONNECT = os.environ['DATABASE_URL']
 BACKEND_PATH = os.environ['REDIS_URL']
 BROKER_PATH = os.environ['REDIS_URL']
-BINANCE_API_KEY = 'cywfdaMkZBSUgWm3H1rDqg9jMzAUXIyiAQpybBvsoKIlSTuMYIqEGojKfUYZq9Kp'
-SECRET_KEY = 'AGDZPw1pH6szTjmBExpRThMR9pnZ2rJ0K3oX8roEiHsEesAJvDfS7ScWLjESNcPJ'
+SENTRY_URL = os.environ['SENTRY_DSN']
+BINANCE_API_KEY = os.environ['BINANCE_API_KEY']
+SECRET_KEY = os.environ['SECRET_KEY']
 
 EXCEPTION_LIST = (
                 BinanceRequestException, BinanceAPIException, BinanceOrderException,
