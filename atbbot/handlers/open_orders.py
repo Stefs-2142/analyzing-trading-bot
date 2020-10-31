@@ -1,6 +1,6 @@
 from binance_utils import binance_client
 
-from keyboards import back_keyboard
+from keyboards import main_binance_keyboard
 
 
 def get_open_orers(update, context):
@@ -16,9 +16,9 @@ def get_open_orers(update, context):
             formated_orders += f" {order['price']}\n"
 
         update.message.reply_text(
-            f"{formated_orders}\n", reply_markup=back_keyboard()
+            f"{formated_orders}\n", reply_markup=main_binance_keyboard()
             )
     else:
         update.message.reply_text(
-            'Нет открытых ордеров.', keyboard_markup=back_keyboard()
+            'Нет открытых ордеров.', keyboard_markup=main_binance_keyboard()
             )
