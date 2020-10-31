@@ -1,6 +1,4 @@
 ﻿from telegram import ReplyKeyboardMarkup
-from emoji import emojize
-from settings import USER_EMOJI
 
 
 KEYBOARD_PERCENT_POOL = ['25%', '50%', '75%', '100%']
@@ -138,12 +136,4 @@ def yes_no_keyboard():
     return ReplyKeyboardMarkup([
         ['Да', 'Нет'],
         ['Отмена']
-    ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
-
-
-def waiting_smile_keyboard():
-    smile = USER_EMOJI[0]
-    smile = emojize(smile, use_aliases=True)
-    return ReplyKeyboardMarkup([
-        [f'{smile}'],
     ], one_time_keyboard=True, row_width=1, resize_keyboard=True)
