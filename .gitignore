@@ -2,6 +2,7 @@
 gists.py
 *backup.py
 db_utils.py
+settings.py.example
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
