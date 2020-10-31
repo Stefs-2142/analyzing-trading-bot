@@ -1,11 +1,20 @@
 import logging
 import telegram
+<<<<<<< HEAD
+=======
+import sentry_sdk
+
+>>>>>>> bdfa73a1f3186ff3f2402a616a37cde1689fe32d
 from telegram.utils.request import Request
 
 from telegram.ext import (Updater, CommandHandler,
                           MessageHandler, Filters)
 
+<<<<<<< HEAD
 from settings import TELEGRAM_API_KEY
+=======
+from settings import TELEGRAM_API_KEY, SENTRY_URL
+>>>>>>> bdfa73a1f3186ff3f2402a616a37cde1689fe32d
 
 from conversations import (assets, edit_asssets,
                            edit_crypto_asssets, price, crypto_assets,
@@ -24,6 +33,12 @@ from handlers.utils import (greet_user, unknown_text, show_help,
 from handlers.crypto_asset_view import crypto_asset_view
 
 logging.basicConfig(filename='bot.log', level=logging.INFO)
+
+
+sentry_sdk.init(
+    SENTRY_URL,
+    traces_sample_rate=1.0
+)
 
 
 def main():

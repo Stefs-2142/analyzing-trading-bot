@@ -39,7 +39,7 @@ def beat_crypto_pooling():
                 Asset().edit_t_price(user_id, ticker_id, 0)
             else:
                 reply_message = (
-                    (text_m_price % ticker_id) + text_end
+                    (text_m_price % ticker_id)+text_end
                 )
                 Asset().edit_m_price(user_id, ticker_id, 0)
         bot.send_message(user_id, reply_message)

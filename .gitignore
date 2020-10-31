@@ -1,10 +1,7 @@
 # Project-related stuff
-settings.py
-bot.log
 gists.py
 *backup.py
 db_utils.py
-
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -132,5 +129,3 @@ dmypy.json
 
 # VS Code
 .vscode/
-
-
