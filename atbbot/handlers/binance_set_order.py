@@ -10,9 +10,10 @@ from keyboards import ORDERS_SIDE
 
 from binance_utils import binance_client
 
-from .utils import clear_all_crypto
+from .utils import clear_all_crypto, autorization
 
 
+@autorization
 def set_order(update, context):
     """
     Функция с которой начинается диалог для

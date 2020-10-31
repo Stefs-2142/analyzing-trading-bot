@@ -1,15 +1,36 @@
-﻿from telegram.ext import ConversationHandler
+﻿from functools import wraps
+
+from telegram.ext import ConversationHandler
 
 from keyboards import (main_binance_keyboard, main_menu_keyboard,
                        main_shares_keyboard, main_crypto_shares_keyboard)
 
+from settings import ADMIN_ID
+
+
+def autorization(func):
+    """
+    Данный декоратор проверяет user_id пользователя.
+    Если пользоветля нет в списке админов - часть функционала
+    недостпуна, например выставление ордеров.
+    """
+
+    @wraps(func)
+    def wrapper(update, context):
+        if update.effective_user['id'] == ADMIN_ID:
+            func(update, context)
+        else:
+            message = 'Недоступно в demo-режиме.\n Для получения доступа обратитесь к https://t.me/Stefs'
+            update.message.reply_text(
+                message,
+                reply_markup=main_binance_keyboard())
+    return wrapper
+
 
 def greet_user(update, context):
     # Дописать нормальный текст
-
     clear_all_shares(update, context)
     clear_all_crypto(update, context)
-
     update.message.reply_text(
         "Привет! Выбери нужный раздел.", reply_markup=main_menu_keyboard())
 
