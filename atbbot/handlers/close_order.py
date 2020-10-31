@@ -22,7 +22,7 @@ def choosing_order_for_close(update, context):
         for order in open_orders:
             formated_orders += f"{order_count}. {order['symbol']}"
             formated_orders += f" {order['type']} {order['side']}"
-            formated_orders += f" {order['price']}\n"
+            formated_orders += f" {float(order['price'])}\n"
             order_count += 1
             # Cохраняем количество отрктых ордеров.
             context.user_data['total_open_orders'] = order_count

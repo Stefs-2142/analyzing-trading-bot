@@ -13,8 +13,8 @@ def get_open_orers(update, context):
         for i, order in enumerate(open_orders, start=1):
             formated_orders += f"{i}. {order['symbol']}"
             formated_orders += f" {order['type']} {order['side']}"
-            formated_orders += f" {order['price']}\n"
-
+            formated_orders += f" {float(order['price'])}"
+            formated_orders += f" QUANTITY {float(order['origQty'])} \n"
         update.message.reply_text(
             f"{formated_orders}\n", reply_markup=main_binance_keyboard()
             )
