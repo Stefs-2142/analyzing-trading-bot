@@ -9,6 +9,7 @@ BROKER_PATH = os.environ['REDIS_URL']
 SENTRY_URL = os.environ['SENTRY_DSN']
 BINANCE_API_KEY = os.environ['BINANCE_API_KEY']
 SECRET_KEY = os.environ['SECRET_KEY']
+ADMIN_ID = os.environ['ADMIN_ID']
 
 EXCEPTION_LIST = (
                 BinanceRequestException, BinanceAPIException, BinanceOrderException,
@@ -16,7 +17,3 @@ EXCEPTION_LIST = (
                 BinanceOrderMinTotalException, BinanceOrderUnknownSymbolException,
                 BinanceOrderInactiveSymbolException
                 )
-
-PROXY_URL = 'socks5://t2.learn.python.ru:1080'
-
-USER_EMOJI = [':hourglass_flowing_sand:', ':arrow_backward:']
