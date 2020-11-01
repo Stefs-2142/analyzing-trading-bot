@@ -11,7 +11,7 @@ BINANCE_API_KEY = os.environ['BINANCE_API_KEY']
 SECRET_KEY = os.environ['SECRET_KEY']
 ADMIN_ID = os.environ['ADMIN_ID']
 
-EXCEPTION_LIST = (
+EXCEPTIONS = (
                 BinanceRequestException, BinanceAPIException, BinanceOrderException,
                 BinanceOrderMinAmountException, BinanceOrderMinPriceException,
                 BinanceOrderMinTotalException, BinanceOrderUnknownSymbolException,
