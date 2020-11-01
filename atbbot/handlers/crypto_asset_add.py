@@ -12,8 +12,6 @@ from keyboards import cancel_keyboard, yes_no_keyboard, main_menu_keyboard
 from .utils import clear_all_crypto
 
 
-
-
 def add_crypto(update, context):
     """Запрашиваем пару для установки уведомления."""
 

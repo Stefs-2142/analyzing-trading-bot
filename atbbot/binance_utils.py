@@ -4,7 +4,7 @@ from functools import wraps
 
 from settings import BINANCE_API_KEY
 from settings import SECRET_KEY
-from settings import EXCEPTION_LIST
+from settings import EXCEPTIONS
 
 from binance.client import Client
 from binance.enums import (SIDE_BUY, SIDE_SELL, ORDER_TYPE_LIMIT,
@@ -23,7 +23,7 @@ def wrap_try_except(func):
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except EXCEPTION_LIST as ex:
+        except EXCEPTIONS as ex:
             logging.info(f'Возникла ошибка - {ex}')
     return wrapper
 
