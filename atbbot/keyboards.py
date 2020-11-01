@@ -1,6 +1,4 @@
-﻿from emoji import emojize
-
-from telegram import ReplyKeyboardMarkup
+﻿from telegram import ReplyKeyboardMarkup
 
 KEYBOARD_PERCENT_POOL = ['25%', '50%', '75%', '100%']
 ORDERS_TYPE = ['Limit order', 'Market order']
