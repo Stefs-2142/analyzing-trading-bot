@@ -37,7 +37,7 @@ from handlers.utils import operation_cancel
 
 
 assets = ConversationHandler(
-    entry_points=[MessageHandler(Filters.regex('Добавить'), add_start),],
+    entry_points=[MessageHandler(Filters.regex('^Добавить'), add_start),],
     states={
         add_step_1: [
             MessageHandler(
@@ -64,7 +64,7 @@ assets = ConversationHandler(
 )
 
 edit_asssets = ConversationHandler(
-    entry_points=[MessageHandler(Filters.regex('Изменить/Удалить'), edit_delete_start)],
+    entry_points=[MessageHandler(Filters.regex('^Изменить/Удалить'), edit_delete_start)],
     states={
         '1': [
             MessageHandler(
@@ -94,7 +94,7 @@ edit_asssets = ConversationHandler(
 )
 
 edit_crypto_asssets = ConversationHandler(
-    entry_points=[MessageHandler(Filters.regex('Edit/Delete'), edit_delete_start_crypto)],
+    entry_points=[MessageHandler(Filters.regex('^Edit/Delete'), edit_delete_start_crypto)],
     states={
         "1": [
             MessageHandler(
@@ -124,8 +124,33 @@ edit_crypto_asssets = ConversationHandler(
     ]
 )
 
+crypto_assets = ConversationHandler(
+    entry_points=[MessageHandler(Filters.regex('^Add'), add_crypto)],
+    states={
+        "add_crypto_step_1": [
+            MessageHandler(
+                Filters.text & (~Filters.regex('^(Отмена|Назад)$')), choosing_pair_for_target
+            )
+        ],
+        "add_crypto_step_2": [
+            MessageHandler(
+                Filters.text & (~Filters.regex('^(Отмена|Назад)$')), checking_price_for_target
+            )
+        ],
+        "add_crypto_step_3": [
+            MessageHandler(
+                Filters.text & (~Filters.regex('^(Отмена|Назад)$')), aplying_target
+            )
+        ],
+    },
+    fallbacks=[
+        MessageHandler(Filters.regex('(Назад)'), crypto_shares_comands),
+        MessageHandler(Filters.regex('(Отмена)'), operation_cancel),
+    ]
+)
+
 price = ConversationHandler(
-    entry_points=[MessageHandler(Filters.regex('Текущий курс'), get_price)],
+    entry_points=[MessageHandler(Filters.regex('^Текущий курс'), get_price)],
     states={
         "get_step_1": [
             MessageHandler(
@@ -145,7 +170,7 @@ price = ConversationHandler(
 )
 
 orders = ConversationHandler(
-    entry_points=[MessageHandler(Filters.regex('Создать ордер'), set_order)],
+    entry_points=[MessageHandler(Filters.regex('^Создать ордер'), set_order)],
     states={
         "set_step_1": [
             MessageHandler(
@@ -185,7 +210,7 @@ orders = ConversationHandler(
 )
 
 close_order = ConversationHandler(
-    entry_points=[MessageHandler(Filters.regex('Отменить ордер'), choosing_order_for_close)],
+    entry_points=[MessageHandler(Filters.regex('^Отменить ордер'), choosing_order_for_close)],
     states={
         "close_step_1": [
             MessageHandler(
@@ -205,7 +230,7 @@ close_order = ConversationHandler(
 )
 
 pair_trade_history = ConversationHandler(
-    entry_points=[MessageHandler(Filters.regex('История торгов'), get_trade_history)],
+    entry_points=[MessageHandler(Filters.regex('^История торгов'), get_trade_history)],
     states={
         "history_step_1": [
             MessageHandler(
@@ -222,29 +247,4 @@ pair_trade_history = ConversationHandler(
         MessageHandler(Filters.regex('(Отмена)'), operation_cancel),
         MessageHandler(Filters.regex('(Назад)'), back_to_menu)
         ]
-)
-
-crypto_assets = ConversationHandler(
-    entry_points=[MessageHandler(Filters.regex('Add'), add_crypto)],
-    states={
-        "add_crypto_step_1": [
-            MessageHandler(
-                Filters.text & (~Filters.regex('^(Отмена|Назад)$')), choosing_pair_for_target
-            )
-        ],
-        "add_crypto_step_2": [
-            MessageHandler(
-                Filters.text & (~Filters.regex('^(Отмена|Назад)$')), checking_price_for_target
-            )
-        ],
-        "add_crypto_step_3": [
-            MessageHandler(
-                Filters.text & (~Filters.regex('^(Отмена|Назад)$')), aplying_target
-            )
-        ],
-    },
-    fallbacks=[
-        MessageHandler(Filters.regex('(Назад)'), crypto_shares_comands),
-        MessageHandler(Filters.regex('(Отмена)'), operation_cancel),
-    ]
 )
