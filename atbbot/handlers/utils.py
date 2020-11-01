@@ -18,9 +18,9 @@ def autorization(func):
     @wraps(func)
     def wrapper(update, context):
         if update.effective_user['id'] == ADMIN_ID:
-            func(update, context)
+            return func(update, context)
         else:
-            message = 'Недоступно в demo-режиме.\n Для получения доступа обратитесь к https://t.me/Stefs'
+            message = '❌ Недоступно в demo-режиме.\n Для получения доступа обратитесь к https://t.me/Stefs'
             update.message.reply_text(
                 message,
                 reply_markup=main_binance_keyboard())
