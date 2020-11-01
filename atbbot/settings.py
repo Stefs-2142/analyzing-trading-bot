@@ -9,7 +9,7 @@ BROKER_PATH = os.environ['REDIS_URL']
 SENTRY_URL = os.environ['SENTRY_DSN']
 BINANCE_API_KEY = os.environ['BINANCE_API_KEY']
 SECRET_KEY = os.environ['SECRET_KEY']
-ADMIN_ID = 364447727
+ADMIN_ID = os.environ['ADMIN_ID']
 
 EXCEPTIONS = (
                 BinanceRequestException, BinanceAPIException, BinanceOrderException,
