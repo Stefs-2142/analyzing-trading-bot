@@ -17,7 +17,6 @@ def autorization(func):
 
     @wraps(func)
     def wrapper(update, context):
-        print(type(update.effective_user['id']), type(ADMIN_ID))
         if update.effective_user['id'] == ADMIN_ID:
             return func(update, context)
         else:
