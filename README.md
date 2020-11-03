@@ -1,8 +1,12 @@
 # Торговый бот для Telegram
 ---
+Бот предоставляет доступ к управлению аккаунтом на криптовалюнтой бирже [Binance](https://www.binance.com/) и мониторинг классических биржевых активов на биржке  NASDAQ или MOEX.
 
-Бот предназначен для отслеживания акций/валюты на любой из существующих бирж, например NASDAQ или MOEX.
-
+Вы можете: 
+<li>Следить за курсом валют и получать уведомления 
+<li>Cоздавать/отменять Limit и Marker ордеры
+<li>Просматривать историю торгов
+<li>Просматривать баланс
 
 # Установка
 ---
@@ -18,7 +22,12 @@
 docker run -d -p 5672:5672 rabbitmq
 docker run -d -p 6379:6379 redis
 ```
-7. Запустите celery командой `celery -A tasks worker --loglevel=info`
+7. Для работы Celery необходимо 2 процесса:
+```
+celery -A tasks worker --loglevel=info
+celery -A tasks beat --loglevel=info
+
+```
 8. Запустите бота `python main.py`
 
 
@@ -31,6 +40,14 @@ docker run -d -p 6379:6379 redis
 
 	[program:celery]
 	command = PATH/alyzing-trading-bot/env/bin/celery -A tasks worker --loglevel=info
+	directory = PATH/analyzing-trading-bot
+	user = USER
+	autostart = true
+	autorestart = true
+	startretries = 3
+
+	[program:celery-beat]
+	command = PATH/alyzing-trading-bot/env/bin/celery -A tasks beat --loglevel=info
 	directory = PATH/analyzing-trading-bot
 	user = USER
 	autostart = true
