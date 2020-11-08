@@ -1,5 +1,6 @@
 ﻿from functools import wraps
 
+from telegram import ParseMode
 from telegram.ext import ConversationHandler
 
 from keyboards import (main_binance_keyboard, main_menu_keyboard,
@@ -28,11 +29,19 @@ def autorization(func):
 
 
 def greet_user(update, context):
-    # Дописать нормальный текст
+
     clear_all_shares(update, context)
     clear_all_crypto(update, context)
+
+    try:
+        name = update.effective_user['first_name']
+    except KeyError:
+        name = update.effective_user['username']
+
     update.message.reply_text(
-        "Привет! Выбери нужный раздел.", reply_markup=main_menu_keyboard())
+        f"Привет <b>{name}</b>! Выбери нужный раздел.",
+        reply_markup=main_menu_keyboard(),
+        parse_mode=ParseMode.HTML)
 
 
 def shares_comands(update, context):
