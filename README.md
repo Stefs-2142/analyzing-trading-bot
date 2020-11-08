@@ -10,7 +10,7 @@
 
 <li><b>Просматривать историю торгов</b>
 
-![](https://s8.gifyu.com/images/trade_history.gif)
+![](https://s8.gifyu.com/images/newest_Trade.gif)
 <li><b>Просматривать баланс</b>
 <li><b>Следить за курсом валют и получать уведомления</b>
 
