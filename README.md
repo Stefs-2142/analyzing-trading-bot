@@ -26,9 +26,8 @@
 3. Установите зависимости `pip install -r requirements.txt`
 4. Измените название файла `settings.py.example`, убрав из него `.example` и впишите в него собственные API ключи и переменные окружения
 5. Установите docker для вашей ОС
-6. Запустите локальные БД для работы Celery:
+6. Запустите локальную БД для работы Celery:
 ```
-docker run -d -p 5672:5672 rabbitmq
 docker run -d -p 6379:6379 redis
 ```
 7. Для работы Celery необходимо 2 процесса:
@@ -73,3 +72,7 @@ celery -A tasks beat --loglevel=info
 	autostart = true
 	autorestart = true
 	startretries = 3
+
+# Пример бота
+
+https://t.me/StefsLearnBot - ограниченный функционал <i>(Использованные в разделах "история торгов" и "баланс" данные не являются дейсвтильеными.)</i>
