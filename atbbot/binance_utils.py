@@ -62,7 +62,7 @@ class BinanceClient():
         order = self.__make_client_call(f'{formated_call}',
                                         symbol=f'{ticker_1}{ticker_2}',
                                         side=f'{side}',
-                                        type=type,
+                                        type=order_type,
                                         timeInForce=TIME_IN_FORCE_GTC,
                                         quantity=quantity,
                                         price=price
