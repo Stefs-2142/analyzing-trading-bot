@@ -10,8 +10,6 @@ from binance.client import Client
 from binance.enums import (SIDE_BUY, SIDE_SELL, ORDER_TYPE_LIMIT,
                            ORDER_TYPE_MARKET, TIME_IN_FORCE_GTC)
 
-client = Client(BINANCE_API_KEY, SECRET_KEY)
-
 logging.basicConfig(filename='binance.log', level=logging.INFO,
                     format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S',)
@@ -61,7 +59,7 @@ class BinanceClient():
             side = SIDE_SELL
             formated_call += 'sell'
 
-        order = self.__make_client_call(f'{formated_call}',  # Создаём тестовый ордер в тестовой сети.
+        order = self.__make_client_call(f'{formated_call}',
                                         symbol=f'{ticker_1}{ticker_2}',
                                         side=f'{side}',
                                         type=type,
@@ -106,15 +104,16 @@ class BinanceClient():
     def get_all_open_orders(self):
         """ Возвращает список открытых сделок. """
 
-        open_orders = self.__make_client_call('get_open_orders')  # Получаем список открытых сделок.
+        open_orders = self.__make_client_call('get_open_orders')  
         if open_orders is not None:
             logging.info(f'Список открытых ордеров - {open_orders}')
             return open_orders
 
     def close_order(self, ticker_pair, orderId):
-        """ Закрывает ордер. """
+        """Метод закрывающий ордер."""
 
-        open_orders = self.__make_client_call('get_open_orders')  # Проверяем есть ли ордер на закрытие.
+        # Проверяем есть ли ордер на закрытие.
+        open_orders = self.__make_client_call('get_open_orders')
         for order in open_orders:
             if order.get('symbol') == f'{ticker_pair}' and order.get('orderId') == orderId:
                 result = self.__make_client_call('cancel_order', symbol=f'{ticker_pair}', orderId=orderId)
@@ -123,11 +122,8 @@ class BinanceClient():
                     return result
                 else:
                     logging.info('Ошибка.')
-                    return
-
                 logging.info('К сожалению, нет ордеров на закрытие.')
-                return
-
+                
     def get_balance(self, full=True):
         """
         Возвращает баланс пользователя.
