@@ -104,7 +104,7 @@ class BinanceClient():
     def get_all_open_orders(self):
         """ Возвращает список открытых сделок. """
 
-        open_orders = self.__make_client_call('get_open_orders')  
+        open_orders = self.__make_client_call('get_open_orders')
         if open_orders is not None:
             logging.info(f'Список открытых ордеров - {open_orders}')
             return open_orders
@@ -123,7 +123,7 @@ class BinanceClient():
                 else:
                     logging.info('Ошибка.')
                 logging.info('К сожалению, нет ордеров на закрытие.')
-                
+
     def get_balance(self, full=True):
         """
         Возвращает баланс пользователя.
