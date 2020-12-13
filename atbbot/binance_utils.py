@@ -41,18 +41,10 @@ class BinanceClient():
         Выставляет ордер с заданными параметрами.
         Собираем из аргументов запрос на возможные оредра:
         Лимитный ордер на покупку,
-        Лимитный ордер на продажу,
-        Маркет ордер на покупку,
-        Маркет ордер на продажу.
+        Лимитный ордер на продажу.
         """
-        formated_call = 'order_'
-        if order_type == 'limit':
-            order_type = ORDER_TYPE_LIMIT
-            formated_call += 'limit'
-        elif order_type == 'market':
-            order_type = ORDER_TYPE_MARKET
-            formated_call += 'market'
-        elif side == 'buy':
+        formated_call = 'order_limit_'
+        if side == 'buy':
             side = SIDE_BUY
             formated_call += 'buy'
         elif side == 'sell':
@@ -62,7 +54,7 @@ class BinanceClient():
         order = self.__make_client_call(f'{formated_call}',
                                         symbol=f'{ticker_1}{ticker_2}',
                                         side=f'{side}',
-                                        type=order_type,
+                                        type=ORDER_TYPE_LIMIT,
                                         timeInForce=TIME_IN_FORCE_GTC,
                                         quantity=quantity,
                                         price=price
