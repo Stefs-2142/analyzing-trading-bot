@@ -327,21 +327,17 @@ def making_order(update, context):
         return 'set_step_4'
 
     if order_type == 'market' and order_side == 'sell':
-        result = binance_client.set_order_market_sell(
-            ticker_pair[0], ticker_pair[1],
-            quantity
-        )
+        result = binance_client.set_order_market_sell(ticker_pair[0], ticker_pair[1], quantity)
+
     elif order_type == 'market' and order_side == 'buy':
-        result = binance_client.set_order_market_buy(
-            ticker_pair[0], ticker_pair[1],
-            quantity
-        )
-    # Формируем и совершаем сделку.
-    elif order_type == 'limit':
-        result = binance_client.set_order(
-                ticker_pair[0], ticker_pair[1],
-                order_type, order_side, quantity, price
-            )
+        result = binance_client.set_order_market_buy(ticker_pair[0], ticker_pair[1], quantity)
+
+    elif order_type == 'limit' and order_side == 'sell':
+        result = binance_client.set_order_limit_sell(ticker_pair[0], ticker_pair[1], quantity, price)
+
+    elif order_type == 'limit' and order_side == 'buy':
+        result = binance_client.set_order_limit_buy(ticker_pair[0], ticker_pair[1], quantity, price)
+
     if result is not None:
         update.message.reply_text(
             'Ордер выставлен!', reply_markup=main_menu_keyboard()

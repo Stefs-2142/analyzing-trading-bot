@@ -36,26 +36,21 @@ class BinanceClient():
         result = getattr(self.client, method_name)(*args, **kwargs)
         return result
 
-    def set_order(self, ticker_1, ticker_2, order_type, side, quantity, price=None):
-        """"
-        Выставляет ордер с заданными параметрами.
-        Собираем из аргументов запрос на возможные оредра:
-        Лимитный ордер на покупку,
-        Лимитный ордер на продажу.
-        """
-        formated_call = 'order_limit_'
-        if side == 'buy':
-            side = SIDE_BUY
-            formated_call += 'buy'
-        elif side == 'sell':
-            side = SIDE_SELL
-            formated_call += 'sell'
+    def set_order_limit_sell(self, ticker_1, ticker_2, quantity, price=None):
 
-        order = self.__make_client_call(f'{formated_call}',
+        order = self.__make_client_call('order_limit_sell',
                                         symbol=f'{ticker_1}{ticker_2}',
-                                        side=f'{side}',
-                                        type=ORDER_TYPE_LIMIT,
-                                        timeInForce=TIME_IN_FORCE_GTC,
+                                        quantity=quantity,
+                                        price=price
+                                        )
+        if order is not None:
+            logging.info('Выполнено. ', order)
+            return order
+
+    def set_order_limit_buy(self, ticker_1, ticker_2, quantity, price=None):
+
+        order = self.__make_client_call('order_limit_buy',
+                                        symbol=f'{ticker_1}{ticker_2}',
                                         quantity=quantity,
                                         price=price
                                         )
