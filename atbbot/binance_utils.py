@@ -7,10 +7,6 @@ from settings import SECRET_KEY
 from settings import EXCEPTIONS
 
 from binance.client import Client
-from binance.enums import (SIDE_BUY, SIDE_SELL, ORDER_TYPE_LIMIT,
-                           ORDER_TYPE_MARKET, TIME_IN_FORCE_GTC)
-
-client = Client(BINANCE_API_KEY, SECRET_KEY)
 
 logging.basicConfig(filename='binance.log', level=logging.INFO,
                     format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s',
@@ -18,6 +14,9 @@ logging.basicConfig(filename='binance.log', level=logging.INFO,
 
 
 def wrap_try_except(func):
+    """
+    Проверяем каждый вызов к API на наличие ошибок.
+    """
 
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -38,34 +37,21 @@ class BinanceClient():
         result = getattr(self.client, method_name)(*args, **kwargs)
         return result
 
-    def set_order(self, ticker_1, ticker_2, order_type, side, quantity, price=None):
-        """"
-        Выставляет ордер с заданными параметрами.
-        Собираем из аргументов запрос на возможные оредра:
-        Лимитный ордер на покупку,
-        Лимитный ордер на продажу,
-        Маркет ордер на покупку,
-        Маркет ордер на продажу.
-        """
-        formated_call = 'order_'
-        if order_type == 'limit':
-            order_type = ORDER_TYPE_LIMIT
-            formated_call += 'limit'
-        elif order_type == 'market':
-            order_type = ORDER_TYPE_MARKET
-            formated_call += 'market'
-        elif side == 'buy':
-            side = SIDE_BUY
-            formated_call += 'buy'
-        elif side == 'sell':
-            side = SIDE_SELL
-            formated_call += 'sell'
+    def set_order_limit_sell(self, ticker_1, ticker_2, quantity, price=None):
 
-        order = self.__make_client_call(f'{formated_call}',  # Создаём тестовый ордер в тестовой сети.
+        order = self.__make_client_call('order_limit_sell',
                                         symbol=f'{ticker_1}{ticker_2}',
-                                        side=f'{side}',
-                                        type=type,
-                                        timeInForce=TIME_IN_FORCE_GTC,
+                                        quantity=quantity,
+                                        price=price
+                                        )
+        if order is not None:
+            logging.info('Выполнено. ', order)
+            return order
+
+    def set_order_limit_buy(self, ticker_1, ticker_2, quantity, price=None):
+
+        order = self.__make_client_call('order_limit_buy',
+                                        symbol=f'{ticker_1}{ticker_2}',
                                         quantity=quantity,
                                         price=price
                                         )
@@ -106,15 +92,16 @@ class BinanceClient():
     def get_all_open_orders(self):
         """ Возвращает список открытых сделок. """
 
-        open_orders = self.__make_client_call('get_open_orders')  # Получаем список открытых сделок.
+        open_orders = self.__make_client_call('get_open_orders')
         if open_orders is not None:
             logging.info(f'Список открытых ордеров - {open_orders}')
             return open_orders
 
     def close_order(self, ticker_pair, orderId):
-        """ Закрывает ордер. """
+        """Метод закрывающий ордер."""
 
-        open_orders = self.__make_client_call('get_open_orders')  # Проверяем есть ли ордер на закрытие.
+        # Проверяем есть ли ордер на закрытие.
+        open_orders = self.__make_client_call('get_open_orders')
         for order in open_orders:
             if order.get('symbol') == f'{ticker_pair}' and order.get('orderId') == orderId:
                 result = self.__make_client_call('cancel_order', symbol=f'{ticker_pair}', orderId=orderId)
@@ -123,10 +110,7 @@ class BinanceClient():
                     return result
                 else:
                     logging.info('Ошибка.')
-                    return
-
                 logging.info('К сожалению, нет ордеров на закрытие.')
-                return
 
     def get_balance(self, full=True):
         """
@@ -164,7 +148,8 @@ class BinanceClient():
     def average_price(self, ticker_1, ticker_2):
         """ Возвращает значение цены заданой пары """
 
-        price = self.__make_client_call('get_avg_price', symbol=f'{ticker_1}{ticker_2}')  # Получаем среднее значение цены за 5 мин.
+        # Получаем среднее значение цены за 5 мин.
+        price = self.__make_client_call('get_avg_price', symbol=f'{ticker_1}{ticker_2}')
         if price is not None:
             return round(float(price['price']), 1)
 
@@ -220,5 +205,5 @@ class BinanceClient():
         return symbol_info
 
 
-# Создаём экземпляр нашего класса.
+# Создаём экземпляр класса.
 binance_client = BinanceClient()

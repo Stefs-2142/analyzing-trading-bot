@@ -10,13 +10,13 @@ from handlers.binance_get_price import getting_another_pair_price
 from handlers.binance_get_price import getting_pair_price
 from handlers.binance_get_price import get_price
 
-from handlers.close_order import applying_closing
-from handlers.close_order import choosing_order_for_close
-from handlers.close_order import closing_order
+from handlers.binance_close_order import applying_closing
+from handlers.binance_close_order import choosing_order_for_close
+from handlers.binance_close_order import closing_order
 
-from handlers.orders_history import get_trade_history
-from handlers.orders_history import getting_another_pair_orders
-from handlers.orders_history import prepearing_trade_history
+from handlers.binance_orders_history import get_trade_history
+from handlers.binance_orders_history import getting_another_pair_orders
+from handlers.binance_orders_history import prepearing_trade_history
 
 from handlers.crypto_asset_add import (add_crypto, aplying_target,
                                        choosing_pair_for_target, checking_price_for_target)

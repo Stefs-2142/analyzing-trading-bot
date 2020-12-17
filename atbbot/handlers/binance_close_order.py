@@ -88,10 +88,7 @@ def closing_order(update, context):
     # Забираем 'orderId' ордера для его закрытия.
     orderId = context.user_data['open_orders'][order_count_for_close - 1].get('orderId')
 
-    try:
-        binance_client.close_order(symbol, orderId)
-    # Блок 'except' неявный намеренно - ошибки отлавливаются уровнем ниже.
-    except:
+    if binance_client.close_order(symbol, orderId) is None:
         update.message.reply_text(
             'Упс! Возникла ошибка.', reply_markup=main_menu_keyboard()
         )

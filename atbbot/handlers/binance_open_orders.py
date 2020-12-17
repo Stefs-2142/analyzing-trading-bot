@@ -3,7 +3,7 @@ from binance_utils import binance_client
 from keyboards import main_binance_keyboard
 
 
-def get_open_orers(update, context):
+def get_open_orders(update, context):
     """Получаем список отрктых ордеров на бирже."""
 
     open_orders = binance_client.get_all_open_orders()
