@@ -11,9 +11,9 @@ from conversations import (assets, edit_asssets,
                            edit_crypto_asssets, price, crypto_assets,
                            orders, close_order, pair_trade_history)
 
-from handlers.binance_calls import get_balance
+from handlers.binance_balance import get_balance
 
-from handlers.open_orders import get_open_orers
+from handlers.binance_open_orders import get_open_orders
 
 from handlers.asset_view import asset_view
 
@@ -49,7 +49,7 @@ def main():
     dp.add_handler(MessageHandler(Filters.regex('^Узнать баланс'), get_balance))
     dp.add_handler(MessageHandler(Filters.regex('^Мои инструменты'), asset_view))
     dp.add_handler(MessageHandler(Filters.regex('^Помощь'), show_help))
-    dp.add_handler(MessageHandler(Filters.regex('^Открытые ордеры'), get_open_orers))
+    dp.add_handler(MessageHandler(Filters.regex('^Открытые ордеры'), get_open_orders))
     dp.add_handler(MessageHandler(Filters.regex('^Уведомления'), crypto_shares_comands))
     dp.add_handler(MessageHandler(Filters.regex('^Отслеживаемые'), crypto_asset_view))
     dp.add_handler(MessageHandler(Filters.regex('^Назад'), back_to_menu))

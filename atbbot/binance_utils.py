@@ -7,8 +7,6 @@ from settings import SECRET_KEY
 from settings import EXCEPTIONS
 
 from binance.client import Client
-from binance.enums import (SIDE_BUY, SIDE_SELL, ORDER_TYPE_LIMIT,
-                           ORDER_TYPE_MARKET, TIME_IN_FORCE_GTC)
 
 logging.basicConfig(filename='binance.log', level=logging.INFO,
                     format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s',
