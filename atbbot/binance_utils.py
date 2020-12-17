@@ -14,6 +14,9 @@ logging.basicConfig(filename='binance.log', level=logging.INFO,
 
 
 def wrap_try_except(func):
+    """
+    Проверяем каждый вызов к API на наличие ошибок.
+    """
 
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -145,7 +148,8 @@ class BinanceClient():
     def average_price(self, ticker_1, ticker_2):
         """ Возвращает значение цены заданой пары """
 
-        price = self.__make_client_call('get_avg_price', symbol=f'{ticker_1}{ticker_2}')  # Получаем среднее значение цены за 5 мин.
+        # Получаем среднее значение цены за 5 мин.
+        price = self.__make_client_call('get_avg_price', symbol=f'{ticker_1}{ticker_2}')
         if price is not None:
             return round(float(price['price']), 1)
 
@@ -201,5 +205,5 @@ class BinanceClient():
         return symbol_info
 
 
-# Создаём экземпляр нашего класса.
+# Создаём экземпляр класса.
 binance_client = BinanceClient()

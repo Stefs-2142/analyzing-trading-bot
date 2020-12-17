@@ -53,7 +53,7 @@ def prepearing_trade_history(update, context):
 
 
 # history_step_2
-def getting_another_pair_orders(update, context): 
+def getting_another_pair_orders(update, context):
     """На этом шаге позволяем пользователю выбрать другую пару."""
 
     if update.message.text != 'Другая пара':
