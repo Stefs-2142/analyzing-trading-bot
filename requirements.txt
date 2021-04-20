@@ -1,7 +1,7 @@
 amqp==5.0.1
 appdirs==1.4.4
 attrs==19.3.0
-autobahn==20.6.1
+autobahn==20.12.3
 Automat==20.2.0
 beautifulsoup4==4.9.1
 billiard==3.6.3.0
