@@ -35,7 +35,7 @@ kombu==5.0.2
 lxml==4.6.2
 matplotlib==3.3.2
 mccabe==0.6.1
-numpy==1.19.0
+numpy==1.22.0
 pandas==1.0.5
 parse==1.15.0
 Pillow==7.2.0
